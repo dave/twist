@@ -2,9 +2,7 @@ package templates
 
 import (
 	"fmt"
-	"strings"
 	"reflect"
-	"runtime"
 )
 type Item struct {
 	id string
@@ -26,11 +24,20 @@ func (i *Item) Click(handlerFunc interface{}, items ...interface{}) {
 			itemsString += `"`+item.FullId()+`" : ""`
 		}
 	}
-	v := reflect.ValueOf(handlerFunc)
-	f := runtime.FuncForPC(v.Pointer()).Name()
-	handler := f[strings.Index(f, "·") + 2:]
+	handler := getFunctionName(handlerFunc)
 	i.writer.Buffer += `
 $("#` + i.FullId() + `").click(function(){var itemsMap = {`+itemsString+`}; getValues(itemsMap); itemsMap["function"]="`+handler+`"; $.post("/function", itemsMap, function(data){$("#head").append($("<div>").html(data))}, "html")});`
+}
+func getFunctionName(input interface{}) string {
+	v := reflect.ValueOf(input)
+	t := v.Type().In(0)
+	for i := 0; i < t.NumMethod(); i++ {
+		m := t.Method(i)
+		if v.Pointer() ==  m.Func.Pointer() {
+			return m.Name
+		}
+	}
+	return "not found"
 }
 func (i *Item) Html(o ...interface{}) {
 	i.generic(true, o)

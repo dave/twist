@@ -9,7 +9,6 @@ func init() {
 	http.HandleFunc("/", handler)
 }
 
-
 func handler(wr http.ResponseWriter, r *http.Request) {
 
 	templates.Handler(

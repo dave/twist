@@ -11,7 +11,7 @@ import (
 
 func Handler(
 	wr http.ResponseWriter, 
-	r *http.Request, 
+	r *http.Request,
 	getContext func(c *appengine.Context, w *Writer, r *http.Request) interface{}) {
 
 	c := appengine.NewContext(r)
@@ -54,7 +54,6 @@ func Handler(
 		
 	} else {
 
-
 		w := NewWriter(wr, true)
 
 		root := Root(w)
@@ -62,8 +61,9 @@ func Handler(
 		context := getContext(&c, w, r)
 		
 		r := reflect.ValueOf(root)
-		params := make([]reflect.Value, 0)
-		params = append(params, r)
+		
+		params := []reflect.Value{r}
+		
 		v := reflect.ValueOf(context)
 		typ := v.Type()
 		if n := v.Type().NumMethod(); n > 0 {
@@ -74,8 +74,19 @@ func Handler(
 				}
 			}
 		}
-		//context.Root(root)
 
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
