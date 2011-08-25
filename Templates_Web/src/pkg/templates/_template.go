@@ -2,7 +2,7 @@ package templates
 
 
 import (
-	"strings"
+//	"strings"
 	//"writer"
 )
 type Template struct {
@@ -14,12 +14,12 @@ type Template struct {
 }
 
 func (t *Template) GetTemplateJavascript() string {
-	s := strings.Replace(t.Html, `"`, `\"`, -1)
-	s1 := strings.Replace(s, ` id=\"`, ` id=\""+id+"_`, -1)
-	s2 := strings.Replace(s1, `
-`, `\n`, -1)
-	s3 := `<script>function template_`+t.name+`(id){return "` + s2 + `"}</script>`
-	return s3
+//	s := strings.Replace(t.Html, `"`, `\"`, -1)
+//	s1 := strings.Replace(s, ` id=\"`, ` id=\""+id+"_`, -1)
+//	s2 := strings.Replace(s1, `
+//`, `\n`, -1)
+//	s3 := `<script>function template_`+t.name+`(id){return "` + s2 + `"}</script>`
+	return t.Html
 }
 func (t *Template) FullId() string {
 	return t.parentId + `_` + t.Id

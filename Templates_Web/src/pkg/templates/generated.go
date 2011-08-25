@@ -1,10 +1,11 @@
+
 package templates
 
 func GetTemplateByName(name string) *Template {
 	switch name {
 		case "inner" : 
 			return inner_Template()
-		case "test" :
+		case "test" : 
 			return test_Template()
 	}
 	return nil
@@ -21,10 +22,7 @@ type Inner_T struct {
 func inner_Template() *Template{
 	return &Template {
 		name : "inner",
-		Html : `
-<b>This is an inner template, here's some text: <span id="span1" /></b><br />
-...and here's an image: <img id="img1" border="0" /><br />
-`,
+		Html : `<script>function template_inner(id){return "<b>This is an inner template, here's some text: <span style=\"border:1px solid #000000;\" id=\""+id+"_span1\" /></b><br />\n...and here's an image: <img id=\""+id+"_img1\" border=\"0\" /><br />"}</script>`,
 	}
 }
 func (t *Inner_T) GetTemplate() *Template {
@@ -33,17 +31,15 @@ func (t *Inner_T) GetTemplate() *Template {
 
 func Inner(w *Writer, id string) *Inner_T {
 	
-	
 	t := inner_Template()
 	t.Writer = w
 	t.Id = id
 	
 	w.RegisterTemplate(t.name)
-
 	
 	return &Inner_T{
 		name : t.name, 
-		Template : t, 
+		Template : t,
 		Span1 : &Item{
 			id : "span1",
 			template : t, 
@@ -56,28 +52,21 @@ func Inner(w *Writer, id string) *Inner_T {
 		},
 	}
 }
-
-
 type Test_T struct {
 	
 	name string
 	*Template
 	Span1 *Item
-	Para1 *Item
 	Text1 *Item
+	Para1 *Item
 	Button1 *Item
+
 }
-func test_Template() *Template {
-	return &Template{
+func test_Template() *Template{
+	return &Template {
 		name : "test",
-		Html : `
-<p>Template: <span id="span1">span1</span></p>
-<p><input id="text1" type="text" /></p>
-<p></p>
-<p id="para1"></p>
-<p><button id="button1" /></p>
-`,
-	}	
+		Html : `<script>function template_test(id){return "<p>TEsting... <span id=\""+id+"_span1\">span1</span></p>\n<p><input id=\""+id+"_text1\" type=\"text\" /></p>\n<p></p>\n<p id=\""+id+"_para1\"></p>\n<p><button id=\""+id+"_button1\" /></p>"}</script>`,
+	}
 }
 func (t *Test_T) GetTemplate() *Template {
 	return t.Template
@@ -93,28 +82,26 @@ func Test(w *Writer, id string) *Test_T {
 	
 	return &Test_T{
 		name : t.name, 
-		Template : t, 
+		Template : t,
 		Span1 : &Item{
-			id:"span1",
-			template:t, 
-			writer:w,
-		},
-		Para1 : &Item{
-			id:"para1",
-			template:t, 
-			writer:w,
+			id : "span1",
+			template : t, 
+			writer : w,
 		},
 		Text1 : &Item{
-			id:"text1",
-			template:t, 
-			writer:w,
+			id : "text1",
+			template : t, 
+			writer : w,
+		},
+		Para1 : &Item{
+			id : "para1",
+			template : t, 
+			writer : w,
 		},
 		Button1 : &Item{
-			id:"button1",
-			template:t, 
-			writer:w,
+			id : "button1",
+			template : t, 
+			writer : w,
 		},
 	}
 }
-
-
