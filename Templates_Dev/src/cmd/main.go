@@ -55,12 +55,10 @@ func main() {
 func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 
 	templateName := fi.Name[0:strings.Index(fi.Name, ".")]
-	s := "" // main output
+	s := ""
 	f, _ := os.Open(path)
 	t := html.NewTokenizer(f)
 	items := []Item{}
-//	u, _ := ioutil.ReadAll(f)
-//	s := string(u)
 
 	for {
 		tt := t.Next()
@@ -71,7 +69,6 @@ func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 			}
 		}
 		token := t.Token()
-		//fmt.Println(token.Type.String() + ": " + token.Data)
 		switch token.Type {
 			case html.TextToken :
 				s1 := strings.Replace(token.Data, `"`, `\"`, -1)
@@ -97,16 +94,8 @@ func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 			case html.EndTagToken :
 				s += `</` + token.Data + `>`
 		}
-		
-		//if (t.Token().Type == 
-		//fmt.Println(t.Token().Type.String() + " "  + t.Token().String())
-		//fmt.Println(t.Token().String() + " " + t.Token().Type.String())
 	}
 	sOut := `<script>function template_`+templateName+`(id){return "` + s + `"}</script>`
-	//fmt.Println(sOut)
-//	for _, v := range items {
-//		fmt.Println(strings.ToUpper(v[0:1]) + v[1:])
-//	}
 	
 	temp := Template{
 		NameUpper: toUpper(templateName),

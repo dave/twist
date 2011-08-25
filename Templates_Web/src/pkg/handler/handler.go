@@ -46,14 +46,15 @@ func (c Context)Root(root *templates.Item) {
 	inner.Img1.Attr("width", 100)
 	inner.Img1.Attr("height", 100)
 	
-	inner.Img1.Click(Context.MyClickFoo, inner.Span1, test.Text1)
+	inner.Img1.Click(Context.MyClick, inner.Span1, test.Text1, inner.Img1)
 	
 	c.Send()
 }
-
-func (c Context)MyClick(span1 *templates.Item, text1 *templates.Item) {
+func (c Context)MyClick(span1 *templates.Item, text1 *templates.Item, img1 *templates.Item) {
 	
+	img1.Css("border", "10px solid #ff0000")
 	span1.Html("WHOOOOOOPPPPPPPPP!!!!! " + text1.Value)
+	
 	c.Send()
 }
 

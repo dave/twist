@@ -51,7 +51,6 @@ func Handler(
 				}
 			}
 		}
-		
 	} else {
 
 		w := NewWriter(wr, true)

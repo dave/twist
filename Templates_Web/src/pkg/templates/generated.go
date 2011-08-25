@@ -22,7 +22,7 @@ type Inner_T struct {
 func inner_Template() *Template{
 	return &Template {
 		name : "inner",
-		Html : `<script>function template_inner(id){return "<b>This is an inner template, here's some text: <span style=\"border:1px solid #000000;\" id=\""+id+"_span1\" /></b><br />\n...and here's an image: <img id=\""+id+"_img1\" border=\"0\" /><br />"}</script>`,
+		Html : `<script>function template_inner(id){return "<b>This is an inner template, here's some text: <span style=\"border:1px solid #000000;\" id=\""+id+"_span1\" /></b><br />\n...and here's an image: <img id=\""+id+"_img1\" border=\"0\" style=\"border:2px solid #00ff00;\" /><br />"}</script>`,
 	}
 }
 func (t *Inner_T) GetTemplate() *Template {

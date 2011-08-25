@@ -85,24 +85,29 @@ func (i *Item) templateGeneric(replace bool, t *Template) {
 	i.writer.Buffer += `
 $("#` + i.FullId() + `").`+command+`(template_` + t.name + `("` + t.FullId() + `"));`
 }
-
 func (i *Item) Attr(attrib string, o interface{}) {
+	i.attrCss("attr", attrib, o)
+}
+func (i *Item) Css(attrib string, o interface{}) {
+	i.attrCss("css", attrib, o)
+}
+func (i *Item) attrCss(command string, attrib string, o interface{}) {
 		switch t := o.(type) {
 			case string:
-				i.attr(attrib, t)
+				i.attrCssGeneric(command, attrib, t)
 			case int:
-				i.attr(attrib, fmt.Sprint(t))
+				i.attrCssGeneric(command, attrib, fmt.Sprint(t))
 			case float32:
-				i.attr(attrib, fmt.Sprint(t))
+				i.attrCssGeneric(command, attrib, fmt.Sprint(t))
 			case float64:
-				i.attr(attrib, fmt.Sprint(t))
+				i.attrCssGeneric(command, attrib, fmt.Sprint(t))
 			case bool:
-				i.attr(attrib, fmt.Sprint(t))
+				i.attrCssGeneric(command, attrib, fmt.Sprint(t))
 		}
 }
-func (i *Item) attr(attrib string, val string) {
+func (i *Item) attrCssGeneric(command string, attrib string, val string) {
 	i.writer.Buffer += `
-$("#` + i.FullId() + `").attr("` + attrib + `", "` + val + `");`
+$("#` + i.FullId() + `").` + command + `("` + attrib + `", "` + val + `");`
 }
 
 
