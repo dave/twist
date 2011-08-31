@@ -7,6 +7,7 @@ import (
 	"strings"
 	"path/filepath"
 	"template"
+	//"bytes"
 )
 
 const HtmlFileSpec = "/Users/d.brophy/Projects/Templates/Templates_Web/src/pkg/html/"
@@ -16,39 +17,41 @@ type visitor struct {
 	Templates *[]Template
 }
 
-func (v *visitor) AppendTemplate (t *Template) {
+func (v *visitor) AppendTemplate(t *Template) {
 	tem := append(*v.Templates, *t)
 	v.Templates = &tem
 }
 
 
 func (v *visitor) VisitDir(path string, f *os.FileInfo) bool {
-    return true
+	return true
 }
 
 type Binder struct {
 	Templates []Template
 }
+
 func main() {
 	t := []Template{}
 	v := visitor{&t}
-    filepath.Walk(HtmlFileSpec, &v, nil)
+	filepath.Walk(HtmlFileSpec, &v, nil)
 	binder := Binder{*v.Templates}
-	
+
 	temp := template.New(nil)
 	temp.SetDelims("{{", "}}")
-    err := temp.Parse(getTemplate())
-    
-    if err != nil {
-    	fmt.Println("Error!", err.String())
-    	return
-    }
-    
-    f, _ := os.Create(GeneatedFile)
-    defer f.Close()
-    
-    temp.Execute(f, binder)
-    fmt.Println("Done!!")
+	err := temp.Parse(getTemplate())
+
+	if err != nil {
+		fmt.Println("Error!", err.String())
+		return
+	}
+	//b := new(bytes.Buffer)
+	f, _ := os.Create(GeneatedFile)
+	defer f.Close()
+
+	temp.Execute(f, binder)
+	
+	fmt.Println("Done!!")
 
 }
 
@@ -62,7 +65,7 @@ func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 
 	for {
 		tt := t.Next()
-		
+
 		if tt == html.ErrorToken {
 			if t.Error().String() == "EOF" {
 				break
@@ -70,38 +73,38 @@ func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 		}
 		token := t.Token()
 		switch token.Type {
-			case html.TextToken :
-				s1 := strings.Replace(token.Data, `"`, `\"`, -1)
-				s2 := strings.Replace(s1, `
+		case html.TextToken:
+			s1 := strings.Replace(token.Data, `"`, `\"`, -1)
+			s2 := strings.Replace(s1, `
 `, `\n`, -1)
-				s += s2
-			case html.StartTagToken, html.SelfClosingTagToken :
-				att := token.Attr
-				s += `<` + token.Data
-				for _, v := range att {
-					val := v.Val
-					if v.Key == "id" {
-						val = `"+id+"_` + v.Val
-						items = append(items, Item{ItemNameLower:toLower(v.Val), ItemNameUpper:toUpper(v.Val)})
-					}
-					s += ` ` + v.Key + `=\"` + val + `\"`
+			s += s2
+		case html.StartTagToken, html.SelfClosingTagToken:
+			att := token.Attr
+			s += `<` + token.Data
+			for _, v := range att {
+				val := v.Val
+				if v.Key == "id" {
+					val = `"+id+"_` + v.Val
+					items = append(items, Item{ItemNameLower: toLower(v.Val), ItemNameUpper: toUpper(v.Val)})
 				}
-				if token.Type == html.StartTagToken {
-					s += `>`
-				} else {
-					s += ` />`
-				}
-			case html.EndTagToken :
-				s += `</` + token.Data + `>`
+				s += ` ` + v.Key + `=\"` + val + `\"`
+			}
+			if token.Type == html.StartTagToken {
+				s += `>`
+			} else {
+				s += ` />`
+			}
+		case html.EndTagToken:
+			s += `</` + token.Data + `>`
 		}
 	}
-	sOut := `<script>function template_`+templateName+`(id){return "` + s + `"}</script>`
-	
+	sOut := `<script>function template_` + templateName + `(id){return "` + s + `"}</script>`
+
 	temp := Template{
 		NameUpper: toUpper(templateName),
 		NameLower: toLower(templateName),
-		Html: sOut,
-		Items: items,
+		Html:      sOut,
+		Items:     items,
 	}
 	v.AppendTemplate(&temp)
 }
@@ -112,6 +115,7 @@ func toUpper(s string) string {
 func toLower(s string) string {
 	return strings.ToLower(s[0:1]) + s[1:]
 }
+
 type Item struct {
 	ItemNameUpper string
 	ItemNameLower string
@@ -119,8 +123,8 @@ type Item struct {
 type Template struct {
 	NameUpper string
 	NameLower string
-	Html string
-	Items []Item
+	Html      string
+	Items     []Item
 }
 
 func getTemplate() string {
@@ -150,7 +154,7 @@ type {{NameUpper}}_T struct {
 func {{NameLower}}_Template() *Template{
 	return &Template {
 		name : "{{NameLower}}",
-		Html : `+"`"+`{{Html}}`+"`"+`,
+		Html : ` + "`" + `{{Html}}` + "`" + `,
 	}
 }
 func (t *{{NameUpper}}_T) GetTemplate() *Template {

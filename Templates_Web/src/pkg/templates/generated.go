@@ -10,7 +10,6 @@ func GetTemplateByName(name string) *Template {
 	}
 	return nil
 }
-
 type Inner_T struct {
 	
 	name string

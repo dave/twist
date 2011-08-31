@@ -4,7 +4,6 @@ import (
 	"http"
 	"fmt"
 )
-
 func Root(w *Writer) *Item {
 
 	return &Item{
@@ -53,10 +52,11 @@ func (w *Writer) Send() {
 func (w *Writer) sendPage() {
 
 	root := `
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script src="/static/jquery.js"></script>
+<script src="/static/json.js"></script>
 <script>
 function getValues(items) {
-	$.each(items, function(i,n){try{items[i] = $("#" + i).val()}catch(ex){}})
+	$.each(items, function(i,n){try{items[i].V = $("#" + items[i].I).val()}catch(ex){}})
 }
 </script>
 <div id="head"></div>
@@ -94,7 +94,6 @@ var templatesLoaded_1 = 0;`
 			templates += `
 $("#head").append($("<div>").load("/template_` + w.Templates[i] + `", function() {templatesLoaded_1++;if(templatesLoaded_1 == templatesToLoad_1){runScript_1();}}));`
 		}
-		
 		script = `
 function runScript_1()
 {`+w.Buffer+`

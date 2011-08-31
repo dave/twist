@@ -1,6 +1,5 @@
 package templates
 
-
 type Template struct {
 	name string
 	Html string

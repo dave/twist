@@ -3,7 +3,6 @@ package handler
 import (
 	"http"
 	"templates"
-	"appengine"
 )
 
 func init() {
@@ -12,58 +11,84 @@ func init() {
 
 func handler(wr http.ResponseWriter, r *http.Request) {
 
-	templates.Handler(
-		wr, 
+	templates.Server(
+		wr,
 		r,
-		func(c *appengine.Context, w *templates.Writer, r *http.Request) interface{} { 
-			return &Context{Context : c, Writer : w, Request : r }
-		},
+		func() interface{} { return Functions(0) },
 	)
-
 }
 
-type Context struct{
+type Functions int
 
-	*templates.Writer
-	Context *appengine.Context
-	Request *http.Request
+func (f Functions) Root(c templates.Context, root *templates.Item) {
 
-}
-
-func (c Context)Root(root *templates.Item) {
-	
 	test := templates.Test(c.Writer, "main")
 	root.Html(test)
-	
+
 	test.Span1.Html("Hello world!")
 	test.Text1.Attr("value", "foo")
-	
+
 	inner := templates.Inner(c.Writer, "dave")
 	test.Para1.Html(inner)
-		
+
 	inner.Span1.Html("BAR")
 	inner.Img1.Attr("src", "http://pix-eu.dontstayin.com/53812cd7-33c7-44ac-a766-9710e4f14077.jpg")
 	inner.Img1.Attr("width", 100)
 	inner.Img1.Attr("height", 100)
+
+	//inner.Img1.Click(Functions.MyClick, &MyClick_T{Span1: inner.Span1, Text1: test.Text1, Img1: inner.Img1})
+
+	inner.Img1.Click(
+		Functions.MyClickNew, 
+		MyClickNew_T {
+			Val1 : "testing", 
+			Span1: inner.Span1, 
+			Img1: inner.Img1,
+			Text1: test.Text1,
+		})
 	
-	inner.Img1.Click(Context.MyClick, inner.Span1, test.Text1, inner.Img1)
-	
+
 	c.Send()
 }
-func (c Context)MyClick(span1 *templates.Item, text1 *templates.Item, img1 *templates.Item) {
-	
-	img1.Css("border", "10px solid #ff0000")
-	span1.Html("WHOOOOOOPPPPPPPPP!!!!! " + text1.Value)
-	
+
+type MyClickNew_T struct {
+	Val1  templates.Value
+	Span1 *templates.Item
+	Img1  *templates.Item
+	Text1 *templates.Item
+}
+
+func (f Functions) MyClickNew(c templates.Context, v MyClickNew_T) {
+
+	v.Img1.Css("border", "10px solid #ff0000")
+	v.Span1.Html("WHOOOOOOPPPPPPPPP!!!!" + v.Val1)
+
 	c.Send()
 }
 
-func (c Context)MyClickFoo(span1 *templates.Item, text1 *templates.Item) {
+type MyClick_T struct {
+	Span1 *templates.Item
+	Text1 *templates.Item
+	Img1  *templates.Item
+}
 
-	span1.Html("FOOOOOOOOOOO " + text1.Value)
+func (f Functions) MyClick(c templates.Context, v MyClick_T) {
+
+	v.Img1.Css("border", "10px solid #ff0000")
+	v.Span1.Html("WHOOOOOOPPPPPPPPP!!!!! " + v.Text1.Value)
+
 	c.Send()
-
 }
 
 
+type MyClickFoo_T struct {
+	Span1 *templates.Item
+	Text1 *templates.Item
+}
 
+func (f Functions) MyClickFoo(c templates.Context, v MyClickFoo_T) {
+
+	v.Span1.Html("FOOOOOOOOOOO " + v.Text1.Value)
+	c.Send()
+
+}
