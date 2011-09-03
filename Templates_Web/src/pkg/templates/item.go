@@ -3,8 +3,9 @@ package templates
 import (
 	"fmt"
 	"reflect"
-	//"http"
 	"json"
+	"crypto/md5"
+	"encoding/hex"
 )
 
 type Value string
@@ -36,67 +37,53 @@ type ValueStub struct {
 	V string
 	E bool
 }
-type AllStubs struct {
+type allStubs struct {
 	Func string
+	Hash string
 	Items []ItemStub
 	Values []ValueStub
 }
 
 func (i *Item) Click(handlerFunc interface{}, values interface{}) {
-//	fmt.Fprint(wr, "hello!", "<br>")
 
-//	itemsJson := ""
-//	valuesJson := ""
 	itemStubs := make([]ItemStub, 0)
 	valueStubs := make([]ValueStub, 0)
 
-//	fmt.Fprint(wr, reflect.ValueOf(values).Type().Name(), " --------<br>")
 	val := reflect.ValueOf(values)
 	typ := val.Type()
 	for i := 0; i < typ.NumField(); i++ {
 		name := typ.Field(i).Name
 		switch o := val.FieldByName(name).Interface().(type) {
 		case *Item:
-			itemStubs = append(itemStubs, ItemStub{N: name, I: o.FullId(), V: ""}) 
-			
-		//	if len(itemsJson) > 0 {
-		//		itemsJson += ","
-		//	}
-		//	itemsJson += fmt.Sprint(`{"n":"` + name + `","i":"` + o.FullId() + `","v":""}`)
+			itemStubs = append(itemStubs, ItemStub{N: name, I: o.FullId(), V: ""})
 		case Value:
-			
 			valueStubs = append(valueStubs, ValueStub{N: name, V: string(o), E: false})
-			
-		//	if len(valuesJson) > 0 {
-		//		valuesJson += ","
-		//	}
-		//	valuesJson += fmt.Sprint(`{"n":"` + name + `","v":"` + strings.Replace(strings.Replace(string(o), "\n", `\n`, -1), `"`, `\"`, -1) + `"}`)
 		case ValueEncrypted:
 			panic("TODO")
-			//fmt.Fprint(wr, name, " (encrypted) ", o, "<br>")
 		default:
 			panic("Incorrect value " + name)
-			//fmt.Fprint(wr, "failed... ", o, "<br>")
 		}
 	}
-	//fmt.Fprint(wr, "Items: ", itemsJson, "<br>")
-	//fmt.Fprint(wr, "Values: ", valuesJson, "<br>")
 	
-	stubs := AllStubs{Func: getFunctionName(handlerFunc), Items: itemStubs, Values: valueStubs}
+	stubs := allStubs{Func: getFunctionName(handlerFunc), Items: itemStubs, Values: valueStubs}
 	
-	b, _ := json.Marshal(stubs)
+	hash := getHash(stubs)
+    stubs.Hash = hash
 	
-//	fmt.Fprint(wr, string(b))
-	
-	//val := `{"items":[`+itemsJson+`],"values":[`+valuesJson+`]}`
-
-	//	for i := 0; i < val.NumField(); i++ {
-	//		fmt.Fprint(wr, val.Field(i), "<br>")
-	//	}
+	marshalled, _ := json.Marshal(stubs)
 	
 	i.writer.Buffer += `
-$("#` + i.FullId() + `").click(function(){var j = ` + string(b) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){$("#head").append($("<div>").html(data))}, "html")});`
+$("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){$("#head").append($("<div>").html(data))}, "html")});`
 
+}
+func getHash(stubs allStubs) string {
+	
+	b, _ := json.Marshal(stubs)
+	h := md5.New()
+	h.Write([]byte(b))
+	
+	return hex.EncodeToString([]byte(h.Sum()))
+	
 }
 func getFunctionName(input interface{}) string {
 	v := reflect.ValueOf(input)

@@ -13,7 +13,6 @@ func Root(w *Writer) *Item {
 	}
 
 }
-
 type Writer struct {
 	Output    http.ResponseWriter
 	Buffer    string

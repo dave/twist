@@ -131,7 +131,7 @@ func getTemplate() string {
 	return `
 package templates
 
-func GetTemplateByName(name string) *Template {
+func getTemplateByName(name string) *Template {
 	switch name {
 		{{.repeated section Templates}}
 		case "{{NameLower}}" : 

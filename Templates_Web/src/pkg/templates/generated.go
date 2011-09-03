@@ -1,7 +1,7 @@
 
 package templates
 
-func GetTemplateByName(name string) *Template {
+func getTemplateByName(name string) *Template {
 	switch name {
 		case "inner" : 
 			return inner_Template()

@@ -29,8 +29,7 @@ func Server(
 	if strings.HasPrefix(path, "/template") {
 
 		name := path[strings.Index(path, "_") + 1:]
-		c.Infof(name)
-		template := GetTemplateByName(name)
+		template := getTemplateByName(name)
 		fmt.Fprint(wr, template.GetTemplateJavascript())
 		
 	} else if strings.HasPrefix(path, "/function") {
@@ -38,11 +37,28 @@ func Server(
 		
 		r.ParseForm()
 		
-		stubs := new(AllStubs)
+		stubs := new(allStubs)
+		stubsForCheck := new(allStubs)
 		for v, _ := range r.Form {
 			json.Unmarshal([]uint8(v), stubs)
+			json.Unmarshal([]uint8(v), stubsForCheck)
 			break
 		}
+		proposedHashFromClient := stubs.Hash
+		
+		//clear variant data out of stubsForCheck before checking hash
+		stubsForCheck.Hash = ""
+		for i, _ := range stubsForCheck.Items {
+			stubsForCheck.Items[i].V = ""
+		}
+		
+		calculatedHash := getHash(*stubsForCheck)
+		
+		if proposedHashFromClient != calculatedHash {
+			panic("hash mismatch")
+		}
+
+
 		
 		methodValue, method := findMethod(stubs.Func, getFunctionsType)
 		context := Context{w, &c, r}
