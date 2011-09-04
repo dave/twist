@@ -3,6 +3,7 @@ package handler
 import (
 	"http"
 	"templates"
+	//"fmt"
 )
 
 func init() {
@@ -20,12 +21,11 @@ func handler(wr http.ResponseWriter, r *http.Request) {
 
 type Functions int
 
-func (f Functions) Root(c templates.Context, root *templates.Item) {
+func (f Functions) Root(c templates.Context) {
 
-	
 
 	test := templates.Test(c.Writer, "main")
-	root.Html(test)
+	c.Root.Html(test)
 
 	test.Span1.Html("Hello world!")
 	test.Text1.Attr("value", "foo")
@@ -38,14 +38,26 @@ func (f Functions) Root(c templates.Context, root *templates.Item) {
 	inner.Img1.Attr("width", 100)
 	inner.Img1.Attr("height", 100)
 
-	//inner.Img1.Click(Functions.MyClick, &MyClick_T{Span1: inner.Span1, Text1: test.Text1, Img1: inner.Img1})
-
 	inner.Img1.Click(Functions.MyClickNew, MyClickNew_T { Val1 : "testing", Span1: inner.Span1, Img1: inner.Img1, Text1: test.Text1 })
 	
-	
-	
+	inner.MyLink.Link(Functions.Page1, Page1_T { Val1 : "ooooooh!" })
 
 	c.Send()
+
+}
+
+type Page1_T struct {
+	Val1 templates.Value
+}
+func (f Functions) Page1(c templates.Context, v Page1_T) {
+
+	c.Root.Html("Hello World. " + v.Val1)
+	c.Send()
+
+}
+
+type ClickLink_T struct {
+	Val1 templates.Value
 }
 
 type MyClickNew_T struct {

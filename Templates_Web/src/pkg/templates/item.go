@@ -6,6 +6,7 @@ import (
 	"json"
 	"crypto/md5"
 	"encoding/hex"
+	"http"
 )
 
 type Value string
@@ -74,11 +75,63 @@ func (i *Item) Click(handlerFunc interface{}, values interface{}) {
 	marshalled, _ := json.Marshal(stubs)
 	
 	i.writer.Buffer += `
-$("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){$("#head").append($("<div>").html(data))}, "html")});`
+$("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){$("#head").append($("<div>").html(data))}, "html");return false;});`
 
 }
+
+func (i *Item) Link(handlerFunc interface{}, values interface{}) {
+
+	valueStubs := make([]valueStub, 0)
+
+	val := reflect.ValueOf(values)
+	typ := val.Type()
+	for i := 0; i < typ.NumField(); i++ {
+		name := typ.Field(i).Name
+		switch o := val.FieldByName(name).Interface().(type) {
+		case Value:
+			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), E: false})
+		case ValueEncrypted:
+			panic("TODO")
+		case *Item:
+			if name != "Root" {
+				panic("We can't have Items in a Link - name:" + name)
+			}
+		default:
+			panic("Incorrect value " + name)
+		}
+	}
+	
+	stubs := allStubs{Func: getFunctionName(handlerFunc), Values: valueStubs}
+	
+	hash := getHash(stubs)
+    stubs.Hash = hash
+	
+	marshalled, _ := json.Marshal(stubs)
+	
+	href := "/" + stubs.Func
+	qstring := ""
+	for _, v := range stubs.Values {
+		if len(qstring) == 0 {
+			qstring += "?"
+		} else {
+			qstring += "&"
+		}
+		qstring += v.N + "=" + http.URLEscape(v.V)
+	}
+	href += qstring
+	if len(stubs.Values) > 0 {
+		href += "&_hash=" + hash
+	}
+
+	i.writer.Buffer += `
+$("#` + i.FullId() + `").attr("href", "` + href + `");
+$("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){$("#head").append($("<div>").html(data))}, "html");return false;});`
+
+}
+
 func getHash(stubs allStubs) string {
 	
+	stubs.Hash = "oiheworkvnxcvwetrytknmxznuihkfnknvkcskjnsjdnanjvdskjsvnmzxbc" // this works as a crude salt.
 	b, _ := json.Marshal(stubs)
 	h := md5.New()
 	h.Write([]byte(b))

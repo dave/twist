@@ -63,19 +63,28 @@ function getValues(items) {
 <div id="root"></div>
 <script>`
 
-	templates := `
+	templates := ""
+	script := ""
+
+	if len(w.Templates) > 0 {
+		templates = `
 var templatesToLoad = ` + fmt.Sprint(len(w.Templates)) + `;
 var templatesLoaded = 0;`
-	for i := 0; i < len(w.Templates); i++ {
-		templates += `
+		for i := 0; i < len(w.Templates); i++ {
+			templates += `
 $("#head").append($("<div>").load("/template_` + w.Templates[i] + `", function() {templatesLoaded++;if(templatesLoaded == templatesToLoad){runScript();}}));`
-	}
+		}
 	
-	script := `
+		script = `
 function runScript()
 {`+w.Buffer+`
 }
 </script>`
+
+	} else {
+		script = w.Buffer + `
+</script>`
+	}
 
 	fmt.Fprint(w.Output,
 		root + templates + script)
