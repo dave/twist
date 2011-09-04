@@ -22,6 +22,8 @@ type Functions int
 
 func (f Functions) Root(c templates.Context, root *templates.Item) {
 
+	
+
 	test := templates.Test(c.Writer, "main")
 	root.Html(test)
 
@@ -38,14 +40,9 @@ func (f Functions) Root(c templates.Context, root *templates.Item) {
 
 	//inner.Img1.Click(Functions.MyClick, &MyClick_T{Span1: inner.Span1, Text1: test.Text1, Img1: inner.Img1})
 
-	inner.Img1.Click(
-		Functions.MyClickNew, 
-		MyClickNew_T {
-			Val1 : "testing", 
-			Span1: inner.Span1, 
-			Img1: inner.Img1,
-			Text1: test.Text1,
-		})
+	inner.Img1.Click(Functions.MyClickNew, MyClickNew_T { Val1 : "testing", Span1: inner.Span1, Img1: inner.Img1, Text1: test.Text1 })
+	
+	
 	
 
 	c.Send()

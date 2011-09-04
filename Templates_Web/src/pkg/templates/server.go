@@ -32,6 +32,7 @@ func Server(
 		template := getTemplateByName(name)
 		fmt.Fprint(wr, template.GetTemplateJavascript())
 		
+		
 	} else if strings.HasPrefix(path, "/function") {
 		w := NewWriter(wr, false)
 		
@@ -53,6 +54,7 @@ func Server(
 		}
 		
 		calculatedHash := getHash(*stubsForCheck)
+		
 		
 		if proposedHashFromClient != calculatedHash {
 			panic("hash mismatch")

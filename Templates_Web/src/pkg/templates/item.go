@@ -27,12 +27,12 @@ func newValueFromAction(value string) Value {
 	return Value(value)
 }
 
-type ItemStub struct {
+type itemStub struct {
 	N string
 	I string
 	V string
 }
-type ValueStub struct {
+type valueStub struct {
 	N string
 	V string
 	E bool
@@ -40,14 +40,15 @@ type ValueStub struct {
 type allStubs struct {
 	Func string
 	Hash string
-	Items []ItemStub
-	Values []ValueStub
+	Items []itemStub
+	Values []valueStub
 }
+
 
 func (i *Item) Click(handlerFunc interface{}, values interface{}) {
 
-	itemStubs := make([]ItemStub, 0)
-	valueStubs := make([]ValueStub, 0)
+	itemStubs := make([]itemStub, 0)
+	valueStubs := make([]valueStub, 0)
 
 	val := reflect.ValueOf(values)
 	typ := val.Type()
@@ -55,9 +56,9 @@ func (i *Item) Click(handlerFunc interface{}, values interface{}) {
 		name := typ.Field(i).Name
 		switch o := val.FieldByName(name).Interface().(type) {
 		case *Item:
-			itemStubs = append(itemStubs, ItemStub{N: name, I: o.FullId(), V: ""})
+			itemStubs = append(itemStubs, itemStub{N: name, I: o.FullId(), V: ""})
 		case Value:
-			valueStubs = append(valueStubs, ValueStub{N: name, V: string(o), E: false})
+			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), E: false})
 		case ValueEncrypted:
 			panic("TODO")
 		default:

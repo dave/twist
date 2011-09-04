@@ -7,6 +7,7 @@ type Template struct {
 	parentId string
 	Writer *Writer
 }
+
 func (t *Template) GetTemplateJavascript() string {
 	return t.Html
 }
