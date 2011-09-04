@@ -54,11 +54,7 @@ func (w *Writer) sendPage() {
 	root := `
 <script src="/static/jquery.js"></script>
 <script src="/static/json.js"></script>
-<script>
-function getValues(items) {
-	$.each(items, function(i,n){try{items[i].V = $("#" + items[i].I).val()}catch(ex){}})
-}
-</script>
+<script src="/static/helpers.js"></script>
 <div id="head"></div>
 <div id="root"></div>
 <script>`

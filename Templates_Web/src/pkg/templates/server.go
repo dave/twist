@@ -7,7 +7,6 @@ import (
 	"appengine"
 	"reflect"
 	"json"
-	//	"strconv"
 )
 
 type Context struct {
@@ -44,7 +43,6 @@ getFunctionsType func() interface{}) {
 		for v, _ := range r.Form {
 			json.Unmarshal([]uint8(v), stubs)
 			json.Unmarshal([]uint8(v), stubsForCheck)
-			c.Infof(v)
 			break
 		}
 		proposedHashFromClient := stubs.Hash
@@ -139,7 +137,6 @@ getFunctionsType func() interface{}) {
 				if n == "_hash" {
 					proposedHashFromClient = v[0]
 				} else {
-					c.Infof(n, v[0])
 					valueStubs = append(valueStubs, valueStub{N:n, V:v[0], E:false})
 				}
 			}
@@ -169,12 +166,7 @@ getFunctionsType func() interface{}) {
 				field.Set(reflect.ValueOf(value))
 			}
 		}
-/*
-		field := mainParam.FieldByName("Root")
-		item := newItemFromAction("root", w)
-		item.Value = ""
-		field.Set(reflect.ValueOf(item))
-*/
+
 		functionParams := make([]reflect.Value, 2)
 		functionParams[0] = reflect.ValueOf(context)
 		functionParams[1] = mainParam
