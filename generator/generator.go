@@ -10,8 +10,8 @@ import (
 	//"bytes"
 )
 
-const HtmlFileSpec = "/Users/d.brophy/Projects/Templates/Templates_Web/src/pkg/html/"
-const GeneatedFile = "/Users/d.brophy/Projects/Templates/Templates_Web/src/pkg/templates/generated.go"
+const HtmlFileSpec = "../web/html/"
+const GeneatedFile = "../web/twist/generated.go"
 
 type visitor struct {
 	Templates *[]Template
@@ -129,7 +129,7 @@ type Template struct {
 
 func getTemplate() string {
 	return `
-package templates
+package twist
 
 func getTemplateByName(name string) *Template {
 	switch name {
