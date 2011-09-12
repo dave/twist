@@ -7,10 +7,17 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"http"
+	"strconv"
 )
 
-type Value string
-type ValueEncrypted string
+type String string
+type StringHashed string
+type StringEncrypted string
+
+type Int int
+type IntHashed int
+type IntEncrypted int
+
 type Item struct {
 	id       string
 	template *Template
@@ -18,14 +25,48 @@ type Item struct {
 	Value    string
 }
 
+func (v String) Value() string {
+	return string(v)
+}
+func (v StringHashed) Value() string {
+	return string(v)
+}
+func (v StringEncrypted) Value() string {
+	return string(v)
+}
+func (v String) String() string {
+	return string(v)
+}
+func (v StringHashed) String() string {
+	return string(v)
+}
+func (v StringEncrypted) String() string {
+	return string(v)
+}
+func (v Int) Value() int {
+	return int(v)
+}
+func (v IntHashed) Value() int {
+	return int(v)
+}
+func (v IntEncrypted) Value() int {
+	return int(v)
+}
+func (v Int) String() string {
+	return strconv.Itoa(int(v))
+}
+func (v IntHashed) String() string {
+	return strconv.Itoa(int(v))
+}
+func (v IntEncrypted) String() string {
+	return strconv.Itoa(int(v))
+}
+
 func newItemFromAction(id string, writer *Writer) *Item {
 	return &Item{
 		id:     id,
 		writer: writer,
 	}
-}
-func newValueFromAction(value string) Value {
-	return Value(value)
 }
 
 type itemStub struct {
@@ -35,8 +76,8 @@ type itemStub struct {
 }
 type valueStub struct {
 	N string
-	V string
-	E bool
+	V interface{}
+	T int
 }
 type allStubs struct {
 	Func string
@@ -58,9 +99,17 @@ func (i *Item) Click(handlerFunc interface{}, values interface{}) {
 		switch o := val.FieldByName(name).Interface().(type) {
 		case *Item:
 			itemStubs = append(itemStubs, itemStub{N: name, I: o.FullId(), V: ""})
-		case Value:
-			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), E: false})
-		case ValueEncrypted:
+		case String:
+			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T:1})
+		case StringHashed:
+			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T:2})
+		case StringEncrypted:
+			panic("TODO")
+		case Int:
+			valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T:4})
+		case IntHashed:
+			valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T:5})
+		case IntEncrypted:
 			panic("TODO")
 		default:
 			panic("Incorrect value " + name)
@@ -82,20 +131,31 @@ $("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; ge
 func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 
 	valueStubs := make([]valueStub, 0)
+	needsHash := false
 
 	val := reflect.ValueOf(values)
 	typ := val.Type()
 	for i := 0; i < typ.NumField(); i++ {
 		name := typ.Field(i).Name
 		switch o := val.FieldByName(name).Interface().(type) {
-		case Value:
-			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), E: false})
-		case ValueEncrypted:
+		case String:
+			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T:1})
+		case StringHashed:
+			needsHash = true
+			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T:2})
+		case StringEncrypted:
+			needsHash = true //???
+			panic("TODO")
+		case Int:
+			valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T:4})
+		case IntHashed:
+			needsHash = true
+			valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T:5})
+		case IntEncrypted:
+			needsHash = true //???
 			panic("TODO")
 		case *Item:
-			if name != "Root" {
-				panic("We can't have Items in a Link - name:" + name)
-			}
+			panic("We can't have Items in a Link - name:" + name)
 		default:
 			panic("Incorrect value " + name)
 		}
@@ -103,12 +163,15 @@ func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 	
 	stubs := allStubs{Func: getFunctionName(handlerFunc), Values: valueStubs}
 	
-	hash := getHash(stubs)
-    stubs.Hash = hash
-	
+	hashQuery := ""
+	if needsHash {
+		hash := getHash(stubs)
+    	stubs.Hash = hash
+    	hashQuery = "&_hash=" + hash
+	}
+
 	marshalled, _ := json.Marshal(stubs)
 	
-	href := "/" + stubs.Func
 	qstring := ""
 	for _, v := range stubs.Values {
 		if len(qstring) == 0 {
@@ -116,12 +179,10 @@ func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 		} else {
 			qstring += "&"
 		}
-		qstring += v.N + "=" + http.URLEscape(v.V)
+		
+		qstring += v.N + "=" + http.URLEscape(toString(v.V))
 	}
-	href += qstring
-	if len(stubs.Values) > 0 {
-		href += "&_hash=" + hash
-	}
+	href := "/" + stubs.Func + qstring + hashQuery
 
 	i.writer.Buffer += `
 $("#` + i.FullId() + `").attr("href", "` + href + `");
@@ -129,10 +190,42 @@ $("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; ge
 
 }
 
-func getHash(stubs allStubs) string {
-	
+
+//We use this when we have to clear values out in the hash function
+func (self *allStubs) Copy() *allStubs { 
+
+	r := new(allStubs)
+	*r = *self
+	r.Items = make([]itemStub, len(r.Items))
+	r.Values = make([]valueStub, len(r.Values))
+	copy(r.Items, self.Items)
+	copy(r.Values, self.Values)
+	return r
+
+}
+
+func getHash(stubs1 allStubs) string {
+
+	var stubs allStubs = *stubs1.Copy()
+
+	//clear variant data out of stubs before checking hash
+	stubs.Hash = ""
+	for i, _ := range stubs.Items {
+		stubs.Items[i].V = ""
+	}
+
+	//clear data out of non-hashed items
+	for i, _ := range stubs.Values {
+		if (stubs.Values[i].T == 1) {
+			stubs.Values[i].V = ""
+		} else if stubs.Values[i].T == 4 {
+			stubs.Values[i].V = 0
+		}
+	}
+
 	stubs.Hash = "oiheworkvnxcvwetrytknmxznuihkfnknvkcskjnsjdnanjvdskjsvnmzxbc" // this works as a crude salt.
 	b, _ := json.Marshal(stubs)
+
 	h := md5.New()
 	h.Write([]byte(b))
 	
@@ -173,8 +266,10 @@ func (i *Item) generic(replace bool, o []interface{}) {
 			i.htmlGeneric(replace && j == 0, fmt.Sprint(t))
 		case bool:
 			i.htmlGeneric(replace && j == 0, fmt.Sprint(t))
-		case Value:
-			i.htmlGeneric(replace && j == 0, string(t))
+		case String, StringHashed, StringEncrypted:
+			i.htmlGeneric(replace && j == 0, toString(t))
+		case Int, IntHashed, IntEncrypted:
+			i.htmlGeneric(replace && j == 0, fmt.Sprint(toInt(t)))
 		default:
 			if t, ok := o1.(Templater); ok {
 				i.templateGeneric(replace && j == 0, t.GetTemplate())
@@ -183,6 +278,28 @@ func (i *Item) generic(replace bool, o []interface{}) {
 			}
 		}
 	}
+}
+func toString(input interface{}) string {
+	s := ""
+	if st, ok := input.(string); ok {
+		s = st
+	} else if in, ok := input.(int); ok {
+		s = strconv.Itoa(in)
+	}
+	return s
+}
+func toInt(input interface{}) int {
+	i := 0
+	if in, ok := input.(int); ok {
+		i = in
+	} else if fl, ok := input.(float64); ok {
+		in := int(fl)
+		i = in
+	} else if st, ok := input.(string); ok {
+		in, _ := strconv.Atoi(st)
+		i = in
+	}
+	return i
 }
 func (i *Item) htmlGeneric(replace bool, s string) {
 	command := ""

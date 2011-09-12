@@ -5,6 +5,13 @@ import (
 	"fmt"
 )
 
+type Writer struct {
+	Output    http.ResponseWriter
+	Buffer    string
+	Templates []Template
+	IsRoot    bool
+}
+
 func Root(w *Writer) *Item {
 
 	return &Item{
@@ -14,29 +21,25 @@ func Root(w *Writer) *Item {
 	}
 
 }
-type Writer struct {
-	Output    http.ResponseWriter
-	Buffer    string
-	Templates []string
-	IsRoot    bool
-}
+
 
 func NewWriter(o http.ResponseWriter, isRoot bool) *Writer {
 	return &Writer{
 		Output:    o,
 		Buffer:    "",
-		Templates: make([]string, 0),
+		Templates: make([]Template, 0),
 		IsRoot : isRoot}
 }
 
-func (w *Writer) RegisterTemplate(name string) {
+func (w *Writer) RegisterTemplate(t Template) {
 
+	
 	for i := 0; i < len(w.Templates); i++ {
-		if w.Templates[i] == name {
+		if w.Templates[i].name == t.name {
 			return
 		}
 	}
-	w.Templates = append(w.Templates, name)
+	w.Templates = append(w.Templates, t)
 
 }
 
@@ -68,7 +71,7 @@ var templatesToLoad = ` + fmt.Sprint(len(w.Templates)) + `;
 var templatesLoaded = 0;`
 		for i := 0; i < len(w.Templates); i++ {
 			templates += `
-$("#head").append($("<div>").load("/template_` + w.Templates[i] + `", function() {templatesLoaded++;if(templatesLoaded == templatesToLoad){runScript();}}));`
+$("#head").append($("<div>").load("/template_` + w.Templates[i].name + `", function() {templatesLoaded++;if(templatesLoaded == templatesToLoad){runScript();}}));`
 		}
 	
 		script = `
@@ -93,14 +96,14 @@ func (w *Writer) sendFragment() {
 	script := ``
 	if len(w.Templates) > 0 {
 		templates = `
-var templatesToLoad_1 = ` + fmt.Sprint(len(w.Templates)) + `;
-var templatesLoaded_1 = 0;`
+var templatesToLoad = ` + fmt.Sprint(len(w.Templates)) + `;
+var templatesLoaded = 0;`
 		for i := 0; i < len(w.Templates); i++ {
 			templates += `
-$("#head").append($("<div>").load("/template_` + w.Templates[i] + `", function() {templatesLoaded_1++;if(templatesLoaded_1 == templatesToLoad_1){runScript_1();}}));`
+$("#head").append($("<div>").load("/template_` + w.Templates[i].name + `", function() {templatesLoaded++;if(templatesLoaded == templatesToLoad){runScript();}}));`
 		}
 		script = `
-function runScript_1()
+function runScript()
 {`+w.Buffer+`
 }`
 	} else {

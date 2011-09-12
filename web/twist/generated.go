@@ -1,4 +1,3 @@
-
 package twist
 
 func getTemplateByName(name string) *Template {
@@ -36,7 +35,7 @@ func Inner(w *Writer, id string) *Inner_T {
 	t.Writer = w
 	t.Id = id
 	
-	w.RegisterTemplate(t.name)
+	w.RegisterTemplate(*t)
 	
 	return &Inner_T{
 		name : t.name, 
@@ -84,7 +83,7 @@ func Test(w *Writer, id string) *Test_T {
 	t.Writer = w
 	t.Id = id
 	
-	w.RegisterTemplate(t.name)
+	w.RegisterTemplate(*t)
 	
 	return &Test_T{
 		name : t.name, 
