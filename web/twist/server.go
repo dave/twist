@@ -14,7 +14,7 @@ type Context struct {
 	*Writer
 	Context *appengine.Context
 	Request *http.Request
-	Root *Item
+	Root    *Item
 }
 
 func Server(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
@@ -22,7 +22,7 @@ func Server(wr http.ResponseWriter, r *http.Request, getFunctionsType func() int
 	path := r.URL.Path
 
 	if path == "/favicon.ico" {
-		
+
 		return
 
 	} else if path == "/" {
@@ -54,15 +54,15 @@ func serverTemplate(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 }
 
 func serverRoot(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
-	
+
 	c := appengine.NewContext(r)
 	w := NewWriter(wr, true)
 
-	context := Context {
-		Writer: w, 
-		Context: &c, 
-		Request: r, 
-		Root: Root(w),
+	context := Context{
+		Writer:  w,
+		Context: &c,
+		Request: r,
+		Root:    Root(w),
 	}
 
 	contextVal := reflect.ValueOf(context)
@@ -75,7 +75,7 @@ func serverRoot(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 }
 
 func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
-	
+
 	c := appengine.NewContext(r)
 	w := NewWriter(wr, false)
 
@@ -88,11 +88,11 @@ func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 	}
 
 	methodValue, method := findMethod(stubs.Func, getFunctionsType)
-	context := Context {
-		Writer: w, 
-		Context: &c, 
-		Request: r, 
-		Root: Root(w),
+	context := Context{
+		Writer:  w,
+		Context: &c,
+		Request: r,
+		Root:    Root(w),
 	}
 
 	if method.Type.NumIn() != 3 {
@@ -109,48 +109,48 @@ func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 		name := typ.Field(i).Name
 		field := val.FieldByName(name)
 		switch o := field.Interface().(type) {
-			case String:
-				stub, found := getValueStubByName(stubs.Values, name)
-				if found {
-					value := String(toString(stub.V))
-					field.Set(reflect.ValueOf(value))
-				}
-			case StringHashed:
-				needsHash = true
-				stub, found := getValueStubByName(stubs.Values, name)
-				if found {
-					value := StringHashed(toString(stub.V))
-					field.Set(reflect.ValueOf(value))
-				}
-			case StringEncrypted:
-				needsHash = true //???
-				panic("TODO")
-			case Int:
-				stub, found := getValueStubByName(stubs.Values, name)
-				if found {
-					value := Int(toInt(stub.V))
-					field.Set(reflect.ValueOf(value))
-				}
-			case IntHashed:
-				needsHash = true
-				stub, found := getValueStubByName(stubs.Values, name)
-				if found {
-					value := IntHashed(toInt(stub.V))
-					field.Set(reflect.ValueOf(value))
-				}
-			case IntEncrypted:
-				needsHash = true //???
-				panic("TODO")
-			case *Item:
-				needsHash = true
-				stub, found := getItemStubByName(stubs.Items, name)
-				if found {
-					item := newItemFromAction(stub.I, w)
-					item.Value = stub.V
-					field.Set(reflect.ValueOf(item))
-				}
-			default:
-				panic("Incorrect item/value " + name)
+		case String:
+			stub, found := getValueStubByName(stubs.Values, name)
+			if found {
+				value := String(toString(stub.V))
+				field.Set(reflect.ValueOf(value))
+			}
+		case StringHashed:
+			needsHash = true
+			stub, found := getValueStubByName(stubs.Values, name)
+			if found {
+				value := StringHashed(toString(stub.V))
+				field.Set(reflect.ValueOf(value))
+			}
+		case StringEncrypted:
+			needsHash = true //???
+			panic("TODO")
+		case Int:
+			stub, found := getValueStubByName(stubs.Values, name)
+			if found {
+				value := Int(toInt(stub.V))
+				field.Set(reflect.ValueOf(value))
+			}
+		case IntHashed:
+			needsHash = true
+			stub, found := getValueStubByName(stubs.Values, name)
+			if found {
+				value := IntHashed(toInt(stub.V))
+				field.Set(reflect.ValueOf(value))
+			}
+		case IntEncrypted:
+			needsHash = true //???
+			panic("TODO")
+		case *Item:
+			needsHash = true
+			stub, found := getItemStubByName(stubs.Items, name)
+			if found {
+				item := newItemFromAction(stub.I, w)
+				item.Value = stub.V
+				field.Set(reflect.ValueOf(item))
+			}
+		default:
+			panic("Incorrect item/value " + name)
 		}
 	}
 
@@ -193,11 +193,11 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 	w := NewWriter(wr, true)
 	pageName := path[1:]
 
-	context := Context {
-		Writer: w, 
-		Context: &c, 
-		Request: r, 
-		Root: Root(w),
+	context := Context{
+		Writer:  w,
+		Context: &c,
+		Request: r,
+		Root:    Root(w),
 	}
 
 	r.ParseForm()
@@ -210,7 +210,7 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 	if method.Type.In(1) != reflect.TypeOf(context) {
 		panic("function " + pageName + " first field should be type templates.Context")
 	}
-	
+
 	needsHash := false
 
 	valueStubs := make([]valueStub, 0)
@@ -221,40 +221,40 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 		name := typ.Field(i).Name
 		field := val.FieldByName(name)
 		switch o := field.Interface().(type) {
-			case String:
-				v := r.FormValue(name)
-				valueStubs = append(valueStubs, valueStub{N:name, V:v, T:1})
-				value := String(v)
-				field.Set(reflect.ValueOf(value))
-			case StringHashed:
-				needsHash = true
-				v := r.FormValue(name)
-				valueStubs = append(valueStubs, valueStub{N:name, V:v, T:2})
-				value := StringHashed(v)
-				field.Set(reflect.ValueOf(value))
-			case StringEncrypted:
-				needsHash = true //???
-				panic("TODO")
-			case Int:
-				v := r.FormValue(name)
-				valueStubs = append(valueStubs, valueStub{N:name, V:v, T:4})
-				vInt, _ := strconv.Atoi(v)
-				value := Int(vInt)
-				field.Set(reflect.ValueOf(value))
-			case IntHashed:
-				needsHash = true
-				v := r.FormValue(name)
-				valueStubs = append(valueStubs, valueStub{N:name, V:v, T:5})
-				vInt, _ := strconv.Atoi(v)
-				value := IntHashed(vInt)
-				field.Set(reflect.ValueOf(value))
-			case IntEncrypted:
-				needsHash = true //???
-				panic("TODO")
-			case *Item:
-				panic("We can't have Items in a Link - name:" + name)
-			default:
-				panic("Incorrect value " + name)
+		case String:
+			v := r.FormValue(name)
+			valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 1})
+			value := String(v)
+			field.Set(reflect.ValueOf(value))
+		case StringHashed:
+			needsHash = true
+			v := r.FormValue(name)
+			valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 2})
+			value := StringHashed(v)
+			field.Set(reflect.ValueOf(value))
+		case StringEncrypted:
+			needsHash = true //???
+			panic("TODO")
+		case Int:
+			v := r.FormValue(name)
+			valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 4})
+			vInt, _ := strconv.Atoi(v)
+			value := Int(vInt)
+			field.Set(reflect.ValueOf(value))
+		case IntHashed:
+			needsHash = true
+			v := r.FormValue(name)
+			valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 5})
+			vInt, _ := strconv.Atoi(v)
+			value := IntHashed(vInt)
+			field.Set(reflect.ValueOf(value))
+		case IntEncrypted:
+			needsHash = true //???
+			panic("TODO")
+		case *Item:
+			panic("We can't have Items in a Link - name:" + name)
+		default:
+			panic("Incorrect value " + name)
 		}
 	}
 
@@ -274,7 +274,6 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 	methodValue.Call(functionParams)
 
 }
-
 
 
 func findMethod(name string, getFunctionsType func() interface{}) (val reflect.Value, met reflect.Method) {

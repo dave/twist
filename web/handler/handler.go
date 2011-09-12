@@ -3,7 +3,6 @@ package handler
 import (
 	"http"
 	"twist"
-	//"fmt"
 )
 
 func init() {
@@ -23,7 +22,6 @@ type Functions int
 
 func (f Functions) Root(c twist.Context) {
 
-
 	test := twist.Test(c.Writer, "main")
 	c.Root.Html(test)
 
@@ -38,19 +36,17 @@ func (f Functions) Root(c twist.Context) {
 	inner.Img1.Attr("width", 100)
 	inner.Img1.Attr("height", 100)
 
-	inner.Img1.Click(Functions.MyClickNew, MyClickNew_T { Val1 : "testing", Span1: inner.Span1, Img1: inner.Img1, Text1: test.Text1 })
-	
-	inner.MyLink.Link(Functions.Page1, Page1_T { Val1 : "ooooooh!", Val2: 44 })
+	inner.Img1.Click(Functions.MyClickNew, MyClickNew_T{Val1: "testing", Span1: inner.Span1, Img1: inner.Img1, Text1: test.Text1})
+
+	inner.MyLink.Link(Functions.Page1, Page1_T{Val1: "ooooooh!", Val2: 44})
 
 	c.Send()
 
 }
 
 type Page1_T struct {
-
 	Val1 twist.String
 	Val2 twist.Int
-
 }
 
 func (f Functions) Page1(c twist.Context, v Page1_T) {

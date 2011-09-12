@@ -15,9 +15,9 @@ type Writer struct {
 func Root(w *Writer) *Item {
 
 	return &Item{
-		id : "root",
-		template : nil, 
-		writer : w,
+		id:       "root",
+		template: nil,
+		writer:   w,
 	}
 
 }
@@ -28,12 +28,11 @@ func NewWriter(o http.ResponseWriter, isRoot bool) *Writer {
 		Output:    o,
 		Buffer:    "",
 		Templates: make([]Template, 0),
-		IsRoot : isRoot}
+		IsRoot:    isRoot}
 }
 
 func (w *Writer) RegisterTemplate(t Template) {
 
-	
 	for i := 0; i < len(w.Templates); i++ {
 		if w.Templates[i].name == t.name {
 			return
@@ -44,12 +43,12 @@ func (w *Writer) RegisterTemplate(t Template) {
 }
 
 func (w *Writer) Send() {
-	if (w.IsRoot) {
+	if w.IsRoot {
 		w.sendPage()
 	} else {
 		w.sendFragment()
 	}
-		
+
 }
 
 func (w *Writer) sendPage() {
@@ -73,10 +72,10 @@ var templatesLoaded = 0;`
 			templates += `
 $("#head").append($("<div>").load("/template_` + w.Templates[i].name + `", function() {templatesLoaded++;if(templatesLoaded == templatesToLoad){runScript();}}));`
 		}
-	
+
 		script = `
 function runScript()
-{`+w.Buffer+`
+{` + w.Buffer + `
 }
 </script>`
 
@@ -86,7 +85,7 @@ function runScript()
 	}
 
 	fmt.Fprint(w.Output,
-		root + templates + script)
+		root+templates+script)
 	w.Buffer = ""
 
 }
@@ -104,15 +103,14 @@ $("#head").append($("<div>").load("/template_` + w.Templates[i].name + `", funct
 		}
 		script = `
 function runScript()
-{`+w.Buffer+`
+{` + w.Buffer + `
 }`
 	} else {
 		script = w.Buffer
 	}
-	
 
 	fmt.Fprint(w.Output,
-		`<script>` + templates + script + `</script>`)
+		`<script>`+templates+script+`</script>`)
 	w.Buffer = ""
 
 }

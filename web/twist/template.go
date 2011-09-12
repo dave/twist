@@ -1,11 +1,11 @@
 package twist
 
 type Template struct {
-	name string
-	Html string
-	Id string
+	name     string
+	Html     string
+	Id       string
 	parentId string
-	Writer *Writer
+	Writer   *Writer
 }
 
 func (t *Template) GetTemplateJavascript() string {
