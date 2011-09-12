@@ -89,9 +89,8 @@ type allStubs struct {
 
 func (i *Item) Click(handlerFunc interface{}, values interface{}) {
 
-	itemStubs := make([]itemStub, 0)
-	valueStubs := make([]valueStub, 0)
-
+	valueStubs, itemStubs, _ := makeStubs(values, true)
+/*
 	val := reflect.ValueOf(values)
 	typ := val.Type()
 	for i := 0; i < typ.NumField(); i++ {
@@ -115,6 +114,7 @@ func (i *Item) Click(handlerFunc interface{}, values interface{}) {
 			panic("Incorrect value " + name)
 		}
 	}
+*/
 	
 	stubs := allStubs{Func: getFunctionName(handlerFunc), Items: itemStubs, Values: valueStubs}
 	
@@ -128,11 +128,51 @@ $("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; ge
 
 }
 
+func makeStubs(values interface{}, isClick bool) (valueStubs []valueStub, itemStubs []itemStub, needsHash bool) {
+	
+	valueStubs = make([]valueStub, 0)
+	itemStubs = make([]itemStub, 0)
+	needsHash = false
+
+	val := reflect.ValueOf(values)
+	typ := val.Type()
+	for i := 0; i < typ.NumField(); i++ {
+		name := typ.Field(i).Name
+		switch o := val.FieldByName(name).Interface().(type) {
+		case String:
+			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T:1})
+		case StringHashed:
+			needsHash = true
+			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T:2})
+		case StringEncrypted:
+			needsHash = true //???
+			panic("TODO")
+		case Int:
+			valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T:4})
+		case IntHashed:
+			needsHash = true
+			valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T:5})
+		case IntEncrypted:
+			needsHash = true //???
+			panic("TODO")
+		case *Item:
+			needsHash = true
+			if isClick {
+				itemStubs = append(itemStubs, itemStub{N: name, I: o.FullId(), V: ""})
+			} else {
+				panic("We can't have Items in a Link - name:" + name)
+			}
+		default:
+			panic("Incorrect value " + name)
+		}
+	}
+	return valueStubs, itemStubs, needsHash
+}
+
 func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 
-	valueStubs := make([]valueStub, 0)
-	needsHash := false
-
+	valueStubs, _, needsHash := makeStubs(values, false)
+	/*
 	val := reflect.ValueOf(values)
 	typ := val.Type()
 	for i := 0; i < typ.NumField(); i++ {
@@ -160,7 +200,7 @@ func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 			panic("Incorrect value " + name)
 		}
 	}
-	
+	*/
 	stubs := allStubs{Func: getFunctionName(handlerFunc), Values: valueStubs}
 	
 	hashQuery := ""
