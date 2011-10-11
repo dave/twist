@@ -150,10 +150,17 @@ func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 	}
 	href := "/" + stubs.Func + qstring + hashQuery
 
+	if !i.writer.SendHtml {
+		i.writer.Buffer += `
+$("#` + i.FullId() + `").attr("href", "` + href + `");`
+	}
+
 	i.writer.Buffer += `
-$("#` + i.FullId() + `").attr("href", "` + href + `");
 $("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){$("#head").append($("<div>").html(data))}, "html");return false;});`
 
+	if i.writer.SendHtml {
+		i.Attributes["href"] = href
+	}
 }
 
 func makeStubs(values interface{}, isClick bool) (valueStubs []valueStub, itemStubs []itemStub, needsHash bool) {
@@ -315,40 +322,46 @@ func toInt(input interface{}) int {
 }
 
 func (i *Item) htmlGeneric(replace bool, s string) {
-	command := ""
-	if replace {
-		command = "html"
-	} else {
-		command = "append"
-	}
-	i.writer.Buffer += `
+	if !i.writer.SendHtml {
+		command := ""
+		if replace {
+			command = "html"
+		} else {
+			command = "append"
+		}
+		i.writer.Buffer += `
 $("#` + i.FullId() + `").` + command + `("` + s + `");`
-
-	if replace {
-		i.Contents = make([]*Item, 0)
 	}
-	i.Contents = append(i.Contents, &Item{Text: s})
 
+	if i.writer.SendHtml {
+		if replace {
+			i.Contents = make([]*Item, 0)
+		}
+		i.Contents = append(i.Contents, &Item{Text: s})
+	}
 }
 
 func (i *Item) templateGeneric(replace bool, t *Template) {
 	t.parentId = i.FullId()
-	command := ""
-	if replace {
-		command = "html"
-	} else {
-		command = "append"
-	}
-	i.writer.Buffer += `
+	if !i.writer.SendHtml {
+		command := ""
+		if replace {
+			command = "html"
+		} else {
+			command = "append"
+		}
+		i.writer.Buffer += `
 $("#` + i.FullId() + `").` + command + `(template_` + t.name + `("` + t.FullId() + `"));`
-
-	if replace {
-		i.Contents = make([]*Item, 0)
-	}
-	for _, item := range t.Contents {
-		i.Contents = append(i.Contents, item)
 	}
 
+	if i.writer.SendHtml {
+		if replace {
+			i.Contents = make([]*Item, 0)
+		}
+		for _, item := range t.Contents {
+			i.Contents = append(i.Contents, item)
+		}
+	}
 }
 func (i *Item) Attr(attrib string, o interface{}) {
 	i.attrCss("attr", attrib, o)
@@ -372,12 +385,16 @@ func (i *Item) attrCss(command string, attrib string, o interface{}) {
 	}
 }
 func (i *Item) attrCssGeneric(command string, attrib string, val string) {
-	i.writer.Buffer += `
+	if !i.writer.SendHtml {
+		i.writer.Buffer += `
 $("#` + i.FullId() + `").` + command + `("` + attrib + `", "` + val + `");`
-	if command == "attr" {
-		i.Attributes[attrib] = val
-	} else {
-		i.Styles[attrib] = val
+	}
+	if i.writer.SendHtml {
+		if command == "attr" {
+			i.Attributes[attrib] = val
+		} else {
+			i.Styles[attrib] = val
+		}
 	}
 }
 

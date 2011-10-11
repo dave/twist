@@ -10,6 +10,7 @@ type Writer struct {
 	Buffer    string
 	Templates []Template
 	IsRoot    bool
+	SendHtml  bool
 }
 
 func Root(w *Writer) *Item {
@@ -22,12 +23,14 @@ func Root(w *Writer) *Item {
 
 }
 
-func NewWriter(o http.ResponseWriter, isRoot bool) *Writer {
+func NewWriter(o http.ResponseWriter, isRoot bool, sendHtml bool) *Writer {
 	return &Writer{
 		Output:    o,
 		Buffer:    "",
 		Templates: make([]Template, 0),
-		IsRoot:    isRoot}
+		IsRoot:    isRoot,
+		SendHtml:  sendHtml,
+	}
 }
 
 func (w *Writer) RegisterTemplate(t Template) {
@@ -43,26 +46,24 @@ func (w *Writer) RegisterTemplate(t Template) {
 
 func (c *Context) Send() {
 	if c.Writer.IsRoot {
-		c.Writer.sendHtml(c.Root)
+		c.Writer.sendPage(c.Root)
 	} else {
 		c.Writer.sendFragment()
 	}
 
 }
 
-func (w *Writer) sendHtml(item *Item) {
-
-	fmt.Fprint(w.Output, item.RenderHtml())
-
-}
-func (w *Writer) sendPage() {
+func (w *Writer) sendPage(item *Item) {
 
 	root := `
 <script src="/static/jquery.js"></script>
 <script src="/static/json.js"></script>
 <script src="/static/helpers.js"></script>
 <div id="head"></div>
-<div id="root"></div>
+<div id="root">`
+	root += item.RenderHtml()
+	root += `
+</div>
 <script>`
 
 	templates := ""

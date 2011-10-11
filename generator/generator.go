@@ -148,7 +148,7 @@ func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 	for _, v := range root.Contents {
 		newSequence, name, def := v.Definition(sequence, namesMap)
 		defs += def
-		names += `&` + name + `,`
+		names += `&` + name + `, `
 		sequence = newSequence
 	}
 
@@ -206,7 +206,7 @@ func (pte *Text) Definition(sequence int, names map[string]string) (int, string,
 	v := strings.Replace(pte.Text, "`", "`+\"`\"+`", -1)
 	v1 := strings.Replace(v, "\n", "`+\"\\n\"+`", -1)
 	s := fmt.Sprint(`
-v`, sequence, ` := Item{Text:`, "`", v1, "`", `}`)
+	v`, sequence, ` := Item{Text:`, "`", v1, "`", `}`)
 	return sequence, fmt.Sprint(`v`, sequence), s
 }
 func (he *Tag) Definition(sequence int, names map[string]string) (int, string, string) {
@@ -218,7 +218,7 @@ func (he *Tag) Definition(sequence int, names map[string]string) (int, string, s
 
 	newSequence := sequence
 	s := fmt.Sprint(`
-v`, sequence, ` := Item{Name: "`, he.Name, `", `)
+	v`, sequence, ` := Item{Name: "`, he.Name, `", `)
 
 	if len(he.Id) > 0 {
 		s += fmt.Sprint(`template: t, `)

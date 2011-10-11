@@ -56,7 +56,7 @@ func serverTemplate(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 func serverRoot(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
 
 	c := appengine.NewContext(r)
-	w := NewWriter(wr, true)
+	w := NewWriter(wr, true, true)
 
 	context := Context{
 		Writer:  w,
@@ -77,7 +77,7 @@ func serverRoot(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
 
 	c := appengine.NewContext(r)
-	w := NewWriter(wr, false)
+	w := NewWriter(wr, false, false)
 
 	r.ParseForm()
 
@@ -190,7 +190,7 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 
 	c := appengine.NewContext(r)
 	path := r.URL.Path
-	w := NewWriter(wr, true)
+	w := NewWriter(wr, true, true)
 	pageName := path[1:]
 
 	context := Context{
