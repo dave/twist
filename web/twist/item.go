@@ -26,7 +26,7 @@ type Item struct {
 	Name       string
 	Attributes map[string]string
 	Styles     map[string]string
-	Contents   []Item
+	Contents   []*Item
 	Text       string
 }
 
@@ -324,11 +324,10 @@ func (i *Item) htmlGeneric(replace bool, s string) {
 	i.writer.Buffer += `
 $("#` + i.FullId() + `").` + command + `("` + s + `");`
 
-	newItem := Item{Text: s}
 	if replace {
-		i.Contents = make([]Item, 0)
+		i.Contents = make([]*Item, 0)
 	}
-	i.Contents = append(i.Contents, newItem)
+	i.Contents = append(i.Contents, &Item{Text: s})
 
 }
 
@@ -344,7 +343,7 @@ func (i *Item) templateGeneric(replace bool, t *Template) {
 $("#` + i.FullId() + `").` + command + `(template_` + t.name + `("` + t.FullId() + `"));`
 
 	if replace {
-		i.Contents = make([]Item, 1)
+		i.Contents = make([]*Item, 0)
 	}
 	for _, item := range t.Contents {
 		i.Contents = append(i.Contents, item)

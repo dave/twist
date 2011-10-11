@@ -10,7 +10,7 @@ type Template struct {
 	Id       string
 	parentId string
 	Writer   *Writer
-	Contents []Item
+	Contents []*Item
 }
 
 func (t *Template) GetTemplateJavascript() string {

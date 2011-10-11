@@ -148,7 +148,7 @@ func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 	for _, v := range root.Contents {
 		newSequence, name, def := v.Definition(sequence, namesMap)
 		defs += def
-		names += name + `,`
+		names += `&` + name + `,`
 		sequence = newSequence
 	}
 
@@ -241,10 +241,10 @@ v`, sequence, ` := Item{Name: "`, he.Name, `", `)
 		s += `}, `
 	}
 	if len(he.Contents) > 0 {
-		s += `Contents: []Item{`
+		s += `Contents: []*Item{`
 		for _, c := range he.Contents {
 			newSequence1, name, def := c.Definition(newSequence, names)
-			s += name + `, `
+			s += `&` + name + `, `
 			s = def + s
 			newSequence = newSequence1
 		}
@@ -321,7 +321,7 @@ func {{NameUpper}}(w *Writer, id string) *{{NameUpper}}_T {
 
 	{{Defs}}
 
-	t.Contents = []Item{ {{Names}} }
+	t.Contents = []*Item{ {{Names}} }
 	
 	return &{{NameUpper}}_T{
 		name : t.name, 
