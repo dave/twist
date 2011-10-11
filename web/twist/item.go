@@ -19,10 +19,53 @@ type IntHashed int
 type IntEncrypted int
 
 type Item struct {
-	id       string
-	template *Template
-	writer   *Writer
-	Value    string
+	id         string
+	template   *Template
+	writer     *Writer
+	Value      string
+	Name       string
+	Attributes map[string]string
+	Styles     map[string]string
+	Contents   []Item
+	Text       string
+}
+
+
+func (he *Item) RenderHtml() string {
+	s := ``
+	if len(he.Name) > 0 {
+		s += `<`
+		s += he.Name
+		if len(he.id) > 0 {
+			s += fmt.Sprint(` id="`, he.FullId(), `"`)
+		}
+		for attKey, attVal := range he.Attributes {
+			s += fmt.Sprint(` `, attKey, `="`, attVal, `"`)
+		}
+		if len(he.Styles) > 0 {
+			s += ` style="`
+			for k, v := range he.Styles {
+				s += fmt.Sprint(k, `:`, v, `;`)
+			}
+			s += `"`
+		}
+		if len(he.Contents) == 0 {
+			s += ` />`
+		} else {
+			s += `>`
+			for _, inner := range he.Contents {
+				s += inner.RenderHtml()
+			}
+			s += fmt.Sprint(`</`, he.Name, `>`)
+		}
+	} else if len(he.Text) > 0 {
+		s += he.Text
+	} else {
+		for _, inner := range he.Contents {
+			s += inner.RenderHtml()
+		}
+	}
+	return s
 }
 
 func (v String) Value() string           { return string(v) }
@@ -280,6 +323,13 @@ func (i *Item) htmlGeneric(replace bool, s string) {
 	}
 	i.writer.Buffer += `
 $("#` + i.FullId() + `").` + command + `("` + s + `");`
+
+	newItem := Item{Text: s}
+	if replace {
+		i.Contents = make([]Item, 0)
+	}
+	i.Contents = append(i.Contents, newItem)
+
 }
 
 func (i *Item) templateGeneric(replace bool, t *Template) {
@@ -292,6 +342,14 @@ func (i *Item) templateGeneric(replace bool, t *Template) {
 	}
 	i.writer.Buffer += `
 $("#` + i.FullId() + `").` + command + `(template_` + t.name + `("` + t.FullId() + `"));`
+
+	if replace {
+		i.Contents = make([]Item, 1)
+	}
+	for _, item := range t.Contents {
+		i.Contents = append(i.Contents, item)
+	}
+
 }
 func (i *Item) Attr(attrib string, o interface{}) {
 	i.attrCss("attr", attrib, o)
@@ -317,11 +375,18 @@ func (i *Item) attrCss(command string, attrib string, o interface{}) {
 func (i *Item) attrCssGeneric(command string, attrib string, val string) {
 	i.writer.Buffer += `
 $("#` + i.FullId() + `").` + command + `("` + attrib + `", "` + val + `");`
+	if command == "attr" {
+		i.Attributes[attrib] = val
+	} else {
+		i.Styles[attrib] = val
+	}
 }
 
 func (i *Item) FullId() string {
 
-	if i.template == nil {
+	if len(i.id) == 0 {
+		return ``
+	} else if i.template == nil {
 		return i.id
 	} else {
 		return i.template.FullId() + `_` + i.id

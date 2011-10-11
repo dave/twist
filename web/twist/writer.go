@@ -22,7 +22,6 @@ func Root(w *Writer) *Item {
 
 }
 
-
 func NewWriter(o http.ResponseWriter, isRoot bool) *Writer {
 	return &Writer{
 		Output:    o,
@@ -42,15 +41,20 @@ func (w *Writer) RegisterTemplate(t Template) {
 
 }
 
-func (w *Writer) Send() {
-	if w.IsRoot {
-		w.sendPage()
+func (c *Context) Send() {
+	if c.Writer.IsRoot {
+		c.Writer.sendHtml(c.Root)
 	} else {
-		w.sendFragment()
+		c.Writer.sendFragment()
 	}
 
 }
 
+func (w *Writer) sendHtml(item *Item) {
+
+	fmt.Fprint(w.Output, item.RenderHtml())
+
+}
 func (w *Writer) sendPage() {
 
 	root := `
@@ -84,8 +88,7 @@ function runScript()
 </script>`
 	}
 
-	fmt.Fprint(w.Output,
-		root+templates+script)
+	fmt.Fprint(w.Output, root+templates+script)
 	w.Buffer = ""
 
 }
