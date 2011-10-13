@@ -28,13 +28,3 @@ func (t *Template) GetParentId() string {
 type Templater interface {
 	GetTemplate() *Template
 }
-
-/*
-func (t *Template) GetPlainHtml() string {
-	s := ``
-	for _, e := range t.Contents {
-		s += e.RenderHtml()
-	}
-	return s
-}
-*/
