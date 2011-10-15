@@ -232,6 +232,8 @@ func (he *Tag) Definition(sequence int, names map[string]string) (int, string, s
 			s += fmt.Sprint(`"`, k, `":"`, v, `", `)
 		}
 		s += `}, `
+	} else {
+		s += `Attributes: map[string]string{}, `
 	}
 	if len(he.Styles) > 0 {
 		s += `Styles: map[string]string{`
@@ -239,6 +241,8 @@ func (he *Tag) Definition(sequence int, names map[string]string) (int, string, s
 			s += fmt.Sprint(`"`, k, `":"`, v, `", `)
 		}
 		s += `}, `
+	} else {
+		s += `Styles: map[string]string{}, `
 	}
 	if len(he.Contents) > 0 {
 		s += `Contents: []*Item{`

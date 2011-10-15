@@ -25,10 +25,6 @@ func Server(wr http.ResponseWriter, r *http.Request, getFunctionsType func() int
 
 		return
 
-	} else if path == "/" {
-
-		serverRoot(wr, r, getFunctionsType)
-
 	} else if strings.HasPrefix(path, "/template") {
 
 		serverTemplate(wr, r, getFunctionsType)
@@ -39,7 +35,15 @@ func Server(wr http.ResponseWriter, r *http.Request, getFunctionsType func() int
 
 	} else if r.Method == "GET" {
 
-		serverPage(wr, r, getFunctionsType)
+		//	if path == "/" {
+		//		serverRoot(wr, r, getFunctionsType)
+		//	} else {
+		serverPage(wr, r, getFunctionsType, true, true)
+		//	}
+
+	} else if r.Method == "POST" {
+
+		serverPage(wr, r, getFunctionsType, false, false)
 
 	}
 }
@@ -53,10 +57,18 @@ func serverTemplate(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 
 }
 
-func serverRoot(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
+func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}, sendRoot bool, sendHtml bool) {
 
 	c := appengine.NewContext(r)
-	w := NewWriter(wr, true, true)
+	path := r.URL.Path
+	w := NewWriter(wr, sendRoot, sendHtml)
+
+	pageName := ""
+	if path == "/" {
+		pageName = "Root"
+	} else {
+		pageName = path[1:]
+	}
 
 	context := Context{
 		Writer:  w,
@@ -65,12 +77,84 @@ func serverRoot(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 		Root:    Root(w),
 	}
 
-	contextVal := reflect.ValueOf(&context)
+	r.ParseForm()
 
-	params := []reflect.Value{contextVal}
+	methodValue, method := findMethod(pageName, getFunctionsType)
 
-	m, _ := findMethod("Root", getFunctionsType)
-	m.Call(params)
+	numFields := method.Type.NumIn() - 1
+	if numFields != 1 && numFields != 2 {
+		panic("function " + pageName + " should have 1 or 2 fields. It has " + fmt.Sprint(numFields))
+	}
+	if method.Type.In(1) != reflect.TypeOf(&context) {
+		panic("function " + pageName + " first field should be type *twist.Context")
+	}
+
+	needsHash := false
+
+	valueStubs := make([]valueStub, 0)
+
+	var val reflect.Value
+	if numFields == 2 {
+		val = reflect.New(method.Type.In(2)).Elem()
+		typ := val.Type()
+		for i := 0; i < typ.NumField(); i++ {
+			name := typ.Field(i).Name
+			field := val.FieldByName(name)
+			switch o := field.Interface().(type) {
+			case String:
+				v := r.FormValue(name)
+				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 1})
+				value := String(v)
+				field.Set(reflect.ValueOf(value))
+			case StringHashed:
+				needsHash = true
+				v := r.FormValue(name)
+				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 2})
+				value := StringHashed(v)
+				field.Set(reflect.ValueOf(value))
+			case StringEncrypted:
+				needsHash = true //???
+				panic("TODO")
+			case Int:
+				v := r.FormValue(name)
+				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 4})
+				vInt, _ := strconv.Atoi(v)
+				value := Int(vInt)
+				field.Set(reflect.ValueOf(value))
+			case IntHashed:
+				needsHash = true
+				v := r.FormValue(name)
+				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 5})
+				vInt, _ := strconv.Atoi(v)
+				value := IntHashed(vInt)
+				field.Set(reflect.ValueOf(value))
+			case IntEncrypted:
+				needsHash = true //???
+				panic("TODO")
+			case *Item:
+				panic("We can't have Items in a Link - name:" + name)
+			default:
+				panic("Incorrect value " + name)
+			}
+		}
+	}
+
+	if needsHash {
+		proposedHashFromClient := r.FormValue("_hash")
+		stubs := allStubs{Func: pageName, Values: valueStubs}
+
+		calculatedHash := getHash(stubs)
+		if proposedHashFromClient != calculatedHash {
+			panic("hash mismatch")
+		}
+	}
+
+	functionParams := make([]reflect.Value, numFields)
+	functionParams[0] = reflect.ValueOf(&context)
+	if numFields == 2 {
+		functionParams[1] = val
+	}
+	methodValue.Call(functionParams)
 
 }
 
@@ -190,101 +274,6 @@ func getValueStubByName(values []valueStub, name string) (val valueStub, found b
 		}
 	}
 	return valueStub{}, false
-}
-
-func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
-
-	c := appengine.NewContext(r)
-	path := r.URL.Path
-	w := NewWriter(wr, true, true)
-	pageName := path[1:]
-
-	context := Context{
-		Writer:  w,
-		Context: &c,
-		Request: r,
-		Root:    Root(w),
-	}
-
-	r.ParseForm()
-
-	methodValue, method := findMethod(pageName, getFunctionsType)
-
-	numFields := method.Type.NumIn() - 1
-	if numFields != 1 && numFields != 2 {
-		panic("function " + pageName + " should have 1 or 2 fields. It has " + fmt.Sprint(numFields))
-	}
-	if method.Type.In(1) != reflect.TypeOf(&context) {
-		panic("function " + pageName + " first field should be type *twist.Context")
-	}
-
-	needsHash := false
-
-	valueStubs := make([]valueStub, 0)
-
-	var val reflect.Value
-	if numFields == 2 {
-		val = reflect.New(method.Type.In(2)).Elem()
-		typ := val.Type()
-		for i := 0; i < typ.NumField(); i++ {
-			name := typ.Field(i).Name
-			field := val.FieldByName(name)
-			switch o := field.Interface().(type) {
-			case String:
-				v := r.FormValue(name)
-				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 1})
-				value := String(v)
-				field.Set(reflect.ValueOf(value))
-			case StringHashed:
-				needsHash = true
-				v := r.FormValue(name)
-				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 2})
-				value := StringHashed(v)
-				field.Set(reflect.ValueOf(value))
-			case StringEncrypted:
-				needsHash = true //???
-				panic("TODO")
-			case Int:
-				v := r.FormValue(name)
-				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 4})
-				vInt, _ := strconv.Atoi(v)
-				value := Int(vInt)
-				field.Set(reflect.ValueOf(value))
-			case IntHashed:
-				needsHash = true
-				v := r.FormValue(name)
-				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 5})
-				vInt, _ := strconv.Atoi(v)
-				value := IntHashed(vInt)
-				field.Set(reflect.ValueOf(value))
-			case IntEncrypted:
-				needsHash = true //???
-				panic("TODO")
-			case *Item:
-				panic("We can't have Items in a Link - name:" + name)
-			default:
-				panic("Incorrect value " + name)
-			}
-		}
-	}
-
-	if needsHash {
-		proposedHashFromClient := r.FormValue("_hash")
-		stubs := allStubs{Func: pageName, Values: valueStubs}
-
-		calculatedHash := getHash(stubs)
-		if proposedHashFromClient != calculatedHash {
-			panic("hash mismatch")
-		}
-	}
-
-	functionParams := make([]reflect.Value, numFields)
-	functionParams[0] = reflect.ValueOf(&context)
-	if numFields == 2 {
-		functionParams[1] = val
-	}
-	methodValue.Call(functionParams)
-
 }
 
 func findMethod(name string, getFunctionsType func() interface{}) (val reflect.Value, met reflect.Method) {

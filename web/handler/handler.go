@@ -56,7 +56,7 @@ func (f Functions) Page1(c *twist.Context, v Page1_T) {
 	page2 := twist.Page2(c, "foo")
 	c.Root.Html(page2)
 
-	page2.Button1.Click(Functions.Root, nil)
+	page2.Button1.Link(Functions.Root, nil)
 
 	c.Send()
 

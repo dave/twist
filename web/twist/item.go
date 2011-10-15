@@ -84,8 +84,10 @@ func (v IntEncrypted) String() string    { return strconv.Itoa(int(v)) }
 
 func newItemFromAction(id string, writer *Writer) *Item {
 	return &Item{
-		id:     id,
-		writer: writer,
+		id:         id,
+		writer:     writer,
+		Attributes: make(map[string]string),
+		Styles:     make(map[string]string),
 	}
 }
 
@@ -137,7 +139,7 @@ func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 		hashQuery = "&_hash=" + hash
 	}
 
-	marshalled, _ := json.Marshal(stubs)
+	//marshalled, _ := json.Marshal(stubs)
 
 	qstring := ""
 	for _, v := range stubs.Values {
@@ -156,8 +158,11 @@ func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 $("#` + i.FullId() + `").attr("href", "` + href + `");`
 	}
 
+	//i.writer.Buffer += `
+	//$("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; $.post("/function", JSON.stringify(j), function(data){$("#head").append($("<div>").html(data))}, "html");History.pushState(null, null, "` + href + `");return false;});`
+
 	i.writer.Buffer += `
-$("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){$("#head").append($("<div>").html(data))}, "html");return false;});`
+$("#` + i.FullId() + `").click(function(){History.pushState(null, null, "` + href + `");return false;});`
 
 	if i.writer.SendHtml {
 		i.Attributes["href"] = href
@@ -255,7 +260,11 @@ func getFunctionName(input interface{}) string {
 	for i := 0; i < t.NumMethod(); i++ {
 		m := t.Method(i)
 		if v.Pointer() == m.Func.Pointer() {
-			return m.Name
+			if m.Name == "Root" {
+				return ""
+			} else {
+				return m.Name
+			}
 		}
 	}
 	return "not found"
@@ -340,7 +349,7 @@ $("#` + i.FullId() + `").` + command + `("` + s + `");`
 		if replace {
 			i.Contents = make([]*Item, 0)
 		}
-		i.Contents = append(i.Contents, &Item{Text: s})
+		i.Contents = append(i.Contents, &Item{Text: s, Attributes: make(map[string]string), Styles: make(map[string]string)})
 	}
 }
 

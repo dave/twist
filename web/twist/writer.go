@@ -9,26 +9,28 @@ type Writer struct {
 	Output    http.ResponseWriter
 	Buffer    string
 	Templates []Template
-	IsRoot    bool
+	SendRoot  bool
 	SendHtml  bool
 }
 
 func Root(w *Writer) *Item {
 
 	return &Item{
-		id:       "root",
-		template: nil,
-		writer:   w,
+		id:         "root",
+		template:   nil,
+		writer:     w,
+		Attributes: make(map[string]string),
+		Styles:     make(map[string]string),
 	}
 
 }
 
-func NewWriter(o http.ResponseWriter, isRoot bool, sendHtml bool) *Writer {
+func NewWriter(o http.ResponseWriter, sendRoot bool, sendHtml bool) *Writer {
 	return &Writer{
 		Output:    o,
 		Buffer:    "",
 		Templates: make([]Template, 0),
-		IsRoot:    isRoot,
+		SendRoot:  sendRoot,
 		SendHtml:  sendHtml,
 	}
 }
@@ -45,7 +47,7 @@ func (w *Writer) RegisterTemplate(t Template) {
 }
 
 func (c *Context) Send() {
-	if c.Writer.IsRoot {
+	if c.Writer.SendRoot {
 		c.Writer.sendPage(c.Root)
 	} else {
 		c.Writer.sendFragment()
@@ -59,12 +61,44 @@ func (w *Writer) sendPage(item *Item) {
 <script src="/static/jquery.js"></script>
 <script src="/static/json.js"></script>
 <script src="/static/helpers.js"></script>
+<script src="/static/native.history.js"></script>
 <div id="head"></div>
 <div id="root">`
 	root += item.RenderHtml()
 	root += `
 </div>
-<script>`
+<script>
+
+	(function(window,undefined){
+
+	    // Prepare
+	    var History = window.History; // Note: We are using a capital H instead of a lower h
+	    if ( !History.enabled ) {
+	         // History.js is disabled for this browser.
+	         // This is because we can optionally choose to support HTML4 browsers or not.
+	        return false;
+	    }
+
+	    // Bind to StateChange Event
+	    History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+			var State = History.getState(); // Note: We are using History.getState() instead of event.state
+			//History.log(State.data, State.title, State.url);
+			$.post(State.url, null, function(data){$("#head").append($("<div>").html(data))}, "html");
+	    });
+
+	    // Change our States
+//	    History.pushState({state:1}, "State 1", "?state=1"); // logs {state:1}, "State 1", "?state=1"
+//	    History.pushState({state:2}, "State 2", "?state=2"); // logs {state:2}, "State 2", "?state=2"
+//	    History.replaceState({state:3}, "State 3", "?state=3"); // logs {state:3}, "State 3", "?state=3"
+//	    History.pushState(null, null, "?state=4"); // logs {}, '', "?state=4"
+//	    History.back(); // logs {state:3}, "State 3", "?state=3"
+//	    History.back(); // logs {state:1}, "State 1", "?state=1"
+//	    History.back(); // logs {}, "Home Page", "?"
+//	    History.go(2); // logs {state:3}, "State 3", "?state=3"
+
+	})(window);
+
+`
 
 	templates := ""
 	script := ""
