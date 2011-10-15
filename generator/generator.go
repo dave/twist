@@ -22,7 +22,6 @@ func (v *visitor) AppendTemplate(t *Template) {
 	v.Templates = &tem
 }
 
-
 func (v *visitor) VisitDir(path string, f *os.FileInfo) bool {
 	return true
 }
@@ -37,9 +36,10 @@ func main() {
 	filepath.Walk(HtmlFileSpec, &v, nil)
 	binder := Binder{*v.Templates}
 
-	temp := template.New(nil)
-	temp.SetDelims("{{", "}}")
-	err := temp.Parse(getTemplate())
+	temp := template.New("")
+	//temp.SetDelims("{{", "}}")
+
+	p, err := temp.Parse(getTemplate())
 
 	if err != nil {
 		fmt.Println("Error!", err.String())
@@ -49,7 +49,7 @@ func main() {
 	f, _ := os.Create(GeneatedFile)
 	defer f.Close()
 
-	temp.Execute(f, binder)
+	p.Execute(f, binder)
 
 	fmt.Println("Done!!")
 
@@ -168,10 +168,10 @@ func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 }
 func makeMap(data string, seperator1 string, seperator2 string) map[string]string {
 	out := make(map[string]string)
-	itemsA := strings.Split(data, seperator1, -1)
+	itemsA := strings.Split(data, seperator1)
 	for _, item := range itemsA {
 		if len(item) > 0 {
-			keyVal := strings.Split(item, seperator2, -1)
+			keyVal := strings.Split(item, seperator2)
 			out[keyVal[0]] = keyVal[1]
 		}
 	}
@@ -222,7 +222,7 @@ func (he *Tag) Definition(sequence int, names map[string]string) (int, string, s
 
 	if len(he.Id) > 0 {
 		s += fmt.Sprint(`template: t, `)
-		s += fmt.Sprint(`writer: w, `)
+		s += fmt.Sprint(`writer: c.Writer, `)
 		s += fmt.Sprint(`id: "`, he.Id, `", `)
 	}
 
@@ -261,7 +261,6 @@ func (he *Tag) Parent() *Tag {
 	return he.parent
 }
 
-
 type Item struct {
 	Id            string
 	ItemNameUpper string
@@ -283,53 +282,53 @@ package twist
 
 func getTemplateByName(name string) *Template {
 	switch name {
-		{{.repeated section Templates}}
-		case "{{NameLower}}" : 
-			return {{NameLower}}_Template()
-		{{.end}}
+		{{range .Templates}}
+		case "{{.NameLower}}" : 
+			return {{.NameLower}}_Template()
+		{{end}}
 	}
 	return nil
 }
 
-{{.repeated section Templates}}
-type {{NameUpper}}_T struct {
+{{range .Templates}}
+type {{.NameUpper}}_T struct {
 	
 	name string
 	*Template
-	{{.repeated section Items}}
-	{{ItemNameUpper}} *Item
-	{{.end}}
+	{{range .Items}}
+	{{.ItemNameUpper}} *Item
+	{{end}}
 
 }
-func {{NameLower}}_Template() *Template{
+func {{.NameLower}}_Template() *Template{
 	return &Template {
-		name     : "{{NameLower}}",
-		Html     : ` + "`" + `{{Html}}` + "`" + `,
+		name     : "{{.NameLower}}",
+		Html     : ` + "`" + `{{.Html}}` + "`" + `,
 	}
 }
-func (t *{{NameUpper}}_T) GetTemplate() *Template {
+func (t *{{.NameUpper}}_T) GetTemplate() *Template {
 	return t.Template
 }
 
-func {{NameUpper}}(w *Writer, id string) *{{NameUpper}}_T {
+func {{.NameUpper}}(c *Context, id string) *{{.NameUpper}}_T {
 	
-	t := {{NameLower}}_Template()
-	t.Writer = w
+	t := {{.NameLower}}_Template()
+	t.Writer = c.Writer
 	t.Id = id
 	
-	w.RegisterTemplate(*t)
+	c.Writer.RegisterTemplate(*t)
 
-	{{Defs}}
+	{{.Defs}}
 
-	t.Contents = []*Item{ {{Names}} }
+	t.Contents = []*Item{ {{.Names}} }
 	
-	return &{{NameUpper}}_T{
+	return &{{.NameUpper}}_T{
 		name : t.name, 
 		Template : t,
-		{{.repeated section Items}}
-		{{ItemNameUpper}} : &{{Variable}},
-		{{.end}}
+		{{range .Items}}
+		{{.ItemNameUpper}} : &{{.Variable}},
+		{{end}}
 	}
 }
-{{.end}}`
+{{end}}`
 }

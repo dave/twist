@@ -6,8 +6,9 @@ import (
 	"json"
 	"crypto/md5"
 	"encoding/hex"
-	"http"
+
 	"strconv"
+	"url"
 )
 
 type String string
@@ -30,8 +31,8 @@ type Item struct {
 	Text       string
 }
 
-
 func (he *Item) RenderHtml() string {
+
 	s := ``
 	if len(he.Name) > 0 {
 		s += `<`
@@ -146,7 +147,7 @@ func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 			qstring += "&"
 		}
 
-		qstring += v.N + "=" + http.URLEscape(toString(v.V))
+		qstring += v.N + "=" + url.QueryEscape(toString(v.V))
 	}
 	href := "/" + stubs.Func + qstring + hashQuery
 
@@ -169,36 +170,38 @@ func makeStubs(values interface{}, isClick bool) (valueStubs []valueStub, itemSt
 	itemStubs = make([]itemStub, 0)
 	needsHash = false
 
-	val := reflect.ValueOf(values)
-	typ := val.Type()
-	for i := 0; i < typ.NumField(); i++ {
-		name := typ.Field(i).Name
-		switch o := val.FieldByName(name).Interface().(type) {
-		case String:
-			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T: 1})
-		case StringHashed:
-			needsHash = true
-			valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T: 2})
-		case StringEncrypted:
-			needsHash = true //???
-			panic("TODO")
-		case Int:
-			valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T: 4})
-		case IntHashed:
-			needsHash = true
-			valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T: 5})
-		case IntEncrypted:
-			needsHash = true //???
-			panic("TODO")
-		case *Item:
-			needsHash = true
-			if isClick {
-				itemStubs = append(itemStubs, itemStub{N: name, I: o.FullId(), V: ""})
-			} else {
-				panic("We can't have Items in a Link - name:" + name)
+	if values != nil {
+		val := reflect.ValueOf(values)
+		typ := val.Type()
+		for i := 0; i < typ.NumField(); i++ {
+			name := typ.Field(i).Name
+			switch o := val.FieldByName(name).Interface().(type) {
+			case String:
+				valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T: 1})
+			case StringHashed:
+				needsHash = true
+				valueStubs = append(valueStubs, valueStub{N: name, V: string(o), T: 2})
+			case StringEncrypted:
+				needsHash = true //???
+				panic("TODO")
+			case Int:
+				valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T: 4})
+			case IntHashed:
+				needsHash = true
+				valueStubs = append(valueStubs, valueStub{N: name, V: int(o), T: 5})
+			case IntEncrypted:
+				needsHash = true //???
+				panic("TODO")
+			case *Item:
+				needsHash = true
+				if isClick {
+					itemStubs = append(itemStubs, itemStub{N: name, I: o.FullId(), V: ""})
+				} else {
+					panic("We can't have Items in a Link - name:" + name)
+				}
+			default:
+				panic("Incorrect value " + name)
 			}
-		default:
-			panic("Incorrect value " + name)
 		}
 	}
 	return valueStubs, itemStubs, needsHash

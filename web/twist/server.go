@@ -65,7 +65,7 @@ func serverRoot(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 		Root:    Root(w),
 	}
 
-	contextVal := reflect.ValueOf(context)
+	contextVal := reflect.ValueOf(&context)
 
 	params := []reflect.Value{contextVal}
 
@@ -95,62 +95,66 @@ func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 		Root:    Root(w),
 	}
 
-	if method.Type.NumIn() != 3 {
-		panic("function " + stubs.Func + " should have two fields. It has " + fmt.Sprint(method.Type.NumIn()))
+	numFields := method.Type.NumIn() - 1
+	if numFields != 1 && numFields != 2 {
+		panic("function " + stubs.Func + " should have 1 or 2 fields. It has " + fmt.Sprint(numFields))
 	}
-	if method.Type.In(1) != reflect.TypeOf(context) {
-		panic("function " + stubs.Func + " first field should be type templates.Context")
+	if method.Type.In(1) != reflect.TypeOf(&context) {
+		panic("function " + stubs.Func + " first field should be type *twist.Context")
 	}
 	needsHash := false
 
-	val := reflect.New(method.Type.In(2)).Elem()
-	typ := val.Type()
-	for i := 0; i < typ.NumField(); i++ {
-		name := typ.Field(i).Name
-		field := val.FieldByName(name)
-		switch o := field.Interface().(type) {
-		case String:
-			stub, found := getValueStubByName(stubs.Values, name)
-			if found {
-				value := String(toString(stub.V))
-				field.Set(reflect.ValueOf(value))
+	var val reflect.Value
+	if numFields == 2 {
+		val = reflect.New(method.Type.In(2)).Elem()
+		typ := val.Type()
+		for i := 0; i < typ.NumField(); i++ {
+			name := typ.Field(i).Name
+			field := val.FieldByName(name)
+			switch o := field.Interface().(type) {
+			case String:
+				stub, found := getValueStubByName(stubs.Values, name)
+				if found {
+					value := String(toString(stub.V))
+					field.Set(reflect.ValueOf(value))
+				}
+			case StringHashed:
+				needsHash = true
+				stub, found := getValueStubByName(stubs.Values, name)
+				if found {
+					value := StringHashed(toString(stub.V))
+					field.Set(reflect.ValueOf(value))
+				}
+			case StringEncrypted:
+				needsHash = true //???
+				panic("TODO")
+			case Int:
+				stub, found := getValueStubByName(stubs.Values, name)
+				if found {
+					value := Int(toInt(stub.V))
+					field.Set(reflect.ValueOf(value))
+				}
+			case IntHashed:
+				needsHash = true
+				stub, found := getValueStubByName(stubs.Values, name)
+				if found {
+					value := IntHashed(toInt(stub.V))
+					field.Set(reflect.ValueOf(value))
+				}
+			case IntEncrypted:
+				needsHash = true //???
+				panic("TODO")
+			case *Item:
+				needsHash = true
+				stub, found := getItemStubByName(stubs.Items, name)
+				if found {
+					item := newItemFromAction(stub.I, w)
+					item.Value = stub.V
+					field.Set(reflect.ValueOf(item))
+				}
+			default:
+				panic("Incorrect item/value " + name)
 			}
-		case StringHashed:
-			needsHash = true
-			stub, found := getValueStubByName(stubs.Values, name)
-			if found {
-				value := StringHashed(toString(stub.V))
-				field.Set(reflect.ValueOf(value))
-			}
-		case StringEncrypted:
-			needsHash = true //???
-			panic("TODO")
-		case Int:
-			stub, found := getValueStubByName(stubs.Values, name)
-			if found {
-				value := Int(toInt(stub.V))
-				field.Set(reflect.ValueOf(value))
-			}
-		case IntHashed:
-			needsHash = true
-			stub, found := getValueStubByName(stubs.Values, name)
-			if found {
-				value := IntHashed(toInt(stub.V))
-				field.Set(reflect.ValueOf(value))
-			}
-		case IntEncrypted:
-			needsHash = true //???
-			panic("TODO")
-		case *Item:
-			needsHash = true
-			stub, found := getItemStubByName(stubs.Items, name)
-			if found {
-				item := newItemFromAction(stub.I, w)
-				item.Value = stub.V
-				field.Set(reflect.ValueOf(item))
-			}
-		default:
-			panic("Incorrect item/value " + name)
 		}
 	}
 
@@ -163,9 +167,11 @@ func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 		}
 	}
 
-	functionParams := make([]reflect.Value, 2)
-	functionParams[0] = reflect.ValueOf(context)
-	functionParams[1] = val
+	functionParams := make([]reflect.Value, numFields)
+	functionParams[0] = reflect.ValueOf(&context)
+	if numFields == 2 {
+		functionParams[1] = val
+	}
 	methodValue.Call(functionParams)
 
 }
@@ -204,57 +210,61 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 
 	methodValue, method := findMethod(pageName, getFunctionsType)
 
-	if method.Type.NumIn() != 3 {
-		panic("function " + pageName + " should have two fields.")
+	numFields := method.Type.NumIn() - 1
+	if numFields != 1 && numFields != 2 {
+		panic("function " + pageName + " should have 1 or 2 fields. It has " + fmt.Sprint(numFields))
 	}
-	if method.Type.In(1) != reflect.TypeOf(context) {
-		panic("function " + pageName + " first field should be type templates.Context")
+	if method.Type.In(1) != reflect.TypeOf(&context) {
+		panic("function " + pageName + " first field should be type *twist.Context")
 	}
 
 	needsHash := false
 
 	valueStubs := make([]valueStub, 0)
 
-	val := reflect.New(method.Type.In(2)).Elem()
-	typ := val.Type()
-	for i := 0; i < typ.NumField(); i++ {
-		name := typ.Field(i).Name
-		field := val.FieldByName(name)
-		switch o := field.Interface().(type) {
-		case String:
-			v := r.FormValue(name)
-			valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 1})
-			value := String(v)
-			field.Set(reflect.ValueOf(value))
-		case StringHashed:
-			needsHash = true
-			v := r.FormValue(name)
-			valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 2})
-			value := StringHashed(v)
-			field.Set(reflect.ValueOf(value))
-		case StringEncrypted:
-			needsHash = true //???
-			panic("TODO")
-		case Int:
-			v := r.FormValue(name)
-			valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 4})
-			vInt, _ := strconv.Atoi(v)
-			value := Int(vInt)
-			field.Set(reflect.ValueOf(value))
-		case IntHashed:
-			needsHash = true
-			v := r.FormValue(name)
-			valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 5})
-			vInt, _ := strconv.Atoi(v)
-			value := IntHashed(vInt)
-			field.Set(reflect.ValueOf(value))
-		case IntEncrypted:
-			needsHash = true //???
-			panic("TODO")
-		case *Item:
-			panic("We can't have Items in a Link - name:" + name)
-		default:
-			panic("Incorrect value " + name)
+	var val reflect.Value
+	if numFields == 2 {
+		val = reflect.New(method.Type.In(2)).Elem()
+		typ := val.Type()
+		for i := 0; i < typ.NumField(); i++ {
+			name := typ.Field(i).Name
+			field := val.FieldByName(name)
+			switch o := field.Interface().(type) {
+			case String:
+				v := r.FormValue(name)
+				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 1})
+				value := String(v)
+				field.Set(reflect.ValueOf(value))
+			case StringHashed:
+				needsHash = true
+				v := r.FormValue(name)
+				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 2})
+				value := StringHashed(v)
+				field.Set(reflect.ValueOf(value))
+			case StringEncrypted:
+				needsHash = true //???
+				panic("TODO")
+			case Int:
+				v := r.FormValue(name)
+				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 4})
+				vInt, _ := strconv.Atoi(v)
+				value := Int(vInt)
+				field.Set(reflect.ValueOf(value))
+			case IntHashed:
+				needsHash = true
+				v := r.FormValue(name)
+				valueStubs = append(valueStubs, valueStub{N: name, V: v, T: 5})
+				vInt, _ := strconv.Atoi(v)
+				value := IntHashed(vInt)
+				field.Set(reflect.ValueOf(value))
+			case IntEncrypted:
+				needsHash = true //???
+				panic("TODO")
+			case *Item:
+				panic("We can't have Items in a Link - name:" + name)
+			default:
+				panic("Incorrect value " + name)
+			}
 		}
 	}
 
@@ -268,13 +278,14 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 		}
 	}
 
-	functionParams := make([]reflect.Value, 2)
-	functionParams[0] = reflect.ValueOf(context)
-	functionParams[1] = val
+	functionParams := make([]reflect.Value, numFields)
+	functionParams[0] = reflect.ValueOf(&context)
+	if numFields == 2 {
+		functionParams[1] = val
+	}
 	methodValue.Call(functionParams)
 
 }
-
 
 func findMethod(name string, getFunctionsType func() interface{}) (val reflect.Value, met reflect.Method) {
 

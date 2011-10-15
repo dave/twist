@@ -20,15 +20,15 @@ func handler(wr http.ResponseWriter, r *http.Request) {
 
 type Functions int
 
-func (f Functions) Root(c twist.Context) {
+func (f Functions) Root(c *twist.Context) {
 
-	test := twist.Test(c.Writer, "main")
+	test := twist.Test(c, "main")
 	c.Root.Html(test)
 
 	test.Span1.Html("Hello world!")
 	test.Text1.Attr("value", "foo")
 
-	inner := twist.Inner(c.Writer, "dave")
+	inner := twist.Inner(c, "dave")
 	test.Para1.Html(inner)
 
 	inner.Span1.Html("BAR")
@@ -49,9 +49,15 @@ type Page1_T struct {
 	Val2 twist.Int
 }
 
-func (f Functions) Page1(c twist.Context, v Page1_T) {
+func (f Functions) Page1(c *twist.Context, v Page1_T) {
 
-	c.Root.Html("Hello World." + v.Val1.Value() + " - " + v.Val2.String())
+	//c.Root.Html("Hello World." + v.Val1.Value() + " - " + v.Val2.String())
+
+	page2 := twist.Page2(c, "foo")
+	c.Root.Html(page2)
+
+	page2.Button1.Click(Functions.Root, nil)
+
 	c.Send()
 
 }
@@ -63,7 +69,7 @@ type MyClickNew_T struct {
 	Text1 *twist.Item
 }
 
-func (f Functions) MyClickNew(c twist.Context, v MyClickNew_T) {
+func (f Functions) MyClickNew(c *twist.Context, v MyClickNew_T) {
 
 	v.Img1.Css("border", "10px solid #ff0000")
 	v.Span1.Html("WHOOOOOOPPPPPPPPP!!!! ", v.Val1.String(), " ", v.Text1.Value)
