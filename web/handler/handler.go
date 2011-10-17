@@ -16,63 +16,116 @@ func handler(wr http.ResponseWriter, r *http.Request) {
 		r,
 		func() interface{} { return Functions(0) },
 	)
+
 }
 
 type Functions int
 
 func (f Functions) Root(c *twist.Context) {
+	f.Plain1(c)
+}
 
-	test := twist.Test(c, "main")
-	c.Root.Html(test)
+func getNav(c *twist.Context) *twist.Navigation_T {
+	nav := twist.Navigation(c, "Nav")
+	nav.Plain1Link.Link(Functions.Plain1, nil)
+	nav.Plain2Link.Link(Functions.Plain2, nil)
+	nav.Plain3Link.Link(Functions.Plain3, nil)
+	nav.Red1Link.Link(Functions.Red1, nil)
+	nav.Red2Link.Link(Functions.Red2, nil)
+	nav.Red3Link.Link(Functions.Red3, nil)
+	return nav
+}
 
-	test.Span1.Html("Hello world!")
-	test.Text1.Attr("value", "foo")
+func getPlainMaster(c *twist.Context) *twist.PlainMaster_T {
+	master := twist.PlainMaster(c, "Master")
+	master.Footer.Html("Here's some HTML in the footer...")
+	master.Navigation.Html(getNav(c))
+	return master
+}
+func getRedMaster(c *twist.Context) *twist.RedMaster_T {
+	master := twist.RedMaster(c, "Master")
+	master.Footer.Html("Here's some HTML in the red footer...")
+	master.Navigation.Html(getNav(c))
+	return master
+}
 
-	inner := twist.Inner(c, "dave")
-	test.Para1.Html(inner)
+func (f Functions) Plain1(c *twist.Context) {
+	master := getPlainMaster(c)
+	c.Root.Html(master)
 
-	inner.Span1.Html("BAR")
-	inner.Img1.Attr("src", "http://pix-eu.dontstayin.com/53812cd7-33c7-44ac-a766-9710e4f14077.jpg")
-	inner.Img1.Attr("width", 100)
-	inner.Img1.Attr("height", 100)
+	master.Header.Html("Plain 1 heading")
 
-	inner.Img1.Click(Functions.MyClickNew, MyClickNew_T{Val1: "testing", Span1: inner.Span1, Img1: inner.Img1, Text1: test.Text1})
-
-	inner.MyLink.Link(Functions.Page1, Page1_T{Val1: "ooooooh!", Val2: 44})
+	contents := twist.Plain1(c, "Plain1")
+	master.Content.Html(contents)
 
 	c.Send()
-
 }
 
-type Page1_T struct {
-	Val1 twist.String
-	Val2 twist.Int
-}
+func (f Functions) Plain2(c *twist.Context) {
+	master := getPlainMaster(c)
+	c.Root.Html(master)
 
-func (f Functions) Page1(c *twist.Context, v Page1_T) {
+	master.Header.Html("Plain 2 heading")
 
-	//c.Root.Html("Hello World." + v.Val1.Value() + " - " + v.Val2.String())
-
-	page2 := twist.Page2(c, "foo")
-	c.Root.Html(page2)
-
-	page2.Button1.Link(Functions.Root, nil)
+	contents := twist.Plain2(c, "Plain2")
+	master.Content.Html(contents)
 
 	c.Send()
-
 }
 
-type MyClickNew_T struct {
-	Val1  twist.String
-	Span1 *twist.Item
-	Img1  *twist.Item
-	Text1 *twist.Item
+func (f Functions) Plain3(c *twist.Context) {
+	master := getPlainMaster(c)
+	c.Root.Html(master)
+
+	master.Header.Html("Plain 3 heading")
+
+	contents := twist.Plain3(c, "Plain3")
+	master.Content.Html(contents)
+
+	c.Send()
 }
 
-func (f Functions) MyClickNew(c *twist.Context, v MyClickNew_T) {
+func (f Functions) Red1(c *twist.Context) {
+	master := getRedMaster(c)
+	c.Root.Html(master)
 
-	v.Img1.Css("border", "10px solid #ff0000")
-	v.Span1.Html("WHOOOOOOPPPPPPPPP!!!! ", v.Val1.String(), " ", v.Text1.Value)
+	master.Location.Html("Red 1 location")
+	master.Date.Html("red 1 date")
+
+	master.Header.Html("Red 1 heading")
+
+	contents := twist.Red1(c, "Red1")
+	master.Content.Html(contents)
+
+	c.Send()
+}
+
+func (f Functions) Red2(c *twist.Context) {
+	master := getRedMaster(c)
+	c.Root.Html(master)
+
+	master.Location.Html("Red 2 location")
+	master.Date.Html("red 2 date")
+
+	master.Header.Html("Red 2 heading")
+
+	contents := twist.Red2(c, "Red2")
+	master.Content.Html(contents)
+
+	c.Send()
+}
+
+func (f Functions) Red3(c *twist.Context) {
+	master := getRedMaster(c)
+	c.Root.Html(master)
+
+	master.Location.Html("Red 3 location")
+	master.Date.Html("red 3 date")
+
+	master.Header.Html("Red 3 heading")
+
+	contents := twist.Red3(c, "Red3")
+	master.Content.Html(contents)
 
 	c.Send()
 }

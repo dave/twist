@@ -57,6 +57,15 @@ func main() {
 
 func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 
+	fmt.Print(fi.Name)
+
+	if !strings.HasSuffix(fi.Name, ".html") {
+		fmt.Println(" (skipping)")
+		return
+	} else {
+		fmt.Println(" (processing)")
+	}
+
 	templateName := fi.Name[0:strings.Index(fi.Name, ".")]
 	s := ""
 	f, _ := os.Open(path)
@@ -171,8 +180,10 @@ func makeMap(data string, seperator1 string, seperator2 string) map[string]strin
 	itemsA := strings.Split(data, seperator1)
 	for _, item := range itemsA {
 		if len(item) > 0 {
-			keyVal := strings.Split(item, seperator2)
-			out[keyVal[0]] = keyVal[1]
+			if strings.Contains(item, seperator2) {
+				index := strings.Index(item, seperator2)
+				out[item[0:index]] = item[index+1:]
+			}
 		}
 	}
 	return out

@@ -29,9 +29,14 @@ type Item struct {
 	Styles     map[string]string
 	Contents   []*Item
 	Text       string
+	commands   []func()
 }
 
 func (he *Item) RenderHtml() string {
+
+	for _, command := range he.commands {
+		command() //******************* this needs to go in writer.Send()
+	}
 
 	s := ``
 	if len(he.Name) > 0 {
@@ -111,6 +116,9 @@ type allStubs struct {
 }
 
 func (i *Item) Click(handlerFunc interface{}, values interface{}) {
+	i.commands = append(i.commands, func() { i.clickAtRender(handlerFunc, values) })
+}
+func (i *Item) clickAtRender(handlerFunc interface{}, values interface{}) {
 
 	valueStubs, itemStubs, _ := makeStubs(values, true)
 
@@ -127,6 +135,9 @@ $("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; ge
 }
 
 func (i *Item) Link(handlerFunc interface{}, values interface{}) {
+	i.commands = append(i.commands, func() { i.linkAtRender(handlerFunc, values) })
+}
+func (i *Item) linkAtRender(handlerFunc interface{}, values interface{}) {
 
 	valueStubs, _, needsHash := makeStubs(values, false)
 
@@ -271,11 +282,11 @@ func getFunctionName(input interface{}) string {
 }
 
 func (i *Item) Html(o ...interface{}) {
-	i.generic(true, o)
+	i.commands = append(i.commands, func() { i.generic(true, o) })
 }
 
 func (i *Item) Append(o ...interface{}) {
-	i.generic(false, o)
+	i.commands = append(i.commands, func() { i.generic(false, o) })
 }
 
 func (i *Item) generic(replace bool, o []interface{}) {
@@ -376,10 +387,11 @@ $("#` + i.FullId() + `").` + command + `(template_` + t.name + `("` + t.FullId()
 	}
 }
 func (i *Item) Attr(attrib string, o interface{}) {
-	i.attrCss("attr", attrib, o)
+	i.commands = append(i.commands, func() { i.attrCss("attr", attrib, o) })
 }
+
 func (i *Item) Css(attrib string, o interface{}) {
-	i.attrCss("css", attrib, o)
+	i.commands = append(i.commands, func() { i.attrCss("css", attrib, o) })
 }
 
 func (i *Item) attrCss(command string, attrib string, o interface{}) {

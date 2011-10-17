@@ -4,179 +4,481 @@ package twist
 func getTemplateByName(name string) *Template {
 	switch name {
 		
-		case "inner" : 
-			return inner_Template()
+		case "navigation" : 
+			return navigation_Template()
 		
-		case "page2" : 
-			return page2_Template()
+		case "plain1" : 
+			return plain1_Template()
 		
-		case "test" : 
-			return test_Template()
+		case "plain2" : 
+			return plain2_Template()
+		
+		case "plain3" : 
+			return plain3_Template()
+		
+		case "plainMaster" : 
+			return plainMaster_Template()
+		
+		case "red1" : 
+			return red1_Template()
+		
+		case "red2" : 
+			return red2_Template()
+		
+		case "red3" : 
+			return red3_Template()
+		
+		case "redMaster" : 
+			return redMaster_Template()
 		
 	}
 	return nil
 }
 
 
-type Inner_T struct {
+type Navigation_T struct {
 	
 	name string
 	*Template
 	
-	Span1 *Item
+	Plain1Link *Item
 	
-	Img1 *Item
+	Plain2Link *Item
 	
-	MyLink *Item
+	Plain3Link *Item
+	
+	Red1Link *Item
+	
+	Red2Link *Item
+	
+	Red3Link *Item
 	
 
 }
-func inner_Template() *Template{
+func navigation_Template() *Template{
 	return &Template {
-		name     : "inner",
-		Html     : `<script>function template_inner(id){return "<b>This is an inner template, here's some text: <span style=\"border:1px solid #000000;\" id=\""+id+"_span1\" /></b><br />\n...and here's an image: <img id=\""+id+"_img1\" border=\"0\" style=\"border:2px solid #00ff00;\" /><br />\n<a href=\"/\" id=\""+id+"_myLink\">This is a link</a>"}</script>`,
+		name     : "navigation",
+		Html     : `<script>function template_navigation(id){return "<div style=\"border 1px solid #000000; padding: 5px;\">\n	<a id=\""+id+"_plain1Link\">Plain page 1</a> |\n	<a id=\""+id+"_plain2Link\">Plain page 2</a> |\n	<a id=\""+id+"_plain3Link\">Plain page 3</a> |\n	<a id=\""+id+"_red1Link\">Red page 1</a> |\n	<a id=\""+id+"_red2Link\">Red page 2</a> |\n	<a id=\""+id+"_red3Link\">Red page 3</a>\n</div>"}</script>`,
 	}
 }
-func (t *Inner_T) GetTemplate() *Template {
+func (t *Navigation_T) GetTemplate() *Template {
 	return t.Template
 }
 
-func Inner(c *Context, id string) *Inner_T {
+func Navigation(c *Context, id string) *Navigation_T {
 	
-	t := inner_Template()
+	t := navigation_Template()
 	t.Writer = c.Writer
 	t.Id = id
 	
 	c.Writer.RegisterTemplate(*t)
 
 	
-	v3 := Item{Name: "span", template: t, writer: c.Writer, id: "span1", Attributes: map[string]string{}, Styles: map[string]string{"border":"1px solid #000000", }, }
-	v2 := Item{Text:`This is an inner template, here's some text: `}
-	v1 := Item{Name: "b", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, &v3, }, }
-	v4 := Item{Name: "br", Attributes: map[string]string{}, Styles: map[string]string{}, }
-	v5 := Item{Text:``+"\n"+`...and here's an image: `}
-	v6 := Item{Name: "img", template: t, writer: c.Writer, id: "img1", Attributes: map[string]string{"border":"0", }, Styles: map[string]string{"border":"2px solid #00ff00", }, }
-	v7 := Item{Name: "br", Attributes: map[string]string{}, Styles: map[string]string{}, }
-	v8 := Item{Text:``+"\n"+``}
-	v10 := Item{Text:`This is a link`}
-	v9 := Item{Name: "a", template: t, writer: c.Writer, id: "myLink", Attributes: map[string]string{"href":"/", }, Styles: map[string]string{}, Contents: []*Item{&v10, }, }
+	v20 := Item{Text:``+"\n"+``}
+	v19 := Item{Text:`Red page 3`}
+	v18 := Item{Name: "a", template: t, writer: c.Writer, id: "red3Link", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v19, }, }
+	v17 := Item{Text:` |`+"\n"+`	`}
+	v16 := Item{Text:`Red page 2`}
+	v15 := Item{Name: "a", template: t, writer: c.Writer, id: "red2Link", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v16, }, }
+	v14 := Item{Text:` |`+"\n"+`	`}
+	v13 := Item{Text:`Red page 1`}
+	v12 := Item{Name: "a", template: t, writer: c.Writer, id: "red1Link", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v13, }, }
+	v11 := Item{Text:` |`+"\n"+`	`}
+	v10 := Item{Text:`Plain page 3`}
+	v9 := Item{Name: "a", template: t, writer: c.Writer, id: "plain3Link", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v10, }, }
+	v8 := Item{Text:` |`+"\n"+`	`}
+	v7 := Item{Text:`Plain page 2`}
+	v6 := Item{Name: "a", template: t, writer: c.Writer, id: "plain2Link", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v7, }, }
+	v5 := Item{Text:` |`+"\n"+`	`}
+	v4 := Item{Text:`Plain page 1`}
+	v3 := Item{Name: "a", template: t, writer: c.Writer, id: "plain1Link", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v4, }, }
+	v2 := Item{Text:``+"\n"+`	`}
+	v1 := Item{Name: "div", Attributes: map[string]string{}, Styles: map[string]string{" padding":" 5px", }, Contents: []*Item{&v2, &v3, &v5, &v6, &v8, &v9, &v11, &v12, &v14, &v15, &v17, &v18, &v20, }, }
 
-	t.Contents = []*Item{ &v1, &v4, &v5, &v6, &v7, &v8, &v9,  }
+	t.Contents = []*Item{ &v1,  }
 	
-	return &Inner_T{
+	return &Navigation_T{
 		name : t.name, 
 		Template : t,
 		
-		Span1 : &v3,
+		Plain1Link : &v3,
 		
-		Img1 : &v6,
+		Plain2Link : &v6,
 		
-		MyLink : &v9,
+		Plain3Link : &v9,
+		
+		Red1Link : &v12,
+		
+		Red2Link : &v15,
+		
+		Red3Link : &v18,
 		
 	}
 }
 
-type Page2_T struct {
+type Plain1_T struct {
 	
 	name string
 	*Template
 	
-	Button1 *Item
-	
 
 }
-func page2_Template() *Template{
+func plain1_Template() *Template{
 	return &Template {
-		name     : "page2",
-		Html     : `<script>function template_page2(id){return "<h1>Page 2!!!... </h1>\n<p><button id=\""+id+"_button1\">Back</button></p>"}</script>`,
+		name     : "plain1",
+		Html     : `<script>function template_plain1(id){return "<p>\n	This is a page using the plain_template.html file.\n</p>"}</script>`,
 	}
 }
-func (t *Page2_T) GetTemplate() *Template {
+func (t *Plain1_T) GetTemplate() *Template {
 	return t.Template
 }
 
-func Page2(c *Context, id string) *Page2_T {
+func Plain1(c *Context, id string) *Plain1_T {
 	
-	t := page2_Template()
+	t := plain1_Template()
 	t.Writer = c.Writer
 	t.Id = id
 	
 	c.Writer.RegisterTemplate(*t)
 
 	
-	v2 := Item{Text:`Page 2!!!... `}
-	v1 := Item{Name: "h1", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, }, }
-	v3 := Item{Text:``+"\n"+``}
-	v6 := Item{Text:`Back`}
-	v5 := Item{Name: "button", template: t, writer: c.Writer, id: "button1", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v6, }, }
-	v4 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v5, }, }
+	v2 := Item{Text:``+"\n"+`	This is a page using the plain_template.html file.`+"\n"+``}
+	v1 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, }, }
 
-	t.Contents = []*Item{ &v1, &v3, &v4,  }
+	t.Contents = []*Item{ &v1,  }
 	
-	return &Page2_T{
+	return &Plain1_T{
 		name : t.name, 
 		Template : t,
 		
-		Button1 : &v5,
-		
 	}
 }
 
-type Test_T struct {
+type Plain2_T struct {
 	
 	name string
 	*Template
 	
-	Span1 *Item
-	
-	Text1 *Item
-	
-	Para1 *Item
-	
 
 }
-func test_Template() *Template{
+func plain2_Template() *Template{
 	return &Template {
-		name     : "test",
-		Html     : `<script>function template_test(id){return "<p>TEsting... <span id=\""+id+"_span1\">span1</span></p>\n<p><input id=\""+id+"_text1\" type=\"text\" /></p>\n<p></p>\n<p id=\""+id+"_para1\"></p>"}</script>`,
+		name     : "plain2",
+		Html     : `<script>function template_plain2(id){return "<p>\n	This is the second plain page.\n</p>"}</script>`,
 	}
 }
-func (t *Test_T) GetTemplate() *Template {
+func (t *Plain2_T) GetTemplate() *Template {
 	return t.Template
 }
 
-func Test(c *Context, id string) *Test_T {
+func Plain2(c *Context, id string) *Plain2_T {
 	
-	t := test_Template()
+	t := plain2_Template()
 	t.Writer = c.Writer
 	t.Id = id
 	
 	c.Writer.RegisterTemplate(*t)
 
 	
-	v4 := Item{Text:`span1`}
-	v3 := Item{Name: "span", template: t, writer: c.Writer, id: "span1", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v4, }, }
-	v2 := Item{Text:`TEsting... `}
-	v1 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, &v3, }, }
+	v2 := Item{Text:``+"\n"+`	This is the second plain page.`+"\n"+``}
+	v1 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, }, }
+
+	t.Contents = []*Item{ &v1,  }
+	
+	return &Plain2_T{
+		name : t.name, 
+		Template : t,
+		
+	}
+}
+
+type Plain3_T struct {
+	
+	name string
+	*Template
+	
+
+}
+func plain3_Template() *Template{
+	return &Template {
+		name     : "plain3",
+		Html     : `<script>function template_plain3(id){return "<p>\n	This is another plain page.\n</p>"}</script>`,
+	}
+}
+func (t *Plain3_T) GetTemplate() *Template {
+	return t.Template
+}
+
+func Plain3(c *Context, id string) *Plain3_T {
+	
+	t := plain3_Template()
+	t.Writer = c.Writer
+	t.Id = id
+	
+	c.Writer.RegisterTemplate(*t)
+
+	
+	v2 := Item{Text:``+"\n"+`	This is another plain page.`+"\n"+``}
+	v1 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, }, }
+
+	t.Contents = []*Item{ &v1,  }
+	
+	return &Plain3_T{
+		name : t.name, 
+		Template : t,
+		
+	}
+}
+
+type PlainMaster_T struct {
+	
+	name string
+	*Template
+	
+	Navigation *Item
+	
+	Header *Item
+	
+	Content *Item
+	
+	Footer *Item
+	
+
+}
+func plainMaster_Template() *Template{
+	return &Template {
+		name     : "plainMaster",
+		Html     : `<script>function template_plainMaster(id){return "<div id=\""+id+"_Navigation\" />\n<h1 id=\""+id+"_Header\">Plain page</h1>\n<div id=\""+id+"_Content\" />\n<div id=\""+id+"_Footer\" style=\"color:#ffffff; background-color:#000000; font-weight:bold; padding:5px;\" />"}</script>`,
+	}
+}
+func (t *PlainMaster_T) GetTemplate() *Template {
+	return t.Template
+}
+
+func PlainMaster(c *Context, id string) *PlainMaster_T {
+	
+	t := plainMaster_Template()
+	t.Writer = c.Writer
+	t.Id = id
+	
+	c.Writer.RegisterTemplate(*t)
+
+	
+	v1 := Item{Name: "div", template: t, writer: c.Writer, id: "Navigation", Attributes: map[string]string{}, Styles: map[string]string{}, }
+	v2 := Item{Text:``+"\n"+``}
+	v4 := Item{Text:`Plain page`}
+	v3 := Item{Name: "h1", template: t, writer: c.Writer, id: "Header", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v4, }, }
 	v5 := Item{Text:``+"\n"+``}
-	v7 := Item{Name: "input", template: t, writer: c.Writer, id: "text1", Attributes: map[string]string{"type":"text", }, Styles: map[string]string{}, }
-	v6 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v7, }, }
-	v8 := Item{Text:``+"\n"+``}
-	v9 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, }
-	v10 := Item{Text:``+"\n"+``}
-	v11 := Item{Name: "p", template: t, writer: c.Writer, id: "para1", Attributes: map[string]string{}, Styles: map[string]string{}, }
+	v6 := Item{Name: "div", template: t, writer: c.Writer, id: "Content", Attributes: map[string]string{}, Styles: map[string]string{}, }
+	v7 := Item{Text:``+"\n"+``}
+	v8 := Item{Name: "div", template: t, writer: c.Writer, id: "Footer", Attributes: map[string]string{}, Styles: map[string]string{" background-color":"#000000", " font-weight":"bold", "color":"#ffffff", " padding":"5px", }, }
 
-	t.Contents = []*Item{ &v1, &v5, &v6, &v8, &v9, &v10, &v11,  }
+	t.Contents = []*Item{ &v1, &v2, &v3, &v5, &v6, &v7, &v8,  }
 	
-	return &Test_T{
+	return &PlainMaster_T{
 		name : t.name, 
 		Template : t,
 		
-		Span1 : &v3,
+		Navigation : &v1,
 		
-		Text1 : &v7,
+		Header : &v3,
 		
-		Para1 : &v11,
+		Content : &v6,
+		
+		Footer : &v8,
+		
+	}
+}
+
+type Red1_T struct {
+	
+	name string
+	*Template
+	
+
+}
+func red1_Template() *Template{
+	return &Template {
+		name     : "red1",
+		Html     : `<script>function template_red1(id){return "<p>\n	This is a page using the red_template.html file.\n</p>"}</script>`,
+	}
+}
+func (t *Red1_T) GetTemplate() *Template {
+	return t.Template
+}
+
+func Red1(c *Context, id string) *Red1_T {
+	
+	t := red1_Template()
+	t.Writer = c.Writer
+	t.Id = id
+	
+	c.Writer.RegisterTemplate(*t)
+
+	
+	v2 := Item{Text:``+"\n"+`	This is a page using the red_template.html file.`+"\n"+``}
+	v1 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, }, }
+
+	t.Contents = []*Item{ &v1,  }
+	
+	return &Red1_T{
+		name : t.name, 
+		Template : t,
+		
+	}
+}
+
+type Red2_T struct {
+	
+	name string
+	*Template
+	
+
+}
+func red2_Template() *Template{
+	return &Template {
+		name     : "red2",
+		Html     : `<script>function template_red2(id){return "<p>\n	This is the second red page.\n</p>"}</script>`,
+	}
+}
+func (t *Red2_T) GetTemplate() *Template {
+	return t.Template
+}
+
+func Red2(c *Context, id string) *Red2_T {
+	
+	t := red2_Template()
+	t.Writer = c.Writer
+	t.Id = id
+	
+	c.Writer.RegisterTemplate(*t)
+
+	
+	v2 := Item{Text:``+"\n"+`	This is the second red page.`+"\n"+``}
+	v1 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, }, }
+
+	t.Contents = []*Item{ &v1,  }
+	
+	return &Red2_T{
+		name : t.name, 
+		Template : t,
+		
+	}
+}
+
+type Red3_T struct {
+	
+	name string
+	*Template
+	
+
+}
+func red3_Template() *Template{
+	return &Template {
+		name     : "red3",
+		Html     : `<script>function template_red3(id){return "<p>\n	This is another red page.\n</p>"}</script>`,
+	}
+}
+func (t *Red3_T) GetTemplate() *Template {
+	return t.Template
+}
+
+func Red3(c *Context, id string) *Red3_T {
+	
+	t := red3_Template()
+	t.Writer = c.Writer
+	t.Id = id
+	
+	c.Writer.RegisterTemplate(*t)
+
+	
+	v2 := Item{Text:``+"\n"+`	This is another red page.`+"\n"+``}
+	v1 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, }, }
+
+	t.Contents = []*Item{ &v1,  }
+	
+	return &Red3_T{
+		name : t.name, 
+		Template : t,
+		
+	}
+}
+
+type RedMaster_T struct {
+	
+	name string
+	*Template
+	
+	Navigation *Item
+	
+	Header *Item
+	
+	Topper *Item
+	
+	Location *Item
+	
+	Date *Item
+	
+	Content *Item
+	
+	Footer *Item
+	
+
+}
+func redMaster_Template() *Template{
+	return &Template {
+		name     : "redMaster",
+		Html     : `<script>function template_redMaster(id){return "<div id=\""+id+"_Navigation\" />\n<h1 id=\""+id+"_Header\">Red page</h1>\n<div id=\""+id+"_Topper\" style=\"background-color:#cc0000; color:#ffffff; font-weight:bold; padding:5px;\">\n	<span id=\""+id+"_Location\" /> @ <span id=\""+id+"_Date\" />\n</div>\n<div id=\""+id+"_Content\" />\n<div id=\""+id+"_Footer\" style=\"color:#ffffff; background-color:#cc0000; font-weight:bold; padding:5px;\" />"}</script>`,
+	}
+}
+func (t *RedMaster_T) GetTemplate() *Template {
+	return t.Template
+}
+
+func RedMaster(c *Context, id string) *RedMaster_T {
+	
+	t := redMaster_Template()
+	t.Writer = c.Writer
+	t.Id = id
+	
+	c.Writer.RegisterTemplate(*t)
+
+	
+	v1 := Item{Name: "div", template: t, writer: c.Writer, id: "Navigation", Attributes: map[string]string{}, Styles: map[string]string{}, }
+	v2 := Item{Text:``+"\n"+``}
+	v4 := Item{Text:`Red page`}
+	v3 := Item{Name: "h1", template: t, writer: c.Writer, id: "Header", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v4, }, }
+	v5 := Item{Text:``+"\n"+``}
+	v11 := Item{Text:``+"\n"+``}
+	v10 := Item{Name: "span", template: t, writer: c.Writer, id: "Date", Attributes: map[string]string{}, Styles: map[string]string{}, }
+	v9 := Item{Text:` @ `}
+	v8 := Item{Name: "span", template: t, writer: c.Writer, id: "Location", Attributes: map[string]string{}, Styles: map[string]string{}, }
+	v7 := Item{Text:``+"\n"+`	`}
+	v6 := Item{Name: "div", template: t, writer: c.Writer, id: "Topper", Attributes: map[string]string{}, Styles: map[string]string{"background-color":"#cc0000", " color":"#ffffff", " font-weight":"bold", " padding":"5px", }, Contents: []*Item{&v7, &v8, &v9, &v10, &v11, }, }
+	v12 := Item{Text:``+"\n"+``}
+	v13 := Item{Name: "div", template: t, writer: c.Writer, id: "Content", Attributes: map[string]string{}, Styles: map[string]string{}, }
+	v14 := Item{Text:``+"\n"+``}
+	v15 := Item{Name: "div", template: t, writer: c.Writer, id: "Footer", Attributes: map[string]string{}, Styles: map[string]string{" background-color":"#cc0000", " font-weight":"bold", "color":"#ffffff", " padding":"5px", }, }
+
+	t.Contents = []*Item{ &v1, &v2, &v3, &v5, &v6, &v12, &v13, &v14, &v15,  }
+	
+	return &RedMaster_T{
+		name : t.name, 
+		Template : t,
+		
+		Navigation : &v1,
+		
+		Header : &v3,
+		
+		Topper : &v6,
+		
+		Location : &v8,
+		
+		Date : &v10,
+		
+		Content : &v13,
+		
+		Footer : &v15,
 		
 	}
 }
