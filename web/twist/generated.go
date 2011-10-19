@@ -121,12 +121,20 @@ type Plain1_T struct {
 	name string
 	*Template
 	
+	Output *Item
+	
+	Plus *Item
+	
+	Minus *Item
+	
+	Count *Item
+	
 
 }
 func plain1_Template() *Template{
 	return &Template {
 		name     : "plain1",
-		Html     : `<script>function template_plain1(id){return "<p>\n	This is a page using the plain_template.html file.\n</p>"}</script>`,
+		Html     : `<script>function template_plain1(id){return "<p>\n	This is a page using the plain_template.html file.\n</p>\n<p>\n	Here's a counter:\n</p>\n<h1 id=\""+id+"_Output\">\n	0\n</h1>\n<p>\n	Click <a href=\"#\" id=\""+id+"_Plus\">plus</a> or <a href=\"#\" id=\""+id+"_Minus\">minus</a>\n</p>\n<input type=\"hidden\" id=\""+id+"_Count\" />"}</script>`,
 	}
 }
 func (t *Plain1_T) GetTemplate() *Template {
@@ -144,12 +152,37 @@ func Plain1(c *Context, id string) *Plain1_T {
 	
 	v2 := Item{Text:``+"\n"+`	This is a page using the plain_template.html file.`+"\n"+``}
 	v1 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v2, }, }
+	v3 := Item{Text:``+"\n"+``}
+	v5 := Item{Text:``+"\n"+`	Here's a counter:`+"\n"+``}
+	v4 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v5, }, }
+	v6 := Item{Text:``+"\n"+``}
+	v8 := Item{Text:``+"\n"+`	0`+"\n"+``}
+	v7 := Item{Name: "h1", template: t, writer: c.Writer, id: "Output", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v8, }, }
+	v9 := Item{Text:``+"\n"+``}
+	v17 := Item{Text:``+"\n"+``}
+	v16 := Item{Text:`minus`}
+	v15 := Item{Name: "a", template: t, writer: c.Writer, id: "Minus", Attributes: map[string]string{"href":"#", }, Styles: map[string]string{}, Contents: []*Item{&v16, }, }
+	v14 := Item{Text:` or `}
+	v13 := Item{Text:`plus`}
+	v12 := Item{Name: "a", template: t, writer: c.Writer, id: "Plus", Attributes: map[string]string{"href":"#", }, Styles: map[string]string{}, Contents: []*Item{&v13, }, }
+	v11 := Item{Text:``+"\n"+`	Click `}
+	v10 := Item{Name: "p", Attributes: map[string]string{}, Styles: map[string]string{}, Contents: []*Item{&v11, &v12, &v14, &v15, &v17, }, }
+	v18 := Item{Text:``+"\n"+``}
+	v19 := Item{Name: "input", template: t, writer: c.Writer, id: "Count", Attributes: map[string]string{"type":"hidden", }, Styles: map[string]string{}, }
 
-	t.Contents = []*Item{ &v1,  }
+	t.Contents = []*Item{ &v1, &v3, &v4, &v6, &v7, &v9, &v10, &v18, &v19,  }
 	
 	return &Plain1_T{
 		name : t.name, 
 		Template : t,
+		
+		Output : &v7,
+		
+		Plus : &v12,
+		
+		Minus : &v15,
+		
+		Count : &v19,
 		
 	}
 }

@@ -23,7 +23,7 @@ type Item struct {
 	id         string
 	template   *Template
 	writer     *Writer
-	Value      string
+	value      string
 	Name       string
 	Attributes map[string]string
 	Styles     map[string]string
@@ -32,14 +32,16 @@ type Item struct {
 	commands   []func()
 }
 
+func (i *Item) Value() string {
+	return i.value
+}
+
 func (he *Item) RunCommands() {
 
-	fmt.Print(" [", len(he.commands), "]")
 	for _, command := range he.commands {
-		command() //******************* this needs to go in writer.Send()
+		command()
 	}
 
-	fmt.Println("Contents: ", len(he.Contents))
 	for _, inner := range he.Contents {
 		inner.RunCommands()
 	}

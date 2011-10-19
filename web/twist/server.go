@@ -232,7 +232,7 @@ func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 				stub, found := getItemStubByName(stubs.Items, name)
 				if found {
 					item := newItemFromAction(stub.I, w)
-					item.Value = stub.V
+					item.value = stub.V
 					field.Set(reflect.ValueOf(item))
 					context.itemsInRequest = append(context.itemsInRequest, item)
 				}
