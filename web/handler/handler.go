@@ -24,7 +24,7 @@ func handler(wr http.ResponseWriter, r *http.Request) {
 type Functions int
 
 func (f Functions) Root(c *twist.Context) {
-	f.Plain1(c)
+	f.Plain1(c, Plain1_T{Start: 0})
 }
 
 func getNav(c *twist.Context) *twist.Navigation_T {
@@ -52,7 +52,11 @@ func getRedMaster(c *twist.Context) *twist.RedMaster_T {
 	return master
 }
 
-func (f Functions) Plain1(c *twist.Context) {
+type Plain1_T struct {
+	Start twist.Int
+}
+
+func (f Functions) Plain1(c *twist.Context, v Plain1_T) {
 
 	master := getPlainMaster(c)
 	c.Root.Html(master)
@@ -62,11 +66,13 @@ func (f Functions) Plain1(c *twist.Context) {
 	p := twist.Plain1(c, "Plain1")
 	master.Content.Html(p)
 
+	fmt.Println(v.Start.Value())
+
 	p.Plus.Click(Functions.Plain1Add, Plain1Count_T{Count: p.Count, Output: p.Output})
 	p.Minus.Click(Functions.Plain1Minus, Plain1Count_T{Count: p.Count, Output: p.Output})
-	p.Count.Attr("value", "0")
+	p.Output.Html(v.Start.String())
+	p.Count.Attr("value", v.Start.String())
 
-	c.Send()
 }
 
 type Plain1Count_T struct {
@@ -79,14 +85,16 @@ func (f Functions) Plain1Add(c *twist.Context, v Plain1Count_T) {
 	i++
 	v.Output.Html(fmt.Sprint(i))
 	v.Count.Attr("value", fmt.Sprint(i))
-	c.Send()
+	c.Navigate(Functions.Plain1, Plain1_T{Start: twist.Int(i)})
+
 }
 func (f Functions) Plain1Minus(c *twist.Context, v Plain1Count_T) {
 	i, _ := strconv.Atoi(v.Count.Value())
 	i--
 	v.Output.Html(fmt.Sprint(i))
 	v.Count.Attr("value", fmt.Sprint(i))
-	c.Send()
+	c.Navigate(Functions.Plain1, Plain1_T{Start: twist.Int(i)})
+
 }
 
 func (f Functions) Plain2(c *twist.Context) {
@@ -99,7 +107,6 @@ func (f Functions) Plain2(c *twist.Context) {
 	contents := twist.Plain2(c, "Plain2")
 	master.Content.Html(contents)
 
-	c.Send()
 }
 
 func (f Functions) Plain3(c *twist.Context) {
@@ -111,7 +118,6 @@ func (f Functions) Plain3(c *twist.Context) {
 	contents := twist.Plain3(c, "Plain3")
 	master.Content.Html(contents)
 
-	c.Send()
 }
 
 func (f Functions) Red1(c *twist.Context) {
@@ -126,7 +132,6 @@ func (f Functions) Red1(c *twist.Context) {
 	contents := twist.Red1(c, "Red1")
 	master.Content.Html(contents)
 
-	c.Send()
 }
 
 func (f Functions) Red2(c *twist.Context) {
@@ -141,7 +146,6 @@ func (f Functions) Red2(c *twist.Context) {
 	contents := twist.Red2(c, "Red2")
 	master.Content.Html(contents)
 
-	c.Send()
 }
 
 func (f Functions) Red3(c *twist.Context) {
@@ -156,5 +160,4 @@ func (f Functions) Red3(c *twist.Context) {
 	contents := twist.Red3(c, "Red3")
 	master.Content.Html(contents)
 
-	c.Send()
 }

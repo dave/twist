@@ -6,7 +6,6 @@ import (
 	"json"
 	"crypto/md5"
 	"encoding/hex"
-
 	"strconv"
 	"url"
 )
@@ -142,11 +141,10 @@ func (i *Item) clickAtRender(handlerFunc interface{}, values interface{}) {
 	marshalled, _ := json.Marshal(stubs)
 
 	i.writer.Buffer += `
-$("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){$("#head").append($("<div>").html(data))}, "html");return false;});`
+$("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){("#head").append($("<div>").html(data))}, "html");return false;});`
 
 }
-
-func (i *Item) Link(handlerFunc interface{}, values interface{}) {
+func (i *Item) getLinkUrl(handlerFunc interface{}, values interface{}) string {
 
 	valueStubs, _, needsHash := makeStubs(values, false)
 
@@ -170,6 +168,13 @@ func (i *Item) Link(handlerFunc interface{}, values interface{}) {
 		qstring += v.N + "=" + url.QueryEscape(toString(v.V))
 	}
 	href := "/" + stubs.Func + qstring + hashQuery
+
+	return href
+
+}
+func (i *Item) Link(handlerFunc interface{}, values interface{}) {
+
+	href := i.getLinkUrl(handlerFunc, values)
 
 	i.Attributes["href"] = href
 

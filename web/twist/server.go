@@ -10,14 +10,6 @@ import (
 	"strconv"
 )
 
-type Context struct {
-	*Writer
-	Context        *appengine.Context
-	Request        *http.Request
-	Root           *Item
-	itemsInRequest []*Item
-}
-
 func Server(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
 
 	path := r.URL.Path
@@ -153,7 +145,7 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 		functionParams[1] = val
 	}
 	methodValue.Call(functionParams)
-
+	context.Send()
 }
 
 func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
@@ -257,6 +249,7 @@ func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 		functionParams[1] = val
 	}
 	methodValue.Call(functionParams)
+	context.Send()
 
 }
 func getItemStubByName(items []itemStub, name string) (item itemStub, found bool) {
