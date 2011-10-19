@@ -3,6 +3,7 @@ package handler
 import (
 	"http"
 	"twist"
+	"fmt"
 )
 
 func init() {
@@ -42,6 +43,7 @@ func getPlainMaster(c *twist.Context) *twist.PlainMaster_T {
 	master.Navigation.Html(getNav(c))
 	return master
 }
+
 func getRedMaster(c *twist.Context) *twist.RedMaster_T {
 	master := twist.RedMaster(c, "Master")
 	master.Footer.Html("Here's some HTML in the red footer...")
@@ -50,6 +52,7 @@ func getRedMaster(c *twist.Context) *twist.RedMaster_T {
 }
 
 func (f Functions) Plain1(c *twist.Context) {
+
 	master := getPlainMaster(c)
 	c.Root.Html(master)
 
@@ -62,8 +65,13 @@ func (f Functions) Plain1(c *twist.Context) {
 }
 
 func (f Functions) Plain2(c *twist.Context) {
+
+	fmt.Println("FOO")
+
 	master := getPlainMaster(c)
 	c.Root.Html(master)
+
+	fmt.Println("Root contents: ", len(c.Root.Contents))
 
 	master.Header.Html("Plain 2 heading")
 

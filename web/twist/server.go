@@ -12,9 +12,10 @@ import (
 
 type Context struct {
 	*Writer
-	Context *appengine.Context
-	Request *http.Request
-	Root    *Item
+	Context        *appengine.Context
+	Request        *http.Request
+	Root           *Item
+	itemsInRequest []*Item
 }
 
 func Server(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
@@ -35,11 +36,7 @@ func Server(wr http.ResponseWriter, r *http.Request, getFunctionsType func() int
 
 	} else if r.Method == "GET" {
 
-		//	if path == "/" {
-		//		serverRoot(wr, r, getFunctionsType)
-		//	} else {
 		serverPage(wr, r, getFunctionsType, true, true)
-		//	}
 
 	} else if r.Method == "POST" {
 
@@ -71,10 +68,11 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 	}
 
 	context := Context{
-		Writer:  w,
-		Context: &c,
-		Request: r,
-		Root:    Root(w),
+		Writer:         w,
+		Context:        &c,
+		Request:        r,
+		Root:           Root(w),
+		itemsInRequest: make([]*Item, 0),
 	}
 
 	r.ParseForm()
@@ -173,10 +171,11 @@ func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 
 	methodValue, method := findMethod(stubs.Func, getFunctionsType)
 	context := Context{
-		Writer:  w,
-		Context: &c,
-		Request: r,
-		Root:    Root(w),
+		Writer:         w,
+		Context:        &c,
+		Request:        r,
+		Root:           Root(w),
+		itemsInRequest: make([]*Item, 0),
 	}
 
 	numFields := method.Type.NumIn() - 1
@@ -235,6 +234,7 @@ func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 					item := newItemFromAction(stub.I, w)
 					item.Value = stub.V
 					field.Set(reflect.ValueOf(item))
+					context.itemsInRequest = append(context.itemsInRequest, item)
 				}
 			default:
 				panic("Incorrect item/value " + name)

@@ -48,6 +48,12 @@ func (w *Writer) RegisterTemplate(t Template) {
 
 func (c *Context) Send() {
 
+	c.Root.RunCommands()
+
+	for _, inner := range c.itemsInRequest {
+		inner.RunCommands()
+	}
+
 	if c.Writer.SendRoot {
 		c.Writer.sendPage(c.Root)
 	} else {
@@ -80,7 +86,7 @@ func (w *Writer) sendPage(item *Item) {
 	    History.Adapter.bind(window,'statechange',function(){
 			var State = History.getState();
 			//History.log(State.data, State.title, State.url);
-			$.post(State.url, null, function(data){alert(data);$("#head").append($("<div>").html(data))}, "html");
+			$.post(State.url, null, function(data){$("#head").append($("<div>").html(data))}, "html");
 	    });
 
 	})(window);
