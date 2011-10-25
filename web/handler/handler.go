@@ -4,7 +4,6 @@ import (
 	"http"
 	"twist"
 	"fmt"
-	"strconv"
 )
 
 func init() {
@@ -66,8 +65,6 @@ func (f Functions) Plain1(c *twist.Context, v Plain1_T) {
 	p := twist.Plain1(c, "Plain1")
 	master.Content.Html(p)
 
-	fmt.Println(v.Start.Value())
-
 	p.Plus.Click(Functions.Plain1Add, Plain1Count_T{Count: p.Count, Output: p.Output})
 	p.Minus.Click(Functions.Plain1Minus, Plain1Count_T{Count: p.Count, Output: p.Output})
 	p.Output.Html(v.Start.String())
@@ -81,20 +78,19 @@ type Plain1Count_T struct {
 }
 
 func (f Functions) Plain1Add(c *twist.Context, v Plain1Count_T) {
-	i, _ := strconv.Atoi(v.Count.Value())
+	i := v.Count.Int()
 	i++
 	v.Output.Html(fmt.Sprint(i))
 	v.Count.Attr("value", fmt.Sprint(i))
 	c.Navigate(Functions.Plain1, Plain1_T{Start: twist.Int(i)})
-
 }
+
 func (f Functions) Plain1Minus(c *twist.Context, v Plain1Count_T) {
-	i, _ := strconv.Atoi(v.Count.Value())
+	i := v.Count.Int()
 	i--
 	v.Output.Html(fmt.Sprint(i))
 	v.Count.Attr("value", fmt.Sprint(i))
 	c.Navigate(Functions.Plain1, Plain1_T{Start: twist.Int(i)})
-
 }
 
 func (f Functions) Plain2(c *twist.Context) {

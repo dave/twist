@@ -13,7 +13,7 @@ type Writer struct {
 	SendHtml  bool
 }
 
-func Root(w *Writer) *Item {
+func getRoot(w *Writer) *Item {
 
 	return &Item{
 		id:         "root",
@@ -25,7 +25,7 @@ func Root(w *Writer) *Item {
 
 }
 
-func NewWriter(o http.ResponseWriter, sendRoot bool, sendHtml bool) *Writer {
+func newWriter(o http.ResponseWriter, sendRoot bool, sendHtml bool) *Writer {
 	return &Writer{
 		Output:    o,
 		Buffer:    "",
@@ -35,7 +35,7 @@ func NewWriter(o http.ResponseWriter, sendRoot bool, sendHtml bool) *Writer {
 	}
 }
 
-func (w *Writer) RegisterTemplate(t Template) {
+func (w *Writer) registerTemplate(t Template) {
 
 	for i := 0; i < len(w.Templates); i++ {
 		if w.Templates[i].name == t.name {

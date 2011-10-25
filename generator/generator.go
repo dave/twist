@@ -331,7 +331,7 @@ func {{.NameUpper}}(c *Context, id string) *{{.NameUpper}}_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	{{.Defs}}
 

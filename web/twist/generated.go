@@ -71,7 +71,7 @@ func Navigation(c *Context, id string) *Navigation_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	
 	v20 := Item{Text:``+"\n"+``}
@@ -147,7 +147,7 @@ func Plain1(c *Context, id string) *Plain1_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	
 	v2 := Item{Text:``+"\n"+`	This is a page using the plain_template.html file.`+"\n"+``}
@@ -210,7 +210,7 @@ func Plain2(c *Context, id string) *Plain2_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	
 	v2 := Item{Text:``+"\n"+`	This is the second plain page.`+"\n"+``}
@@ -248,7 +248,7 @@ func Plain3(c *Context, id string) *Plain3_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	
 	v2 := Item{Text:``+"\n"+`	This is another plain page.`+"\n"+``}
@@ -294,7 +294,7 @@ func PlainMaster(c *Context, id string) *PlainMaster_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	
 	v1 := Item{Name: "div", template: t, writer: c.Writer, id: "Navigation", Attributes: map[string]string{}, Styles: map[string]string{}, }
@@ -346,7 +346,7 @@ func Red1(c *Context, id string) *Red1_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	
 	v2 := Item{Text:``+"\n"+`	This is a page using the red_template.html file.`+"\n"+``}
@@ -384,7 +384,7 @@ func Red2(c *Context, id string) *Red2_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	
 	v2 := Item{Text:``+"\n"+`	This is the second red page.`+"\n"+``}
@@ -422,7 +422,7 @@ func Red3(c *Context, id string) *Red3_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	
 	v2 := Item{Text:``+"\n"+`	This is another red page.`+"\n"+``}
@@ -474,7 +474,7 @@ func RedMaster(c *Context, id string) *RedMaster_T {
 	t.Writer = c.Writer
 	t.Id = id
 	
-	c.Writer.RegisterTemplate(*t)
+	c.Writer.registerTemplate(*t)
 
 	
 	v1 := Item{Name: "div", template: t, writer: c.Writer, id: "Navigation", Attributes: map[string]string{}, Styles: map[string]string{}, }

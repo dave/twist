@@ -13,15 +13,15 @@ type Template struct {
 	Contents []*Item
 }
 
-func (t *Template) GetTemplateJavascript() string {
+func (t *Template) getTemplateJavascript() string {
 	return t.Html
 }
 
-func (t *Template) FullId() string {
+func (t *Template) fullId() string {
 	return t.parentId + `_` + t.Id
 }
 
-func (t *Template) GetParentId() string {
+func (t *Template) getParentId() string {
 	return t.parentId
 }
 

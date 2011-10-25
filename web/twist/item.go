@@ -34,6 +34,13 @@ type Item struct {
 func (i *Item) Value() string {
 	return i.value
 }
+func (i *Item) Int() int {
+	v, _ := strconv.Atoi(i.value)
+	return v
+}
+func (i *Item) String() string {
+	return i.Value()
+}
 
 func (he *Item) RunCommands() {
 
@@ -54,7 +61,7 @@ func (he *Item) RenderHtml() string {
 		s += `<`
 		s += he.Name
 		if len(he.id) > 0 {
-			s += fmt.Sprint(` id="`, he.FullId(), `"`)
+			s += fmt.Sprint(` id="`, he.fullId(), `"`)
 		}
 		for attKey, attVal := range he.Attributes {
 			s += fmt.Sprint(` `, attKey, `="`, attVal, `"`)
@@ -97,6 +104,9 @@ func (v IntEncrypted) Value() int        { return int(v) }
 func (v Int) String() string             { return strconv.Itoa(int(v)) }
 func (v IntHashed) String() string       { return strconv.Itoa(int(v)) }
 func (v IntEncrypted) String() string    { return strconv.Itoa(int(v)) }
+func (v String) Int() int                { i, _ := strconv.Atoi(string(v)); return i }
+func (v StringHashed) Int() int          { i, _ := strconv.Atoi(string(v)); return i }
+func (v StringEncrypted) Int() int       { i, _ := strconv.Atoi(string(v)); return i }
 
 func newItemFromAction(id string, writer *Writer) *Item {
 	return &Item{
@@ -141,7 +151,7 @@ func (i *Item) clickAtRender(handlerFunc interface{}, values interface{}) {
 	marshalled, _ := json.Marshal(stubs)
 
 	i.writer.Buffer += `
-$("#` + i.FullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){("#head").append($("<div>").html(data))}, "html");return false;});`
+$("#` + i.fullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){("#head").append($("<div>").html(data))}, "html");return false;});`
 
 }
 func (i *Item) getLinkUrl(handlerFunc interface{}, values interface{}) string {
@@ -185,11 +195,11 @@ func (i *Item) linkAtRender(href string) {
 
 	if !i.writer.SendHtml {
 		i.writer.Buffer += `
-$("#` + i.FullId() + `").attr("href", "` + href + `");`
+$("#` + i.fullId() + `").attr("href", "` + href + `");`
 	}
 
 	i.writer.Buffer += `
-$("#` + i.FullId() + `").click(function(){History.pushState(null, null, "` + href + `");return false;});`
+$("#` + i.fullId() + `").click(function(){History.pushState(null, null, "` + href + `");return false;});`
 
 }
 
@@ -224,7 +234,7 @@ func makeStubs(values interface{}, isClick bool) (valueStubs []valueStub, itemSt
 			case *Item:
 				needsHash = true
 				if isClick {
-					itemStubs = append(itemStubs, itemStub{N: name, I: o.FullId(), V: ""})
+					itemStubs = append(itemStubs, itemStub{N: name, I: o.fullId(), V: ""})
 				} else {
 					panic("We can't have Items in a Link - name:" + name)
 				}
@@ -377,7 +387,7 @@ func (i *Item) htmlGenericAtRender(replace bool, s string) {
 			command = "append"
 		}
 		i.writer.Buffer += `
-$("#` + i.FullId() + `").` + command + `("` + s + `");`
+$("#` + i.fullId() + `").` + command + `("` + s + `");`
 	}
 
 }
@@ -396,7 +406,7 @@ func (i *Item) templateGeneric(replace bool, t *Template) {
 }
 func (i *Item) templateGenericAtRender(replace bool, t *Template) {
 
-	t.parentId = i.FullId()
+	t.parentId = i.fullId()
 
 	if !i.writer.SendHtml {
 		command := ""
@@ -406,7 +416,7 @@ func (i *Item) templateGenericAtRender(replace bool, t *Template) {
 			command = "append"
 		}
 		i.writer.Buffer += `
-$("#` + i.FullId() + `").` + command + `(template_` + t.name + `("` + t.FullId() + `"));`
+$("#` + i.fullId() + `").` + command + `(template_` + t.name + `("` + t.fullId() + `"));`
 	}
 
 }
@@ -451,18 +461,18 @@ func (i *Item) attrCssGeneric(command string, attrib string, val string) {
 func (i *Item) attrCssGenericAtRender(command string, attrib string, val string) {
 	if !i.writer.SendHtml {
 		i.writer.Buffer += `
-$("#` + i.FullId() + `").` + command + `("` + attrib + `", "` + val + `");`
+$("#` + i.fullId() + `").` + command + `("` + attrib + `", "` + val + `");`
 	}
 }
 
-func (i *Item) FullId() string {
+func (i *Item) fullId() string {
 
 	if len(i.id) == 0 {
 		return ``
 	} else if i.template == nil {
 		return i.id
 	} else {
-		return i.template.FullId() + `_` + i.id
+		return i.template.fullId() + `_` + i.id
 	}
 	return ``
 }

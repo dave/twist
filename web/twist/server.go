@@ -42,7 +42,7 @@ func serverTemplate(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 	path := r.URL.Path
 	name := path[strings.Index(path, "_")+1:]
 	template := getTemplateByName(name)
-	fmt.Fprint(wr, template.GetTemplateJavascript())
+	fmt.Fprint(wr, template.getTemplateJavascript())
 
 }
 
@@ -50,7 +50,7 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 
 	c := appengine.NewContext(r)
 	path := r.URL.Path
-	w := NewWriter(wr, sendRoot, sendHtml)
+	w := newWriter(wr, sendRoot, sendHtml)
 
 	pageName := ""
 	if path == "/" {
@@ -63,7 +63,7 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 		Writer:         w,
 		Context:        &c,
 		Request:        r,
-		Root:           Root(w),
+		Root:           getRoot(w),
 		itemsInRequest: make([]*Item, 0),
 	}
 
@@ -151,7 +151,7 @@ func serverPage(wr http.ResponseWriter, r *http.Request, getFunctionsType func()
 func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType func() interface{}) {
 
 	c := appengine.NewContext(r)
-	w := NewWriter(wr, false, false)
+	w := newWriter(wr, false, false)
 
 	r.ParseForm()
 
@@ -166,7 +166,7 @@ func serverFunction(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 		Writer:         w,
 		Context:        &c,
 		Request:        r,
-		Root:           Root(w),
+		Root:           getRoot(w),
 		itemsInRequest: make([]*Item, 0),
 	}
 
