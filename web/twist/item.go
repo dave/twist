@@ -23,12 +23,40 @@ type Item struct {
 	template   *Template
 	writer     *Writer
 	value      string
-	Name       string
+	name       string
 	Attributes map[string]string
 	Styles     map[string]string
 	Contents   []*Item
 	Text       string
 	commands   []func()
+}
+
+func NewItemId(name string, template *Template, writer *Writer, id string, attributes map[string]string, styles map[string]string, contents []*Item) *Item {
+	i := Item{
+		name:       name,
+		template:   template,
+		writer:     writer,
+		id:         id,
+		Attributes: attributes,
+		Styles:     styles,
+		Contents:   contents,
+	}
+	return &i
+}
+func NewItem(name string, attributes map[string]string, styles map[string]string, contents []*Item) *Item {
+	i := Item{
+		name:       name,
+		Attributes: attributes,
+		Styles:     styles,
+		Contents:   contents,
+	}
+	return &i
+}
+func NewTextItem(text string) *Item {
+	i := Item{
+		Text: text,
+	}
+	return &i
 }
 
 func (i *Item) Value() string {
@@ -57,9 +85,9 @@ func (he *Item) RunCommands() {
 func (he *Item) RenderHtml() string {
 
 	s := ``
-	if len(he.Name) > 0 {
+	if len(he.name) > 0 {
 		s += `<`
-		s += he.Name
+		s += he.name
 		if len(he.id) > 0 {
 			s += fmt.Sprint(` id="`, he.fullId(), `"`)
 		}
@@ -80,7 +108,7 @@ func (he *Item) RenderHtml() string {
 			for _, inner := range he.Contents {
 				s += inner.RenderHtml()
 			}
-			s += fmt.Sprint(`</`, he.Name, `>`)
+			s += fmt.Sprint(`</`, he.name, `>`)
 		}
 	} else if len(he.Text) > 0 {
 		s += he.Text
@@ -151,6 +179,7 @@ func (i *Item) clickAtRender(handlerFunc interface{}, values interface{}) {
 	marshalled, _ := json.Marshal(stubs)
 
 	i.writer.Buffer += `
+$("#` + i.fullId() + `").unbind('click');
 $("#` + i.fullId() + `").click(function(){var j = ` + string(marshalled) + `; getValues(j.Items); $.post("/function", JSON.stringify(j), function(data){("#head").append($("<div>").html(data))}, "html");return false;});`
 
 }
@@ -199,6 +228,7 @@ $("#` + i.fullId() + `").attr("href", "` + href + `");`
 	}
 
 	i.writer.Buffer += `
+$("#` + i.fullId() + `").unbind('click');
 $("#` + i.fullId() + `").click(function(){History.pushState(null, null, "` + href + `");return false;});`
 
 }
@@ -416,7 +446,7 @@ func (i *Item) templateGenericAtRender(replace bool, t *Template) {
 			command = "append"
 		}
 		i.writer.Buffer += `
-$("#` + i.fullId() + `").` + command + `(template_` + t.name + `("` + t.fullId() + `"));`
+$("#` + i.fullId() + `").` + command + `(template_` + t.Name + `("` + t.fullId() + `"));`
 	}
 
 }

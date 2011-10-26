@@ -1,0 +1,472 @@
+go object darwin amd64 release.r60.2 9511
+  exports automatically generated from
+  html/master/master.go in package "master"
+
+$$  // exports
+    package master
+	import runtime "runtime"
+	import twist "twist"
+	type "twist".Template struct { Name string; Html string; Id string; parentId string; Writer *"twist".Writer; Contents []*"twist".Item }
+	func (t *"twist".Template) fullId () string
+	func (t *"twist".Template) getParentId () string
+	func (t *"twist".Template) getTemplateJavascript () string
+	type "twist".Item struct { id string; template *"twist".Template; writer *"twist".Writer; value string; name string; Attributes map[string] string; Styles map[string] string; Contents []*"twist".Item; Text string; commands []func() }
+	func (i *"twist".Item) Append (o ...interface { })
+	func (i *"twist".Item) Attr (attrib string, o interface { })
+	func (i *"twist".Item) Click (handlerFunc interface { }, values interface { })
+	func (i *"twist".Item) Css (attrib string, o interface { })
+	func (i *"twist".Item) Html (o ...interface { })
+	func (i *"twist".Item) Int () int
+	func (i *"twist".Item) Link (handlerFunc interface { }, values interface { })
+	func (he *"twist".Item) RenderHtml () string
+	func (he *"twist".Item) RunCommands ()
+	func (i *"twist".Item) String () string
+	func (i *"twist".Item) Value () string
+	func (i *"twist".Item) attrCss (command string, attrib string, o interface { })
+	func (i *"twist".Item) attrCssGeneric (command string, attrib string, val string)
+	func (i *"twist".Item) attrCssGenericAtRender (command string, attrib string, val string)
+	func (i *"twist".Item) clickAtRender (handlerFunc interface { }, values interface { })
+	func (i *"twist".Item) fullId () string
+	func (i *"twist".Item) generic (replace bool, o []interface { })
+	func (i *"twist".Item) getLinkUrl (handlerFunc interface { }, values interface { }) string
+	func (i *"twist".Item) htmlGeneric (replace bool, s string)
+	func (i *"twist".Item) htmlGenericAtRender (replace bool, s string)
+	func (i *"twist".Item) linkAtRender (href string)
+	func (i *"twist".Item) navigateAtRender (href string)
+	func (i *"twist".Item) templateGeneric (replace bool, t *"twist".Template)
+	func (i *"twist".Item) templateGenericAtRender (replace bool, t *"twist".Template)
+	type "twist".Writer struct { Output "http".ResponseWriter; Buffer string; Templates []*"twist".Template; SendRoot bool; SendHtml bool }
+	func (w *"twist".Writer) RegisterTemplate (t *"twist".Template)
+	func (w *"twist".Writer) sendFragment ()
+	func (w *"twist".Writer) sendPage (item *"twist".Item)
+	import http "http" // indirect
+	type "http".ResponseWriter interface { Header() "http".Header; Write(? []uint8) (? int, ? "os".Error); WriteHeader(? int) }
+	import os "os" // indirect
+	type "os".Error interface { String() string }
+	import io "io" // indirect
+	type "io".Writer interface { Write(p []uint8) (n int, err "os".Error) }
+	type "http".Header map[string] []string
+	func (h "http".Header) Add (key string, value string)
+	func (h "http".Header) Del (key string)
+	func (h "http".Header) Get (key string) string
+	func (h "http".Header) Set (key string, value string)
+	func (h "http".Header) Write (w "io".Writer) "os".Error
+	func (h "http".Header) WriteSubset (w "io".Writer, exclude map[string] bool) "os".Error
+	type "".PlainMaster_T struct { name string; ? *"twist".Template; Navigation *"twist".Item; Header *"twist".Item; Content *"twist".Item; Footer *"twist".Item }
+	func (t *"".PlainMaster_T) GetTemplate () *"twist".Template
+	type "twist".Context struct { ? *"twist".Writer; Context *"appengine".Context; Request *"http".Request; Root *"twist".Item; itemsInRequest []*"twist".Item }
+	func (c *"twist".Context) Navigate (handlerFunc interface { }, values interface { })
+	func (c *"twist".Context) Send ()
+	import appengine "appengine" // indirect
+	type "appengine".Context interface { AppID() string; Call(service string, method string, in interface { }, out interface { }, opts *"appengine_internal".CallOptions) "os".Error; Criticalf(format string, args ...interface { }); Debugf(format string, args ...interface { }); Errorf(format string, args ...interface { }); FullyQualifiedAppID() string; Infof(format string, args ...interface { }); Request() interface { }; Warningf(format string, args ...interface { }) }
+	import appengine_internal "appengine_internal" // indirect
+	type "appengine_internal".CallOptions struct { Deadline float64 }
+	type "http".Cookie struct { Name string; Value string; Path string; Domain string; Expires "time".Time; RawExpires string; MaxAge int; Secure bool; HttpOnly bool; Raw string; Unparsed []string }
+	func (c *"http".Cookie) String () string
+	import time "time" // indirect
+	type "time".Time struct { Year int64; Month int; Day int; Hour int; Minute int; Second int; Nanosecond int; Weekday int; ZoneOffset int; Zone string }
+	func (t *"time".Time) Format (layout string) string
+	func (t *"time".Time) Nanoseconds () int64
+	func (t *"time".Time) Seconds () int64
+	func (t *"time".Time) String () string
+	func (t *"time".Time) parseNanoseconds (value string, nbytes int) (rangErrString string, err "os".Error)
+	import multipart "mime/multipart" // indirect
+	type "mime/multipart".File interface { Close() "os".Error; Read(p []uint8) (n int, err "os".Error); ReadAt(p []uint8, off int64) (n int, err "os".Error); Seek(offset int64, whence int) (ret int64, err "os".Error) }
+	type "mime/multipart".FileHeader struct { Filename string; Header "net/textproto".MIMEHeader; content []uint8; tmpfile string }
+	func (fh *"mime/multipart".FileHeader) Open () (? "mime/multipart".File, ? "os".Error)
+	import textproto "net/textproto" // indirect
+	type "net/textproto".MIMEHeader map[string] []string
+	func (h "net/textproto".MIMEHeader) Add (key string, value string)
+	func (h "net/textproto".MIMEHeader) Del (key string)
+	func (h "net/textproto".MIMEHeader) Get (key string) string
+	func (h "net/textproto".MIMEHeader) Set (key string, value string)
+	type "mime/multipart".Part struct { Header "net/textproto".MIMEHeader; buffer *"bytes".Buffer; mr *"mime/multipart".Reader; disposition string; dispositionParams map[string] string }
+	func (bp *"mime/multipart".Part) Close () "os".Error
+	func (p *"mime/multipart".Part) FileName () string
+	func (p *"mime/multipart".Part) FormName () string
+	func (bp *"mime/multipart".Part) Read (p []uint8) (n int, err "os".Error)
+	func (p *"mime/multipart".Part) parseContentDisposition ()
+	func (bp *"mime/multipart".Part) populateHeaders () "os".Error
+	import bytes "bytes" // indirect
+	type "io".Reader interface { Read(p []uint8) (n int, err "os".Error) }
+	type "bytes".Buffer struct { buf []uint8; off int; runeBytes [4]uint8; bootstrap [64]uint8; lastRead "bytes".readOp }
+	func (b *"bytes".Buffer) Bytes () []uint8
+	func (b *"bytes".Buffer) Len () int
+	func (b *"bytes".Buffer) Next (n int) []uint8
+	func (b *"bytes".Buffer) Read (p []uint8) (n int, err "os".Error)
+	func (b *"bytes".Buffer) ReadByte () (c uint8, err "os".Error)
+	func (b *"bytes".Buffer) ReadBytes (delim uint8) (line []uint8, err "os".Error)
+	func (b *"bytes".Buffer) ReadFrom (r "io".Reader) (n int64, err "os".Error)
+	func (b *"bytes".Buffer) ReadRune () (r int, size int, err "os".Error)
+	func (b *"bytes".Buffer) ReadString (delim uint8) (line string, err "os".Error)
+	func (b *"bytes".Buffer) Reset ()
+	func (b *"bytes".Buffer) String () string
+	func (b *"bytes".Buffer) Truncate (n int)
+	func (b *"bytes".Buffer) UnreadByte () "os".Error
+	func (b *"bytes".Buffer) UnreadRune () "os".Error
+	func (b *"bytes".Buffer) Write (p []uint8) (n int, err "os".Error)
+	func (b *"bytes".Buffer) WriteByte (c uint8) "os".Error
+	func (b *"bytes".Buffer) WriteRune (r int) (n int, err "os".Error)
+	func (b *"bytes".Buffer) WriteString (s string) (n int, err "os".Error)
+	func (b *"bytes".Buffer) WriteTo (w "io".Writer) (n int64, err "os".Error)
+	func (b *"bytes".Buffer) grow (n int) int
+	type "bytes".readOp int
+	type "mime/multipart".Form struct { Value map[string] []string; File map[string] []*"mime/multipart".FileHeader }
+	func (f *"mime/multipart".Form) RemoveAll () "os".Error
+	type "mime/multipart".Reader struct { bufReader *"bufio".Reader; currentPart *"mime/multipart".Part; partsRead int; nl []uint8; nlDashBoundary []uint8; dashBoundaryDash []uint8; dashBoundary []uint8 }
+	func (mr *"mime/multipart".Reader) NextPart () (? *"mime/multipart".Part, ? "os".Error)
+	func (r *"mime/multipart".Reader) ReadForm (maxMemory int64) (f *"mime/multipart".Form, err "os".Error)
+	func (mr *"mime/multipart".Reader) isBoundaryDelimiterLine (line []uint8) bool
+	import bufio "bufio" // indirect
+	type "bufio".Reader struct { buf []uint8; rd "io".Reader; r int; w int; err "os".Error; lastByte int; lastRuneSize int }
+	func (b *"bufio".Reader) Buffered () int
+	func (b *"bufio".Reader) Peek (n int) (? []uint8, ? "os".Error)
+	func (b *"bufio".Reader) Read (p []uint8) (n int, err "os".Error)
+	func (b *"bufio".Reader) ReadByte () (c uint8, err "os".Error)
+	func (b *"bufio".Reader) ReadBytes (delim uint8) (line []uint8, err "os".Error)
+	func (b *"bufio".Reader) ReadLine () (line []uint8, isPrefix bool, err "os".Error)
+	func (b *"bufio".Reader) ReadRune () (rune int, size int, err "os".Error)
+	func (b *"bufio".Reader) ReadSlice (delim uint8) (line []uint8, err "os".Error)
+	func (b *"bufio".Reader) ReadString (delim uint8) (line string, err "os".Error)
+	func (b *"bufio".Reader) UnreadByte () "os".Error
+	func (b *"bufio".Reader) UnreadRune () "os".Error
+	func (b *"bufio".Reader) fill ()
+	func (b *"bufio".Reader) readErr () "os".Error
+	type "http".Request struct { Method string; RawURL string; URL *"url".URL; Proto string; ProtoMajor int; ProtoMinor int; Header "http".Header; Body "io".ReadCloser; ContentLength int64; TransferEncoding []string; Close bool; Host string; Form "url".Values; MultipartForm *"mime/multipart".Form; Trailer "http".Header; RemoteAddr string; TLS *"crypto/tls".ConnectionState }
+	func (r *"http".Request) AddCookie (c *"http".Cookie)
+	func (r *"http".Request) Cookie (name string) (? *"http".Cookie, ? "os".Error)
+	func (r *"http".Request) Cookies () []*"http".Cookie
+	func (r *"http".Request) FormFile (key string) (? "mime/multipart".File, ? *"mime/multipart".FileHeader, ? "os".Error)
+	func (r *"http".Request) FormValue (key string) string
+	func (r *"http".Request) MultipartReader () (? *"mime/multipart".Reader, ? "os".Error)
+	func (r *"http".Request) ParseForm () "os".Error
+	func (r *"http".Request) ParseMultipartForm (maxMemory int64) "os".Error
+	func (r *"http".Request) ProtoAtLeast (major int, minor int) bool
+	func (r *"http".Request) Referer () string
+	func (r *"http".Request) SetBasicAuth (username string, password string)
+	func (r *"http".Request) UserAgent () string
+	func (req *"http".Request) Write (w "io".Writer) "os".Error
+	func (req *"http".Request) WriteProxy (w "io".Writer) "os".Error
+	func (r *"http".Request) expectsContinue () bool
+	func (r *"http".Request) multipartReader () (? *"mime/multipart".Reader, ? "os".Error)
+	func (r *"http".Request) wantsHttp10KeepAlive () bool
+	func (req *"http".Request) write (w "io".Writer, usingProxy bool) "os".Error
+	import url "url" // indirect
+	type "url".Values map[string] []string
+	func (v "url".Values) Add (key string, value string)
+	func (v "url".Values) Del (key string)
+	func (v "url".Values) Encode () string
+	func (v "url".Values) Get (key string) string
+	func (v "url".Values) Set (key string, value string)
+	type "url".URL struct { Raw string; Scheme string; RawAuthority string; RawUserinfo string; Host string; RawPath string; Path string; OpaquePath bool; RawQuery string; Fragment string }
+	func (u *"url".URL) EncodedPath () string
+	func (url *"url".URL) IsAbs () bool
+	func (base *"url".URL) Parse (ref string) (? *"url".URL, ? "os".Error)
+	func (u *"url".URL) Query () "url".Values
+	func (base *"url".URL) ResolveReference (ref *"url".URL) *"url".URL
+	func (url *"url".URL) String () string
+	type "io".ReadCloser interface { Close() "os".Error; Read(p []uint8) (n int, err "os".Error) }
+	import tls "crypto/tls" // indirect
+	type "crypto/tls".ConnectionState struct { HandshakeComplete bool; CipherSuite uint16; NegotiatedProtocol string; NegotiatedProtocolIsMutual bool; PeerCertificates []*"crypto/x509".Certificate; VerifiedChains [][]*"crypto/x509".Certificate }
+	import x509 "crypto/x509" // indirect
+	import pkix "crypto/x509/pkix" // indirect
+	type "crypto/x509/pkix".CertificateList struct { TBSCertList "crypto/x509/pkix".TBSCertificateList; SignatureAlgorithm "crypto/x509/pkix".AlgorithmIdentifier; SignatureValue "asn1".BitString }
+	func (certList *"crypto/x509/pkix".CertificateList) HasExpired (currentTimeSeconds int64) bool
+	type "crypto/x509/pkix".TBSCertificateList struct { Raw "asn1".RawContent; Version int :"asn1:\"optional,default:2\""; Signature "crypto/x509/pkix".AlgorithmIdentifier; Issuer "crypto/x509/pkix".RDNSequence; ThisUpdate *"time".Time; NextUpdate *"time".Time; RevokedCertificates []"crypto/x509/pkix".RevokedCertificate :"asn1:\"optional\""; Extensions []"crypto/x509/pkix".Extension :"asn1:\"tag:0,optional,explicit\"" }
+	import asn1 "asn1" // indirect
+	type "asn1".RawContent []uint8
+	type "crypto/x509/pkix".AlgorithmIdentifier struct { Algorithm "asn1".ObjectIdentifier; Parameters "asn1".RawValue :"asn1:\"optional\"" }
+	type "asn1".ObjectIdentifier []int
+	func (oi "asn1".ObjectIdentifier) Equal (other "asn1".ObjectIdentifier) bool
+	type "asn1".RawValue struct { Class int; Tag int; IsCompound bool; Bytes []uint8; FullBytes []uint8 }
+	type "crypto/x509/pkix".RDNSequence []"crypto/x509/pkix".RelativeDistinguishedNameSET
+	type "crypto/x509/pkix".RelativeDistinguishedNameSET []"crypto/x509/pkix".AttributeTypeAndValue
+	type "crypto/x509/pkix".AttributeTypeAndValue struct { Type "asn1".ObjectIdentifier; Value interface { } }
+	type "crypto/x509/pkix".RevokedCertificate struct { SerialNumber *"big".Int; RevocationTime *"time".Time; Extensions []"crypto/x509/pkix".Extension :"asn1:\"optional\"" }
+	import big "big" // indirect
+	import fmt "fmt" // indirect
+	type "fmt".State interface { Flag(c int) bool; Precision() (prec int, ok bool); Width() (wid int, ok bool); Write(b []uint8) (ret int, err "os".Error) }
+	import rand "rand" // indirect
+	type "rand".Rand struct { src "rand".Source }
+	func (r *"rand".Rand) ExpFloat64 () float64
+	func (r *"rand".Rand) Float32 () float32
+	func (r *"rand".Rand) Float64 () float64
+	func (r *"rand".Rand) Int () int
+	func (r *"rand".Rand) Int31 () int32
+	func (r *"rand".Rand) Int31n (n int32) int32
+	func (r *"rand".Rand) Int63 () int64
+	func (r *"rand".Rand) Int63n (n int64) int64
+	func (r *"rand".Rand) Intn (n int) int
+	func (r *"rand".Rand) NormFloat64 () float64
+	func (r *"rand".Rand) Perm (n int) []int
+	func (r *"rand".Rand) Seed (seed int64)
+	func (r *"rand".Rand) Uint32 () uint32
+	type "rand".Source interface { Int63() int64; Seed(seed int64) }
+	type "fmt".ScanState interface { Read(buf []uint8) (n int, err "os".Error); ReadRune() (rune int, size int, err "os".Error); SkipSpace(); Token(skipSpace bool, f func(? int) bool) (token []uint8, err "os".Error); UnreadRune() "os".Error; Width() (wid int, ok bool) }
+	type "io".RuneScanner interface { ReadRune() (rune int, size int, err "os".Error); UnreadRune() "os".Error }
+	type "big".Int struct { neg bool; abs "big".nat }
+	func (z *"big".Int) Abs (x *"big".Int) *"big".Int
+	func (z *"big".Int) Add (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) And (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) AndNot (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) Binomial (n int64, k int64) *"big".Int
+	func (z *"big".Int) Bit (i int) uint
+	func (z *"big".Int) BitLen () int
+	func (z *"big".Int) Bytes () []uint8
+	func (x *"big".Int) Cmp (y *"big".Int) int
+	func (z *"big".Int) Div (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) DivMod (x *"big".Int, y *"big".Int, m *"big".Int) (? *"big".Int, ? *"big".Int)
+	func (z *"big".Int) Exp (x *"big".Int, y *"big".Int, m *"big".Int) *"big".Int
+	func (x *"big".Int) Format (s "fmt".State, ch int)
+	func (z *"big".Int) GobDecode (buf []uint8) "os".Error
+	func (z *"big".Int) GobEncode () (? []uint8, ? "os".Error)
+	func (x *"big".Int) Int64 () int64
+	func (z *"big".Int) Lsh (x *"big".Int, n uint) *"big".Int
+	func (z *"big".Int) Mod (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) ModInverse (g *"big".Int, p *"big".Int) *"big".Int
+	func (z *"big".Int) Mul (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) MulRange (a int64, b int64) *"big".Int
+	func (z *"big".Int) Neg (x *"big".Int) *"big".Int
+	func (z *"big".Int) Not (x *"big".Int) *"big".Int
+	func (z *"big".Int) Or (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) Quo (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) QuoRem (x *"big".Int, y *"big".Int, r *"big".Int) (? *"big".Int, ? *"big".Int)
+	func (z *"big".Int) Rand (rnd *"rand".Rand, n *"big".Int) *"big".Int
+	func (z *"big".Int) Rem (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) Rsh (x *"big".Int, n uint) *"big".Int
+	func (z *"big".Int) Scan (s "fmt".ScanState, ch int) "os".Error
+	func (z *"big".Int) Set (x *"big".Int) *"big".Int
+	func (z *"big".Int) SetBit (x *"big".Int, i int, b uint) *"big".Int
+	func (z *"big".Int) SetBytes (buf []uint8) *"big".Int
+	func (z *"big".Int) SetInt64 (x int64) *"big".Int
+	func (z *"big".Int) SetString (s string, base int) (? *"big".Int, ? bool)
+	func (x *"big".Int) Sign () int
+	func (x *"big".Int) String () string
+	func (z *"big".Int) Sub (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) Xor (x *"big".Int, y *"big".Int) *"big".Int
+	func (z *"big".Int) scan (r "io".RuneScanner, base int) (? *"big".Int, ? int, ? "os".Error)
+	type "big".Word uintptr
+	type "big".nat []"big".Word
+	func (z "big".nat) add (x "big".nat, y "big".nat) "big".nat
+	func (z "big".nat) and (x "big".nat, y "big".nat) "big".nat
+	func (z "big".nat) andNot (x "big".nat, y "big".nat) "big".nat
+	func (z "big".nat) bit (i uint) uint
+	func (x "big".nat) bitLen () int
+	func (z "big".nat) bytes (buf []uint8) int
+	func (z "big".nat) clear ()
+	func (x "big".nat) cmp (y "big".nat) int
+	func (x "big".nat) decimalString () string
+	func (z "big".nat) div (z2 "big".nat, u "big".nat, v "big".nat) (q "big".nat, r "big".nat)
+	func (z "big".nat) divLarge (u "big".nat, uIn "big".nat, v "big".nat) (q "big".nat, r "big".nat)
+	func (z "big".nat) divW (x "big".nat, y "big".Word) (q "big".nat, r "big".Word)
+	func (z "big".nat) expNN (x "big".nat, y "big".nat, m "big".nat) "big".nat
+	func (z "big".nat) make (n int) "big".nat
+	func (x "big".nat) modW (d "big".Word) "big".Word
+	func (z "big".nat) mul (x "big".nat, y "big".nat) "big".nat
+	func (z "big".nat) mulAddWW (x "big".nat, y "big".Word, r "big".Word) "big".nat
+	func (z "big".nat) mulRange (a uint64, b uint64) "big".nat
+	func (z "big".nat) norm () "big".nat
+	func (z "big".nat) or (x "big".nat, y "big".nat) "big".nat
+	func (x "big".nat) powersOfTwoDecompose () (q "big".nat, k int)
+	func (n "big".nat) probablyPrime (reps int) bool
+	func (z "big".nat) random (rand *"rand".Rand, limit "big".nat, n int) "big".nat
+	func (z "big".nat) scan (r "io".RuneScanner, base int) (? "big".nat, ? int, ? "os".Error)
+	func (z "big".nat) set (x "big".nat) "big".nat
+	func (z "big".nat) setBit (x "big".nat, i uint, b uint) "big".nat
+	func (z "big".nat) setBytes (buf []uint8) "big".nat
+	func (z "big".nat) setUint64 (x uint64) "big".nat
+	func (z "big".nat) setWord (x "big".Word) "big".nat
+	func (z "big".nat) shl (x "big".nat, s uint) "big".nat
+	func (z "big".nat) shr (x "big".nat, s uint) "big".nat
+	func (x "big".nat) string (charset string) string
+	func (z "big".nat) sub (x "big".nat, y "big".nat) "big".nat
+	func (z "big".nat) xor (x "big".nat, y "big".nat) "big".nat
+	type "crypto/x509/pkix".Extension struct { Id "asn1".ObjectIdentifier; Critical bool :"asn1:\"optional\""; Value []uint8 }
+	type "asn1".BitString struct { Bytes []uint8; BitLength int }
+	func (b "asn1".BitString) At (i int) int
+	func (b "asn1".BitString) RightAlign () []uint8
+	type "crypto/x509".SignatureAlgorithm int
+	import rsa "crypto/rsa" // indirect
+	type "crypto/rsa".PrivateKey struct { ? "crypto/rsa".PublicKey; D *"big".Int; Primes []*"big".Int; Precomputed "crypto/rsa".PrecomputedValues }
+	func (priv *"crypto/rsa".PrivateKey) Precompute ()
+	func (priv *"crypto/rsa".PrivateKey) Validate () "os".Error
+	type "crypto/rsa".PublicKey struct { N *"big".Int; E int }
+	type "crypto/rsa".PrecomputedValues struct { Dp *"big".Int; Dq *"big".Int; Qinv *"big".Int; CRTValues []"crypto/rsa".CRTValue }
+	type "crypto/rsa".CRTValue struct { Exp *"big".Int; Coeff *"big".Int; R *"big".Int }
+	type "crypto/x509".VerifyOptions struct { DNSName string; Intermediates *"crypto/x509".CertPool; Roots *"crypto/x509".CertPool; CurrentTime int64 }
+	type "crypto/x509".CertPool struct { bySubjectKeyId map[string] []int; byName map[string] []int; certs []*"crypto/x509".Certificate }
+	func (s *"crypto/x509".CertPool) AddCert (cert *"crypto/x509".Certificate)
+	func (s *"crypto/x509".CertPool) AppendCertsFromPEM (pemCerts []uint8) bool
+	func (s *"crypto/x509".CertPool) findVerifiedParents (cert *"crypto/x509".Certificate) []int
+	type "crypto/x509".Certificate struct { Raw []uint8; RawTBSCertificate []uint8; RawSubjectPublicKeyInfo []uint8; Signature []uint8; SignatureAlgorithm "crypto/x509".SignatureAlgorithm; PublicKeyAlgorithm "crypto/x509".PublicKeyAlgorithm; PublicKey interface { }; Version int; SerialNumber *"big".Int; Issuer "crypto/x509/pkix".Name; Subject "crypto/x509/pkix".Name; NotBefore *"time".Time; NotAfter *"time".Time; KeyUsage "crypto/x509".KeyUsage; ExtKeyUsage []"crypto/x509".ExtKeyUsage; UnknownExtKeyUsage []"asn1".ObjectIdentifier; BasicConstraintsValid bool; IsCA bool; MaxPathLen int; SubjectKeyId []uint8; AuthorityKeyId []uint8; DNSNames []string; EmailAddresses []string; PermittedDNSDomainsCritical bool; PermittedDNSDomains []string; PolicyIdentifiers []"asn1".ObjectIdentifier }
+	func (c *"crypto/x509".Certificate) CheckCRLSignature (crl *"crypto/x509/pkix".CertificateList) "os".Error
+	func (c *"crypto/x509".Certificate) CheckSignature (algo "crypto/x509".SignatureAlgorithm, signed []uint8, signature []uint8) "os".Error
+	func (c *"crypto/x509".Certificate) CheckSignatureFrom (parent *"crypto/x509".Certificate) "os".Error
+	func (c *"crypto/x509".Certificate) CreateCRL (rand "io".Reader, priv *"crypto/rsa".PrivateKey, revokedCerts []"crypto/x509/pkix".RevokedCertificate, now *"time".Time, expiry *"time".Time) (crlBytes []uint8, err "os".Error)
+	func (c *"crypto/x509".Certificate) Equal (other *"crypto/x509".Certificate) bool
+	func (c *"crypto/x509".Certificate) Verify (opts "crypto/x509".VerifyOptions) (chains [][]*"crypto/x509".Certificate, err "os".Error)
+	func (c *"crypto/x509".Certificate) VerifyHostname (h string) "os".Error
+	func (c *"crypto/x509".Certificate) buildChains (cache map[int] [][]*"crypto/x509".Certificate, currentChain []*"crypto/x509".Certificate, opts *"crypto/x509".VerifyOptions) (chains [][]*"crypto/x509".Certificate, err "os".Error)
+	func (c *"crypto/x509".Certificate) isValid (certType int, opts *"crypto/x509".VerifyOptions) "os".Error
+	type "crypto/x509".PublicKeyAlgorithm int
+	type "crypto/x509/pkix".Name struct { Country []string; Organization []string; OrganizationalUnit []string; Locality []string; Province []string; StreetAddress []string; PostalCode []string; SerialNumber string; CommonName string }
+	func (n *"crypto/x509/pkix".Name) FillFromRDNSequence (rdns *"crypto/x509/pkix".RDNSequence)
+	func (n "crypto/x509/pkix".Name) ToRDNSequence () "crypto/x509/pkix".RDNSequence
+	type "crypto/x509".KeyUsage int
+	type "crypto/x509".ExtKeyUsage int
+	func "".PlainMaster (c *"twist".Context, id string) *"".PlainMaster_T
+	type "".RedMaster_T struct { name string; ? *"twist".Template; Navigation *"twist".Item; Header *"twist".Item; Topper *"twist".Item; Location *"twist".Item; Date *"twist".Item; Content *"twist".Item; Footer *"twist".Item }
+	func (t *"".RedMaster_T) GetTemplate () *"twist".Template
+	func "".RedMaster (c *"twist".Context, id string) *"".RedMaster_T
+	var "".initdoneÂ· uint8
+	func "".init ()
+
+$$  // local types
+
+$$
+
+!
+„ y</ „ y<Users „ y<d.brophy „ y<Projects „ y<twist „ y<web „ y<html „ y<master „ y<master.go 8      „ y<twist.6 8     ÿÿÿÿu8 Š     „ q"".(*PlainMaster_T).GetTemplate „ qtype.method(t *"".PlainMaster_T)func() *twist.Template ã    ‘qE       u„ t"".t „ qtype.*"".PlainMaster_T ­   ‘t­      Ž„ t""..noname ­      tª      „ qruntime.throwreturn      qª      „ q"".PlainMaster „ qtype.func(*twist.Context, string) *"".PlainMaster_T ã    ‘qE      u„ q	go.string."html_master_plainMaster" ª   	q„ 
+twist.path ª   
+±     ±     „ qtwist.GetTemplateByPath „ qtype.func(string) *twist.Template      ‘q„ t"".c „ qtype.*twist.Context ­   ‘t­      ­    Œ­    @   ‹„ qtype.*twist.Template ­!   š!       u„ t"".id „ qtype.string ­!   •   t­!   Žr !   •   tr !      Ž­#   Œ„ twist.w ­#   „ s"".t ­#   •xÿÿÿs„ twist.t ­#      „ qtwist.(*Writer).RegisterTemplate  #    q„ qtype.map[string] string „ qtype.uint8 „ runtime.mapType ­&   “q x„ runtime.hint ­&   u   „ qruntime.makemap „ qtype.func(*uint8, int64) map[string] string  &    ‘q­&      „ s"".autotmp_0000 ­&   Èÿÿÿs­&   “q x­&   u    &    ‘q­&      „ s"".autotmp_0001 ­&   ¨ÿÿÿsr &   u„ qruntime.new „ qtype.func(int32) *[0]*twist.Item  &    ‘q­&      r &   ur &   u„ q go.string."div" ª&    q„ !twist.name ª&   !±&     ±&     ­&   •xÿÿÿs„ "twist.template ­&      "­&   ‘t­&   Ž„ #twist.writer ­&      #„ q$go.string."Navigation" ª&   $q„ %twist.id ª&       %±&     ±&     ­&   Èÿÿÿs„ &twist.attributes ­&   0   &­&   ¨ÿÿÿs„ 'twist.styles ­&   8   '„ (twist.contents ª&   @   (­&   Žr &      Žr &      Ž„ q)twist.NewItemId „ q*type.func(string, *twist.Template, *twist.Writer, string, map[string] string, map[string] string, []*twist.Item) *twist.Item  &    ‘)q*­&   P   „ s+"".v1 „ q,type.*twist.Item ­&   •¸ÿÿÿ+s,„ q-go.string."\n" ª'   -q„ .twist.text ª'   .±'     ±'     „ q/twist.NewTextItem „ q0type.func(string) *twist.Item  '    ‘/q0­'      „ s1"".v2 ­'   •Xÿÿÿ1s,„ qgo.string."Plain page" ª(   qª(   .±(     ±(      (    ‘/q0­(      „ s"".v4 ­(   •ÿÿÿs,­)   “q x­)   u    )    ‘q­)      „ s"".autotmp_0004 ­)   èÿÿÿs­)   “q x­)   u    )    ‘q­)      „ s"".autotmp_0005 ­)   ˆÿÿÿsr )      u„ qtype.func(int32) *[1]*twist.Item  )    ‘q­)      „ s"".autotmp_0006 r )      u ÿÿÿsr )      u¤ÿÿÿs­)   ˜ÿÿÿsª)   ˜ÿÿÿs­)   Ž­)   •ÿÿÿs,­)   Ž„ qgo.string."h1" ª)   qª)   !±)     ±)     ­)   •xÿÿÿs­)      "­)   ‘t­)   Ž­)      #„ qgo.string."Header" ª)   qª)       %±)     ±)     ­)   èÿÿÿs­)   0   &­)   ˆÿÿÿs­)   8   'ª)   @   (­)   ˜ÿÿÿs­)   Žr )    ÿÿÿsr )      Žr )   ¤ÿÿÿsr )      Ž )    ‘)q*­)   P   „ s	"".v3 ­)   •hÿÿÿ	s,ª*   -qª*   .±*     ±*      *    ‘/q0­*      „ s
+"".v5 ­*   •Øÿÿÿ
+s,­+   “q x­+   u    +    ‘q­+      „ s"".autotmp_0008 ­+   Àÿÿÿs­+   “q x­+   u    +    ‘q­+      „ s"".autotmp_0009 ­+   °ÿÿÿsr +   u +    ‘q­+      r +   ur +   uª+    qª+   !±+     ±+     ­+   •xÿÿÿs­+      "­+   ‘t­+   Ž­+      #„ qgo.string."Content" ª+   qª+       %±+     ±+     ­+   Àÿÿÿs­+   0   &­+   °ÿÿÿs­+   8   'ª+   @   (­+   Žr +      Žr +      Ž +    ‘)q*­+   P   „ s"".v6 ­+   •`ÿÿÿs,ª,   -qª,   .±,     ±,      ,    ‘/q0­,      „ s"".v7 ­,   •€ÿÿÿs,­-   “q x­-   u    -    ‘q­-      „ s"".autotmp_0012 ­-   àÿÿÿs­-   “q x­-   u    -    ‘q­-      „ s"".autotmp_0013 ­-   Ðÿÿÿs„ q"".statictmp_0014 „ qgo.string." background-color" - -   oqq    x- -   o   q   u„ qgo.string."#000000" - -   o   qq    x- -   o   q   u„ qgo.string." font-weight" - -   o    qq    x- -   o(   q   u„ qgo.string."bold" - -   o0   qq    x- -   o8   q   u„ qgo.string."color" - -   o@   qq    x- -   oH   q   u„ qgo.string."#ffffff" - -   oP   qq    x- -   oX   q   u„ qgo.string." padding" - -   o`   qq    x- -   oh   q   u„ qgo.string."5px" - -   op   qq    x- -   ox   q   ur -   uY -    Ã   pY -    Û   pD -    & -      uR -    Á   p„ qtype.map[string] string „ qtype.uint8 „ runtime.mapType ­-   “q x­-   Ðÿÿÿs„ runtime.hmap ­-      ª-   q®-   ¨-       uš-   „ runtime.key ª-      ±-     ±-     ª-   q„ s "".autotmp_0015 r -   Tÿÿÿ s®-   ¨-       uš-   š-      u„ !runtime.val ª-       !±-     ±-     „ q"runtime.mapassign1 „ q#type.func(*uint8, map[string] string, string, string)  -    ‘"q#r -   Tÿÿÿ sY -    Â   pr -   u„ q$runtime.new „ q%type.func(int32) *[0]*twist.Item  -    ‘$q%­-      r -   ur -   u„ q&go.string."div" ª-   &q„ 'twist.name ª-   '±-     ±-     „ s("".t „ q)type.*twist.Template ­-   •xÿÿÿ(s)„ *twist.template ­-      *„ t+"".c „ q,type.*twist.Context ­-   ‘+t,­-   Ž„ -twist.writer ­-      -„ q.go.string."Footer" ª-   .q„ /twist.id ª-       /±-     ±-     ­-   àÿÿÿs„ 0twist.attributes ­-   0   0­-   Ðÿÿÿs„ 1twist.styles ­-   8   1„ twist.contents ª-   @   ­-   Žr -      Žr -      Ž„ qtwist.NewItemId „ qtype.func(string, *twist.Template, *twist.Writer, string, map[string] string, map[string] string, []*twist.Item) *twist.Item  -    ‘q­-   P   „ s"".v8 „ qtype.*twist.Item ­-   •pÿÿÿsr /   8   u„ qtype.func(int32) *[7]*twist.Item  /    ‘$q­/      „ s"".autotmp_0018 r /      uøÿÿÿsr /      uüÿÿÿs­/   ðÿÿÿsª/   ðÿÿÿs­/   Ž„ s"".v1 ­/   •¸ÿÿÿs­/   Žª/   ðÿÿÿs­/   Ž„ s	"".v2 ­/   •Xÿÿÿ	s­/      Žª/   ðÿÿÿs­/   Ž„ s
+"".v3 ­/   •hÿÿÿ
+s­/      Žª/   ðÿÿÿs­/   Ž„ s"".v5 ­/   •Øÿÿÿs­/      Žª/   ðÿÿÿs­/   Ž­/   •`ÿÿÿs­/       Žª/   ðÿÿÿs­/   Ž­/   •€ÿÿÿs­/   (   Žª/   ðÿÿÿs­/   Ž­/   •pÿÿÿs­/   0   Ž­/   •xÿÿÿ(s)š/   H   u­/   ðÿÿÿs­/   Žr /   øÿÿÿsr /      Žr /   üÿÿÿsr /      Žr =   8   u„ qtype.func(int32) *"".PlainMaster_T  =    ‘$q­=   •xÿÿÿ(s)­=      ­=   )­=   ±=     ±=     ­=      ‹­=   •¸ÿÿÿs­=      ‹­=   •hÿÿÿ
+s­=       ‹­=   •`ÿÿÿs­=   (   ‹­=   •pÿÿÿs­=   0   ‹„ t""..noname ­=      tª =     „ qruntime.throwreturn  >    qª >     „ q"".(*RedMaster_T).GetTemplate „ qtype.method(t *"".RedMaster_T)func() *twist.Template ã V   ‘qE       u„ t"".t „ qtype.*"".RedMaster_T ­W   ‘t­W      Ž­W      tª W      X    qª X     „ q"".RedMaster „ qtype.func(*twist.Context, string) *"".RedMaster_T ã Z   ‘qE€      u„ qgo.string."html_master_redMaster" ª\   q„ twist.path ª\   ±\     ±\     „ qtwist.GetTemplateByPath „ qtype.func(string) *twist.Template  \    ‘q­\   ‘+t,­\      ­]   Œ­]   @   ‹­^   )š^       u„ t"".id „ qtype.string ­^   •   t­^   Žr ^   •   tr ^      Ž­`   Œ„ twist.w ­`   „ s"".t ­`   •ÿÿÿs)„ twist.t ­`      „ qtwist.(*Writer).RegisterTemplate  `    q„ qtype.map[string] string „ q type.uint8 „ !runtime.mapType ­c   “q x !„ "runtime.hint ­c   u   "„ q#runtime.makemap „ q$type.func(*uint8, int64) map[string] string  c    ‘#q$­c      „ s%"".autotmp_0021 ­c   8ÿÿÿ%s­c   “q x !­c   u   " c    ‘#q$­c      „ s&"".autotmp_0022 ­c   ¸ÿÿÿ&sr c   u„ q'runtime.new „ q(type.func(int32) *[0]*twist.Item  c    ‘'q(­c      r c   ur c   u„ q)go.string."div" ªc   )q„ *twist.name ªc   *±c     ±c     „ q+type.*twist.Template ­c   •ÿÿÿs+„ ,twist.template ­c      ,„ t-"".c „ q.type.*twist.Context ­c   ‘-t.­c   Ž„ /twist.writer ­c      /„ q0go.string."Navigation" ªc   0q„ 1twist.id ªc       1±c     ±c     ­c   8ÿÿÿ%s„ twist.attributes ­c   0   ­c   ¸ÿÿÿ&s„ twist.styles ­c   8   „ twist.contents ªc   @   ­c   Žr c      Žr c      Ž„ qtwist.NewItemId „ qtype.func(string, *twist.Template, *twist.Writer, string, map[string] string, map[string] string, []*twist.Item) *twist.Item  c    ‘q­c   P   „ qtype.*twist.Item ­c   •hÿÿÿs„ qgo.string."\n" ªd   q„ twist.text ªd   ±d     ±d     „ q	twist.NewTextItem „ q
+type.func(string) *twist.Item  d    ‘	q
+­d      „ s"".v2 ­d   •èþÿÿs„ qgo.string."Red page" ªe   qªe   ±e     ±e      e    ‘	q
+­e      „ s"".v4 ­e   •(ÿÿÿs­f   “q x !­f   u   " f    ‘#q$­f      „ s"".autotmp_0025 ­f   ˜ÿÿÿs­f   “q x !­f   u   " f    ‘#q$­f      „ s"".autotmp_0026 ­f   Xÿÿÿsr f      u„ qtype.func(int32) *[1]*twist.Item  f    ‘'q­f      „ s"".autotmp_0027 r f      uèÿÿÿsr f      uìÿÿÿs­f   àÿÿÿsªf   àÿÿÿs­f   Ž­f   •(ÿÿÿs­f   Ž„ qgo.string."h1" ªf   qªf   *±f     ±f     ­f   •ÿÿÿs+­f      ,­f   ‘-t.­f   Ž­f      /„ qgo.string."Header" ªf   qªf       1±f     ±f     ­f   ˜ÿÿÿs­f   0   ­f   Xÿÿÿs­f   8   ªf   @   ­f   àÿÿÿs­f   Žr f   èÿÿÿsr f      Žr f   ìÿÿÿsr f      Ž f    ‘q­f   P   „ s"".v3 ­f   •¨ÿÿÿsªg   qªg   ±g     ±g      g    ‘	q
+­g      „ s"".v5 ­g   •àþÿÿsªh   qªh   ±h     ±h      h    ‘	q
+­h      „ s"".v11 ­h   •ÿÿÿs­i   “q x !­i   u   " i    ‘#q$­i      „ s"".autotmp_0029 ­i   0ÿÿÿs­i   “q x !­i   u   " i    ‘#q$­i      „ s"".autotmp_0030 ­i   pÿÿÿsr i   u i    ‘'q(­i      r i   ur i   u„ qgo.string."span" ªi   qªi   *±i     ±i     ­i   •ÿÿÿs+­i      ,­i   ‘-t.­i   Ž­i      /„ qgo.string."Date" ªi   qªi       1±i     ±i     ­i   0ÿÿÿs­i   0   ­i   pÿÿÿs­i   8   ªi   @   ­i   Žr i      Žr i      Ž i    ‘q­i   P   „ s"".v10 ­i   •ˆÿÿÿs„ qgo.string." @ " ªj   qªj   ±j     ±j      j    ‘	q
+­j      „ s"".v9 ­j   •øþÿÿs­k   “q x !­k   u   " k    ‘#q$­k      „ s"".autotmp_0033 ­k   @ÿÿÿs­k   “q x !­k   u   " k    ‘#q$­k      „ s"".autotmp_0034 ­k   °ÿÿÿsr k   u k    ‘'q(­k      r k   ur k   uªk   qªk   *±k     ±k     „ s "".t ­k   •ÿÿÿ s+­k      ,­k   ‘-t.­k   Ž­k      /„ q!go.string."Location" ªk   !qªk       1±k     ±k     ­k   @ÿÿÿs­k   0   ­k   °ÿÿÿs­k   8   ªk   @   ­k   Žr k      Žr k      Ž k    ‘q­k   P   „ s""".v8 ­k   •Hÿÿÿ"s„ q#go.string."\n\t" ªl   #qªl   ±l     ±l      l    ‘	q
+­l      „ s$"".v7 ­l   •Èÿÿÿ$s„ q%type.map[string] string „ q&type.uint8 „ 'runtime.mapType ­m   “q %x&'„ (runtime.hint ­m   u   („ q)runtime.makemap „ q*type.func(*uint8, int64) map[string] string  m    ‘)q*­m      „ s+"".autotmp_0037 ­m   Pÿÿÿ+s­m   “q %x&'­m   u   ( m    ‘)q*­m      „ s,"".autotmp_0038 ­m   ÿÿÿ,s„ q-"".statictmp_0039 „ q.go.string."background-color" - m   o-qq    .x- m   o   -q   u„ q/go.string."#cc0000" - m   o   -qq    /x- m   o   -q   u„ q0go.string." color" - m   o    -qq    0x- m   o(   -q   u„ q1go.string."#ffffff" - m   o0   -qq    1x- m   o8   -q   u„ qgo.string." font-weight" - m   o@   -qq    x- m   oH   -q   u„ qgo.string."bold" - m   oP   -qq    x- m   oX   -q   u„ qgo.string." padding" - m   o`   -qq    x- m   oh   -q   u„ qgo.string."5px" - m   op   -qq    x- m   ox   -q   ur m   uY m    /  pY m    G  pD m    & m      uR m    -  p­m   “q %x&'­m   ÿÿÿ,s„ runtime.hmap ­m      ªm   -q®m   ¨m       ušm   „ runtime.key ªm      ±m     ±m     ªm   -q„ s"".autotmp_0040 r m   Øþÿÿs®m   ¨m       ušm   šm      u„ runtime.val ªm       ±m     ±m     „ q	runtime.mapassign1 „ q
+type.func(*uint8, map[string] string, string, string)  m    ‘	q
+r m   ØþÿÿsY m    .  pr m   (   u„ qruntime.new „ qtype.func(int32) *[5]*twist.Item  m    ‘q­m      „ s"".autotmp_0041 r m      uØÿÿÿsr m      uÜÿÿÿs­m   Ðÿÿÿsªm   Ðÿÿÿs­m   Ž„ qtype.*twist.Item ­m   •Èÿÿÿ$s­m   Žªm   Ðÿÿÿs­m   Ž­m   •Hÿÿÿ"s­m      Žªm   Ðÿÿÿs­m   Ž­m   •øþÿÿs­m      Žªm   Ðÿÿÿs­m   Ž­m   •ˆÿÿÿs­m      Žªm   Ðÿÿÿs­m   Ž­m   •ÿÿÿs­m       Ž„ qgo.string."div" ªm   q„ twist.name ªm   ±m     ±m     „ qtype.*twist.Template ­m   •ÿÿÿ s„ twist.template ­m      „ t"".c „ qtype.*twist.Context ­m   ‘t­m   Ž„ twist.writer ­m      „ qgo.string."Topper" ªm   q„ twist.id ªm       ±m     ±m     ­m   Pÿÿÿ+s„ twist.attributes ­m   0   ­m   ÿÿÿ,s„ twist.styles ­m   8   „ twist.contents ªm   @   ­m   Ðÿÿÿs­m   Žr m   Øÿÿÿsr m      Žr m   Üÿÿÿsr m      Ž„ qtwist.NewItemId „ qtype.func(string, *twist.Template, *twist.Writer, string, map[string] string, map[string] string, []*twist.Item) *twist.Item  m    ‘q­m   P   „ s"".v6 ­m   •ðþÿÿs„ qgo.string."\n" ªn   q„ twist.text ªn   ±n     ±n     „ q twist.NewTextItem „ q!type.func(string) *twist.Item  n    ‘ q!­n      „ s""".v12 ­n   • ÿÿÿ"s­o   “q %x&'­o   u   ( o    ‘)q*­o      „ s#"".autotmp_0043 ­o   `ÿÿÿ#s­o   “q %x&'­o   u   ( o    ‘)q*­o      „ s$"".autotmp_0044 ­o    ÿÿÿ$sr o   u„ q%type.func(int32) *[0]*twist.Item  o    ‘q%­o      r o   ur o   uªo   qªo   ±o     ±o     „ s&"".t ­o   •ÿÿÿ&s­o      ­o   ‘t­o   Ž­o      „ q'go.string."Content" ªo   'qªo       ±o     ±o     ­o   `ÿÿÿ#s­o   0   ­o    ÿÿÿ$s­o   8   ªo   @   ­o   Žr o      Žr o      Ž o    ‘q­o   P   „ s("".v13 ­o   • ÿÿÿ(sªp   qªp   ±p     ±p      p    ‘ q!­p      „ s)"".v14 ­p   •xÿÿÿ)s„ q*type.map[string] string „ q+type.uint8 „ ,runtime.mapType ­q   “q *x+,„ -runtime.hint ­q   u   -„ q.runtime.makemap „ q/type.func(*uint8, int64) map[string] string  q    ‘.q/­q      „ s0"".autotmp_0047 ­q   €ÿÿÿ0s­q   “q *x+,­q   u   - q    ‘.q/­q      „ s1"".autotmp_0048 ­q   Àÿÿÿ1s„ q"".statictmp_0049 „ qgo.string." background-color" - q   oqq    x- q   o   q   u„ qgo.string."#cc0000" - q   o   qq    x- q   o   q   u„ qgo.string." font-weight" - q   o    qq    x- q   o(   q   u„ qgo.string."bold" - q   o0   qq    x- q   o8   q   u„ qgo.string."color" - q   o@   qq    x- q   oH   q   u„ qgo.string."#ffffff" - q   oP   qq    x- q   oX   q   u„ qgo.string." padding" - q   o`   qq    x- q   oh   q   u„ q	go.string."5px" - q   op   qq    	x- q   ox   q   ur q   uY q    ¿  pY q    ×  pD q    & q      uR q    ½  p­q   “q *x+,­q   Àÿÿÿ1s„ 
+runtime.hmap ­q      
+ªq   q®q   ¨q       ušq   „ runtime.key ªq      ±q     ±q     ªq   q„ s"".autotmp_0050 r q   Üþÿÿs®q   ¨q       ušq   šq      u„ runtime.val ªq       ±q     ±q     „ qruntime.mapassign1 „ qtype.func(*uint8, map[string] string, string, string)  q    ‘qr q   ÜþÿÿsY q    ¾  pr q   u„ qruntime.new  q    ‘q%­q      r q   ur q   u„ qgo.string."div" ªq   q„ twist.name ªq   ±q     ±q     „ qtype.*twist.Template ­q   •ÿÿÿ&s„ twist.template ­q      „ t"".c „ qtype.*twist.Context ­q   ‘t­q   Ž„ twist.writer ­q      „ qgo.string."Footer" ªq   q„ twist.id ªq       ±q     ±q     ­q   €ÿÿÿ0s„ twist.attributes ­q   0   ­q   Àÿÿÿ1s„ twist.styles ­q   8   „ twist.contents ªq   @   ­q   Žr q      Žr q      Ž„ qtwist.NewItemId „ qtype.func(string, *twist.Template, *twist.Writer, string, map[string] string, map[string] string, []*twist.Item) *twist.Item  q    ‘q­q   P   „ s"".v15 „ q type.*twist.Item ­q   •ÿÿÿs r s   H   u„ q!type.func(int32) *[9]*twist.Item  s    ‘q!­s      „ s""".autotmp_0053 r s   	   uøÿÿÿ"sr s   	   uüÿÿÿ"s­s   ðÿÿÿ"sªs   ðÿÿÿ"s­s   Ž„ s#"".v1 ­s   •hÿÿÿ#s ­s   Žªs   ðÿÿÿ"s­s   Ž„ s$"".v2 ­s   •èþÿÿ$s ­s      Žªs   ðÿÿÿ"s­s   Ž„ s%"".v3 ­s   •¨ÿÿÿ%s ­s      Žªs   ðÿÿÿ"s­s   Ž„ s&"".v5 ­s   •àþÿÿ&s ­s      Žªs   ðÿÿÿ"s­s   Ž„ s'"".v6 ­s   •ðþÿÿ's ­s       Žªs   ðÿÿÿ"s­s   Ž„ s("".v12 ­s   • ÿÿÿ(s ­s   (   Žªs   ðÿÿÿ"s­s   Ž„ s)"".v13 ­s   • ÿÿÿ)s ­s   0   Žªs   ðÿÿÿ"s­s   Ž„ s*"".v14 ­s   •xÿÿÿ*s ­s   8   Žªs   ðÿÿÿ"s­s   Ž­s   •ÿÿÿs ­s   @   Ž„ s+"".t ­s   •ÿÿÿ+sšs   H   u­s   ðÿÿÿ"s­s   Žr s   øÿÿÿ"sr s      Žr s   üÿÿÿ"sr s      Žr ‡   P   u„ q,type.func(int32) *"".RedMaster_T  ‡    ‘q,­‡   •ÿÿÿ+s­‡      ­‡   ­‡   ±‡     ±‡     ­‡      ‹­‡   •hÿÿÿ#s ­‡      ‹­‡   •¨ÿÿÿ%s ­‡       ‹­‡   •ðþÿÿ's ­‡   (   ‹„ s-"".v8 ­‡   •Hÿÿÿ-s ­‡   0   ‹„ s."".v10 ­‡   •ˆÿÿÿ.s ­‡   8   ‹­‡   • ÿÿÿ)s ­‡   @   ‹­‡   •ÿÿÿs ­‡   H   ‹„ t/""..noname ­‡      /tª ‡     „ q0runtime.throwreturn  ˆ    0qª ˆ     „ q1"".init „ qtype.func() ã ˆ   ‘1qu„ q"".initdoneÂ· „ qtype.uint8 q ˆ   ‘qY ˆ    E  pY ˆ    Q  pq ˆ   % ˆ   uQ ˆ    D  pY ˆ    J  pY ˆ    O  pq ˆ   % ˆ      uZ ˆ    I  pª ˆ     Y ˆ    O  p„ qruntime.throwinit  ˆ    ‘qY ˆ    Q  pq ˆ      u‘q„ qtwist.init  ˆ    ‘qq ˆ      u‘qª ˆ     ª ˆ     „ q"".statictmp_0014 6 -   oq€   u„ q"".statictmp_0039 6 m   oq€   u„ q"".statictmp_0049 6 q   oq€   u6 ˆ   ‘q   u„ q	type."".PlainMaster_T „ q
+type.*runtime.StructType - ˆ   o	qq 
+x- ˆ   o   	qq    	x- ˆ   o   	q8   u- ˆ   o   	qEñè±    u- ˆ   o   	q   u- ˆ   o   	q   u- ˆ   o   	q   u- ˆ   o   	q   u„ qgo.string."master.PlainMaster_T" - ˆ   o    	qq x„ qtype.*"".PlainMaster_T - ˆ   o0   	qq x- ˆ   o8   	qq H   	x- ˆ   o@   	q   u- ˆ   oD   	q   u„ qgo.string."name" - ˆ   oH   	qq x„ qgo.importpath."". - ˆ   oP   	qq x„ qtype.string - ˆ   oX   	qq x- ˆ   o`   	qu- ˆ   oh   	qu- ˆ   op   	qu- ˆ   ox   	qu- ˆ   o€   	qq x- ˆ   oˆ   	qu- ˆ   o   	q   u„ qgo.string."Navigation" - ˆ   o˜   	qq x- ˆ   o    	qu- ˆ   o¨   	qq  x- ˆ   o°   	qu- ˆ   o¸   	q   u„ qgo.string."Header" - ˆ   oÀ   	qq x- ˆ   oÈ   	qu- ˆ   oÐ   	qq  x- ˆ   oØ   	qu- ˆ   oà   	q    u„ qgo.string."Content" - ˆ   oè   	qq x- ˆ   oð   	qu- ˆ   oø   	qq  x- ˆ   o   	qu- ˆ   o  	q(   u- ˆ   o  	qq x- ˆ   o  	qu- ˆ   o   	qq  x- ˆ   o(  	qu- ˆ   o0  	q0   u- ˆ   o(   	qq 8  	x„ qgo.string."PlainMaster_T" - ˆ   o8  	qq x- ˆ   o@  	qq x- ˆ   oH  	qq X  	x- ˆ   oP  	qu- ˆ   oT  	qu6 ˆ   o	qX  u„ qtype.*runtime.PtrType - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qEÅño°    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."*master.PlainMaster_T" - ˆ   o    qq x„ qweak.type.**"".PlainMaster_T - ˆ   o0   qq x- ˆ   o8   qq 	x- ˆ   o(   qq @   x„ qtype.func(*"".PlainMaster_T) *twist.Template „ qtype.*runtime.FuncType - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qGTÕ&u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."func(*master.PlainMaster_T) *twist.Template" - ˆ   o    qq x„ qweak.type.*func(*"".PlainMaster_T) *twist.Template - ˆ   o0   qq x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   q   u- ˆ   oL   q   u- ˆ   oP   qq h   x- ˆ   oX   q   u- ˆ   o\   q   u- ˆ   o`   qq x„ qtype.*twist.Template - ˆ   oh   qq x6 ˆ   o
+qp   u- ˆ   o@   qu- ˆ   oH   qu- ˆ   oP   qq `   x- ˆ   oX   q   u- ˆ   o\   q   u„ qgo.string."GetTemplate" - ˆ   o`   qq x- ˆ   oh   qu„ qtype.func() *twist.Template - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qEá{­é    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."func() *twist.Template" - ˆ   o    qq x„ qweak.type.*func() *twist.Template - ˆ   o0   qq x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   qu- ˆ   oL   qu- ˆ   oP   qq `   x- ˆ   oX   q   u- ˆ   o\   q   u- ˆ   o`   qq x6 ˆ   o
+qh   u- ˆ   op   qq x- ˆ   ox   qq x„ q "".(*PlainMaster_T).GetTemplate - ˆ   o€   qq  x- ˆ   oˆ   qq  x6 ˆ   oq   u„ q!type.method(t *"".PlainMaster_T)func() *twist.Template - ˆ   o!qq x- ˆ   o   !qq    !x- ˆ   o   !q   u- ˆ   o   !qEá{­é    u- ˆ   o   !q	   u- ˆ   o   !q   u- ˆ   o   !q   u- ˆ   o   !q   u„ q"go.string."method(t *master.PlainMaster_T)func() *twist.Template" - ˆ   o    !qq "x„ q#weak.type.*method(t *"".PlainMaster_T)func() *twist.Template - ˆ   o0   !qq #x- ˆ   o8   !qu- ˆ   o@   !qq `   !x- ˆ   oH   !q   u- ˆ   oL   !q   u- ˆ   oP   !qq h   !x- ˆ   oX   !q   u- ˆ   o\   !q   u- ˆ   o`   !qq x- ˆ   oh   !qq x6 ˆ   o
+!qp   u„ q$type.map[string] string „ q%type.*runtime.MapType - ˆ   o$qq %x- ˆ   o   $qq    $x- ˆ   o   $q   u- ˆ   o   $qèúu- ˆ   o   $q	   u- ˆ   o   $q   u- ˆ   o   $q   u- ˆ   o   $q   u„ q&go.string."map[string] string" - ˆ   o    $qq &x„ q'weak.type.*map[string] string - ˆ   o0   $qq 'x- ˆ   o8   $qq x- ˆ   o@   $qq x6 ˆ   o
+$qH   u„ q(type.func(*twist.Context, string) *"".PlainMaster_T - ˆ   o(qq x- ˆ   o   (qq    (x- ˆ   o   (q   u- ˆ   o   (qE\¶Au- ˆ   o   (q	   u- ˆ   o   (q   u- ˆ   o   (q   u- ˆ   o   (q   u„ q)go.string."func(*twist.Context, string) *master.PlainMaster_T" - ˆ   o    (qq )x„ q*weak.type.*func(*twist.Context, string) *"".PlainMaster_T - ˆ   o0   (qq *x- ˆ   o8   (qu- ˆ   o@   (qq `   (x- ˆ   oH   (q   u- ˆ   oL   (q   u- ˆ   oP   (qq p   (x- ˆ   oX   (q   u- ˆ   o\   (q   u„ q+type.*twist.Context - ˆ   o`   (qq +x- ˆ   oh   (qq x- ˆ   op   (qq x6 ˆ   o
+(qx   u„ q,type.func(string) *twist.Template - ˆ   o,qq x- ˆ   o   ,qq    ,x- ˆ   o   ,q   u- ˆ   o   ,qE»°    u- ˆ   o   ,q	   u- ˆ   o   ,q   u- ˆ   o   ,q   u- ˆ   o   ,q   u„ q-go.string."func(string) *twist.Template" - ˆ   o    ,qq -x„ q.weak.type.*func(string) *twist.Template - ˆ   o0   ,qq .x- ˆ   o8   ,qu- ˆ   o@   ,qq `   ,x- ˆ   oH   ,q   u- ˆ   oL   ,q   u- ˆ   oP   ,qq h   ,x- ˆ   oX   ,q   u- ˆ   o\   ,q   u- ˆ   o`   ,qq x- ˆ   oh   ,qq x6 ˆ   o
+,qp   u„ q/type.func(*uint8, int64) map[string] string - ˆ   o/qq x- ˆ   o   /qq    /x- ˆ   o   /q   u- ˆ   o   /quû\hu- ˆ   o   /q	   u- ˆ   o   /q   u- ˆ   o   /q   u- ˆ   o   /q   u„ q0go.string."func(*uint8, int64) map[string] string" - ˆ   o    /qq 0x„ q1weak.type.*func(*uint8, int64) map[string] string - ˆ   o0   /qq 1x- ˆ   o8   /qu- ˆ   o@   /qq `   /x- ˆ   oH   /q   u- ˆ   oL   /q   u- ˆ   oP   /qq p   /x- ˆ   oX   /q   u- ˆ   o\   /q   u„ qtype.*uint8 - ˆ   o`   /qq x„ qtype.int64 - ˆ   oh   /qq x- ˆ   op   /qq $x6 ˆ   o
+/qx   u„ qtype.[]*twist.Item „ qtype.*runtime.SliceType - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qE’ÞÂ    u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."[]*twist.Item" - ˆ   o    qq x„ qweak.type.*[]*twist.Item - ˆ   o0   qq x„ qtype.*twist.Item - ˆ   o8   qq x6 ˆ   o
+q@   u„ qtype.[0]*twist.Item „ q	type.*runtime.ArrayType - ˆ   oqq 	x- ˆ   o   qq    x- ˆ   o   qu- ˆ   o   qEß Î    u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ q
+go.string."[0]*twist.Item" - ˆ   o    qq 
+x„ qweak.type.*[0]*twist.Item - ˆ   o0   qq x- ˆ   o8   qq x- ˆ   o@   qq x- ˆ   oH   qu6 ˆ   o
+qP   u„ qtype.*[0]*twist.Item - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qEÏ9;²    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."*[0]*twist.Item" - ˆ   o    qq x„ qweak.type.**[0]*twist.Item - ˆ   o0   qq x- ˆ   o8   qq x6 ˆ   o
+q@   u„ qtype.func(int32) *[0]*twist.Item - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   q³ú9eu- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."func(int32) *[0]*twist.Item" - ˆ   o    qq x„ qweak.type.*func(int32) *[0]*twist.Item - ˆ   o0   qq x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   q   u- ˆ   oL   q   u- ˆ   oP   qq h   x- ˆ   oX   q   u- ˆ   o\   q   u„ qtype.int32 - ˆ   o`   qq x- ˆ   oh   qq x6 ˆ   o
+qp   u„ qtype.func(string, *twist.Template, *twist.Writer, string, map[string] string, map[string] string, []*twist.Item) *twist.Item - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qE:c!Æ    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ q""..gostring.1 - ˆ   o    qq x„ qweak.type.*func(string, *twist.Template, *twist.Writer, string, map[string] string, map[string] string, []*twist.Item) *twist.Item - ˆ   o0   qq x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   q   u- ˆ   oL   q   u- ˆ   oP   qq ˜   x- ˆ   oX   q   u- ˆ   o\   q   u„ qtype.string - ˆ   o`   qq x- ˆ   oh   qq x„ qtype.*twist.Writer - ˆ   op   qq x- ˆ   ox   qq x- ˆ   o€   qq $x- ˆ   oˆ   qq $x- ˆ   o   qq x- ˆ   o˜   qq x6 ˆ   o
+q    u„ qtype.func(string) *twist.Item „ qtype.*runtime.FuncType - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qEÁq£‡    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."func(string) *twist.Item" - ˆ   o    qq x„ qweak.type.*func(string) *twist.Item - ˆ   o0   qq x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   q   u- ˆ   oL   q   u- ˆ   oP   qq h   x- ˆ   oX   q   u- ˆ   o\   q   u- ˆ   o`   qq x- ˆ   oh   qq x6 ˆ   o
+qp   u„ qtype.[1]*twist.Item - ˆ   oqq 	x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qE!9õä    u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."[1]*twist.Item" - ˆ   o    qq x„ qweak.type.*[1]*twist.Item - ˆ   o0   qq x- ˆ   o8   qq x- ˆ   o@   qq x- ˆ   oH   q   u6 ˆ   o
+qP   u„ qtype.*[1]*twist.Item „ q type.*runtime.PtrType - ˆ   oqq  x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qEPðÎì    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ q!go.string."*[1]*twist.Item" - ˆ   o    qq !x„ q"weak.type.**[1]*twist.Item - ˆ   o0   qq "x- ˆ   o8   qq x6 ˆ   o
+q@   u„ q#type.func(int32) *[1]*twist.Item - ˆ   o#qq x- ˆ   o   #qq    #x- ˆ   o   #q   u- ˆ   o   #q /O%u- ˆ   o   #q	   u- ˆ   o   #q   u- ˆ   o   #q   u- ˆ   o   #q   u„ q$go.string."func(int32) *[1]*twist.Item" - ˆ   o    #qq $x„ q%weak.type.*func(int32) *[1]*twist.Item - ˆ   o0   #qq %x- ˆ   o8   #qu- ˆ   o@   #qq `   #x- ˆ   oH   #q   u- ˆ   oL   #q   u- ˆ   oP   #qq h   #x- ˆ   oX   #q   u- ˆ   o\   #q   u- ˆ   o`   #qq x- ˆ   oh   #qq x6 ˆ   o
+#qp   u„ q&type.func(*uint8, map[string] string, string, string) - ˆ   o&qq x- ˆ   o   &qq    &x- ˆ   o   &q   u- ˆ   o   &qEåÛ    u- ˆ   o   &q	   u- ˆ   o   &q   u- ˆ   o   &q   u- ˆ   o   &q   u„ q'go.string."func(*uint8, map[string] string, string, string)" - ˆ   o    &qq 'x„ q(weak.type.*func(*uint8, map[string] string, string, string) - ˆ   o0   &qq (x- ˆ   o8   &qu- ˆ   o@   &qq `   &x- ˆ   oH   &q   u- ˆ   oL   &q   u- ˆ   oP   &qq €   &x- ˆ   oX   &qu- ˆ   o\   &qu- ˆ   o`   &qq x„ q)type.map[string] string - ˆ   oh   &qq )x- ˆ   op   &qq x- ˆ   ox   &qq x6 ˆ   o
+&q€   u„ q*type.[7]*twist.Item - ˆ   o*qq 	x- ˆ   o   *qq    *x- ˆ   o   *q8   u- ˆ   o   *qþðu- ˆ   o   *q   u- ˆ   o   *q   u- ˆ   o   *q   u- ˆ   o   *q   u„ q+go.string."[7]*twist.Item" - ˆ   o    *qq +x„ q,weak.type.*[7]*twist.Item - ˆ   o0   *qq ,x- ˆ   o8   *qq x- ˆ   o@   *qq x- ˆ   oH   *q   u6 ˆ   o
+*qP   u„ q-type.*[7]*twist.Item - ˆ   o-qq  x- ˆ   o   -qq    -x- ˆ   o   -q   u- ˆ   o   -qnæeiu- ˆ   o   -q	   u- ˆ   o   -q   u- ˆ   o   -q   u- ˆ   o   -q   u„ q.go.string."*[7]*twist.Item" - ˆ   o    -qq .x„ q/weak.type.**[7]*twist.Item - ˆ   o0   -qq /x- ˆ   o8   -qq *x6 ˆ   o
+-q@   u„ q0type.func(int32) *[7]*twist.Item - ˆ   o0qq x- ˆ   o   0qq    0x- ˆ   o   0q   u- ˆ   o   0qEl"‹’    u- ˆ   o   0q	   u- ˆ   o   0q   u- ˆ   o   0q   u- ˆ   o   0q   u„ q1go.string."func(int32) *[7]*twist.Item" - ˆ   o    0qq 1x„ qweak.type.*func(int32) *[7]*twist.Item - ˆ   o0   0qq x- ˆ   o8   0qu- ˆ   o@   0qq `   0x- ˆ   oH   0q   u- ˆ   oL   0q   u- ˆ   oP   0qq h   0x- ˆ   oX   0q   u- ˆ   o\   0q   u- ˆ   o`   0qq x- ˆ   oh   0qq -x6 ˆ   o
+0qp   u„ qtype.func(int32) *"".PlainMaster_T - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qEìÁî³    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."func(int32) *master.PlainMaster_T" - ˆ   o    qq x„ qweak.type.*func(int32) *"".PlainMaster_T - ˆ   o0   qq x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   q   u- ˆ   oL   q   u- ˆ   oP   qq h   x- ˆ   oX   q   u- ˆ   o\   q   u- ˆ   o`   qq x„ qtype.*"".PlainMaster_T - ˆ   oh   qq x6 ˆ   o
+qp   u„ qtype."".RedMaster_T „ qtype.*runtime.StructType - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   qP   u- ˆ   o   qEÙ    u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."master.RedMaster_T" - ˆ   o    qq x„ q	type.*"".RedMaster_T - ˆ   o0   qq 	x- ˆ   o8   qq H   x- ˆ   o@   q	   u- ˆ   oD   q	   u„ q
+go.string."name" - ˆ   oH   qq 
+x„ qgo.importpath."". - ˆ   oP   qq x- ˆ   oX   qq x- ˆ   o`   qu- ˆ   oh   qu- ˆ   op   qu- ˆ   ox   qu„ qtype.*twist.Template - ˆ   o€   qq x- ˆ   oˆ   qu- ˆ   o   q   u„ qgo.string."Navigation" - ˆ   o˜   qq x- ˆ   o    qu„ qtype.*twist.Item - ˆ   o¨   qq x- ˆ   o°   qu- ˆ   o¸   q   u„ qgo.string."Header" - ˆ   oÀ   qq x- ˆ   oÈ   qu- ˆ   oÐ   qq x- ˆ   oØ   qu- ˆ   oà   q    u„ qgo.string."Topper" - ˆ   oè   qq x- ˆ   oð   qu- ˆ   oø   qq x- ˆ   o   qu- ˆ   o  q(   u„ qgo.string."Location" - ˆ   o  qq x- ˆ   o  qu- ˆ   o   qq x- ˆ   o(  qu- ˆ   o0  q0   u„ qgo.string."Date" - ˆ   o8  qq x- ˆ   o@  qu- ˆ   oH  qq x- ˆ   oP  qu- ˆ   oX  q8   u„ qgo.string."Content" - ˆ   o`  qq x- ˆ   oh  qu- ˆ   op  qq x- ˆ   ox  qu- ˆ   o€  q@   u„ qgo.string."Footer" - ˆ   oˆ  qq x- ˆ   o  qu- ˆ   o˜  qq x- ˆ   o   qu- ˆ   o¨  qH   u- ˆ   o(   qq °  x„ qgo.string."RedMaster_T" - ˆ   o°  qq x- ˆ   o¸  qq x- ˆ   oÀ  qq Ð  x- ˆ   oÈ  qu- ˆ   oÌ  qu6 ˆ   oqÐ  u- ˆ   o	qq  x- ˆ   o   	qq    	x- ˆ   o   	q   u- ˆ   o   	qEWÃjÔ    u- ˆ   o   	q	   u- ˆ   o   	q   u- ˆ   o   	q   u- ˆ   o   	q   u„ qgo.string."*master.RedMaster_T" - ˆ   o    	qq x„ qweak.type.**"".RedMaster_T - ˆ   o0   	qq x- ˆ   o8   	qq x- ˆ   o(   	qq @   	x„ qtype.func(*"".RedMaster_T) *twist.Template - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qE!\‚Ç    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."func(*master.RedMaster_T) *twist.Template" - ˆ   o    qq x„ qweak.type.*func(*"".RedMaster_T) *twist.Template - ˆ   o0   qq x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   q   u- ˆ   oL   q   u- ˆ   oP   qq h   x- ˆ   oX   q   u- ˆ   o\   q   u- ˆ   o`   qq 	x- ˆ   oh   qq x6 ˆ   o
+qp   u- ˆ   o@   	qu- ˆ   oH   	qu- ˆ   oP   	qq `   	x- ˆ   oX   	q   u- ˆ   o\   	q   u„ qgo.string."GetTemplate" - ˆ   o`   	qq x- ˆ   oh   	qu„ qtype.func() *twist.Template - ˆ   op   	qq x- ˆ   ox   	qq x„ q"".(*RedMaster_T).GetTemplate - ˆ   o€   	qq x- ˆ   oˆ   	qq x6 ˆ   o	q   u„ qtype.method(t *"".RedMaster_T)func() *twist.Template „ qtype.*runtime.FuncType - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qEá{­é    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ q go.string."method(t *master.RedMaster_T)func() *twist.Template" - ˆ   o    qq  x„ q!weak.type.*method(t *"".RedMaster_T)func() *twist.Template - ˆ   o0   qq !x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   q   u- ˆ   oL   q   u- ˆ   oP   qq h   x- ˆ   oX   q   u- ˆ   o\   q   u- ˆ   o`   qq 	x- ˆ   oh   qq x6 ˆ   o
+qp   u„ q"type.func(*twist.Context, string) *"".RedMaster_T - ˆ   o"qq x- ˆ   o   "qq    "x- ˆ   o   "q   u- ˆ   o   "qšÃ˜>u- ˆ   o   "q	   u- ˆ   o   "q   u- ˆ   o   "q   u- ˆ   o   "q   u„ q#go.string."func(*twist.Context, string) *master.RedMaster_T" - ˆ   o    "qq #x„ q$weak.type.*func(*twist.Context, string) *"".RedMaster_T - ˆ   o0   "qq $x- ˆ   o8   "qu- ˆ   o@   "qq `   "x- ˆ   oH   "q   u- ˆ   oL   "q   u- ˆ   oP   "qq p   "x- ˆ   oX   "q   u- ˆ   o\   "q   u„ q%type.*twist.Context - ˆ   o`   "qq %x„ q&type.string - ˆ   oh   "qq &x- ˆ   op   "qq 	x6 ˆ   o
+"qx   u„ q'type.[5]*twist.Item „ q(type.*runtime.ArrayType - ˆ   o'qq (x- ˆ   o   'qq    'x- ˆ   o   'q(   u- ˆ   o   'qœqru- ˆ   o   'q   u- ˆ   o   'q   u- ˆ   o   'q   u- ˆ   o   'q   u„ q)go.string."[5]*twist.Item" - ˆ   o    'qq )x„ q*weak.type.*[5]*twist.Item - ˆ   o0   'qq *x- ˆ   o8   'qq x„ q+type.[]*twist.Item - ˆ   o@   'qq +x- ˆ   oH   'q   u6 ˆ   o
+'qP   u„ q,type.*[5]*twist.Item „ q-type.*runtime.PtrType - ˆ   o,qq -x- ˆ   o   ,qq    ,x- ˆ   o   ,q   u- ˆ   o   ,qw }u- ˆ   o   ,q	   u- ˆ   o   ,q   u- ˆ   o   ,q   u- ˆ   o   ,q   u„ q.go.string."*[5]*twist.Item" - ˆ   o    ,qq .x„ q/weak.type.**[5]*twist.Item - ˆ   o0   ,qq /x- ˆ   o8   ,qq 'x6 ˆ   o
+,q@   u„ q0type.func(int32) *[5]*twist.Item - ˆ   o0qq x- ˆ   o   0qq    0x- ˆ   o   0q   u- ˆ   o   0qE÷ªºþ    u- ˆ   o   0q	   u- ˆ   o   0q   u- ˆ   o   0q   u- ˆ   o   0q   u„ q1go.string."func(int32) *[5]*twist.Item" - ˆ   o    0qq 1x„ qweak.type.*func(int32) *[5]*twist.Item - ˆ   o0   0qq x- ˆ   o8   0qu- ˆ   o@   0qq `   0x- ˆ   oH   0q   u- ˆ   oL   0q   u- ˆ   oP   0qq h   0x- ˆ   oX   0q   u- ˆ   o\   0q   u„ qtype.int32 - ˆ   o`   0qq x- ˆ   oh   0qq ,x6 ˆ   o
+0qp   u„ qtype.[9]*twist.Item - ˆ   oqq (x- ˆ   o   qq    x- ˆ   o   qH   u- ˆ   o   qE1´    u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."[9]*twist.Item" - ˆ   o    qq x„ qweak.type.*[9]*twist.Item - ˆ   o0   qq x- ˆ   o8   qq x- ˆ   o@   qq +x- ˆ   oH   q	   u6 ˆ   o
+qP   u„ qtype.*[9]*twist.Item - ˆ   oqq -x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qE”ˆ&Þ    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."*[9]*twist.Item" - ˆ   o    qq x„ qweak.type.**[9]*twist.Item - ˆ   o0   qq x- ˆ   o8   qq x6 ˆ   o
+q@   u„ q	type.func(int32) *[9]*twist.Item - ˆ   o	qq x- ˆ   o   	qq    	x- ˆ   o   	q   u- ˆ   o   	qºœ(eu- ˆ   o   	q	   u- ˆ   o   	q   u- ˆ   o   	q   u- ˆ   o   	q   u„ q
+go.string."func(int32) *[9]*twist.Item" - ˆ   o    	qq 
+x„ qweak.type.*func(int32) *[9]*twist.Item - ˆ   o0   	qq x- ˆ   o8   	qu- ˆ   o@   	qq `   	x- ˆ   oH   	q   u- ˆ   oL   	q   u- ˆ   oP   	qq h   	x- ˆ   oX   	q   u- ˆ   o\   	q   u- ˆ   o`   	qq x- ˆ   oh   	qq x6 ˆ   o
+	qp   u„ qtype.func(int32) *"".RedMaster_T - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qECß@È    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."func(int32) *master.RedMaster_T" - ˆ   o    qq x„ qweak.type.*func(int32) *"".RedMaster_T - ˆ   o0   qq x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   q   u- ˆ   oL   q   u- ˆ   oP   qq h   x- ˆ   oX   q   u- ˆ   o\   q   u- ˆ   o`   qq x„ qtype.*"".RedMaster_T - ˆ   oh   qq x6 ˆ   o
+qp   u„ qtype.func() - ˆ   oqq x- ˆ   o   qq    x- ˆ   o   q   u- ˆ   o   qEö¼‚ö    u- ˆ   o   q	   u- ˆ   o   q   u- ˆ   o   q   u- ˆ   o   q   u„ qgo.string."func()" - ˆ   o    qq x„ qweak.type.*func() - ˆ   o0   qq x- ˆ   o8   qu- ˆ   o@   qq `   x- ˆ   oH   qu- ˆ   oL   qu- ˆ   oP   qq `   x- ˆ   oX   qu- ˆ   o\   qu6 ˆ   o
+q`   u„ qgo.importpath.runtime. „ qgo.string."runtime" - ˆ   oqq    x- ˆ   o   q   u6 ˆ   o
+q   u„ qgo.importpath.twist. „ qgo.string."twist" - ˆ   oqq    x- ˆ   o   q   u6 ˆ   o
+q   u„ qgo.string."html_master_plainMaster" -    oqq    x-    o   q   u-    o   q html_mas-    o   q ter_plai-    o   q nMaster -    o#   qu6    o
+q(   u„ qgo.string."div" - &   oqq    x- &   o   q   u- &   o   q div     - &   o   qu6 &   o
+q   u„ qgo.string."Navigation" - &   oqq    x- &   o   q
+   u- &   o   q Navigati- &   o   q on      - &   o   qu6 &   o
+q   u„ qgo.string."\n" - '   oqq    x- '   o   q   u- '   o   q 
+       - '   o   qu6 '   o
+q   u„ qgo.string."Plain page" - (   oqq    x- (   o   q
+   u- (   o   q Plain pa- (   o   q ge      - (   o   qu6 (   o
+q   u„ qgo.string."h1" - )   oqq    x- )   o   q   u- )   o   q h1      - )   o   qu6 )   o
+q   u„ qgo.string."Header" - )   oqq    x- )   o   q   u- )   o   q Header  - )   o   qu6 )   o
+q   u„ qgo.string."Content" - +   oqq    x- +   o   q   u- +   o   q Content - +   o   qu6 +   o
+q   u„ qgo.string." background-color" - -   oqq    x- -   o   q   u- -   o   q  backgro- -   o   q und-colo- -   o   q r       - -   o   qu6 -   o
+q    u„ q go.string."#000000" - -   o qq     x- -   o    q   u- -   o    q #000000 - -   o    qu6 -   o
+ q   u„ q!go.string." font-weight" - -   o!qq    !x- -   o   !q   u- -   o   !q  font-we- -   o   !q ight    - -   o   !qu6 -   o
+!q    u„ q"go.string."bold" - -   o"qq    "x- -   o   "q   u- -   o   "q bold    - -   o   "qu6 -   o
+"q   u„ q#go.string."color" - -   o#qq    #x- -   o   #q   u- -   o   #q color   - -   o   #qu6 -   o
+#q   u„ q$go.string."#ffffff" - -   o$qq    $x- -   o   $q   u- -   o   $q #ffffff - -   o   $qu6 -   o
+$q   u„ q%go.string." padding" - -   o%qq    %x- -   o   %q   u- -   o   %q  padding- -   o   %qu6 -   o
+%q   u„ q&go.string."5px" - -   o&qq    &x- -   o   &q   u- -   o   &q 5px     - -   o   &qu6 -   o
+&q   u„ q'go.string."Footer" - -   o'qq    'x- -   o   'q   u- -   o   'q Footer  - -   o   'qu6 -   o
+'q   u„ q(go.string."html_master_redMaster" - \   o(qq    (x- \   o   (q   u- \   o   (q html_mas- \   o   (q ter_redM- \   o   (q aster   - \   o!   (qu6 \   o
+(q(   u„ q)go.string."Red page" - e   o)qq    )x- e   o   )q   u- e   o   )q Red page- e   o   )qu6 e   o
+)q   u„ q*go.string."span" - i   o*qq    *x- i   o   *q   u- i   o   *q span    - i   o   *qu6 i   o
+*q   u„ q+go.string."Date" - i   o+qq    +x- i   o   +q   u- i   o   +q Date    - i   o   +qu6 i   o
++q   u„ q,go.string." @ " - j   o,qq    ,x- j   o   ,q   u- j   o   ,q  @      - j   o   ,qu6 j   o
+,q   u„ q-go.string."Location" - k   o-qq    -x- k   o   -q   u- k   o   -q Location- k   o   -qu6 k   o
+-q   u„ q.go.string."\n\t" - l   o.qq    .x- l   o   .q   u- l   o   .q 
+	      - l   o   .qu6 l   o
+.q   u„ q/go.string."background-color" - m   o/qq    /x- m   o   /q   u- m   o   /q backgrou- m   o   /q nd-color- m   o   /qu6 m   o
+/q    u„ q0go.string."#cc0000" - m   o0qq    0x- m   o   0q   u- m   o   0q #cc0000 - m   o   0qu6 m   o
+0q   u„ q1go.string." color" - m   o1qq    1x- m   o   1q   u- m   o   1q  color  - m   o   1qu6 m   o
+1q   u„ qgo.string."Topper" - m   oqq    x- m   o   q   u- m   o   q Topper  - m   o   qu6 m   o
+q   u„ qgo.string."master.PlainMaster_T" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q master.P- ˆ   o   q lainMast- ˆ   o   q er_T    - ˆ   o    qu6 ˆ   o
+q(   u„ qgo.string."name" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q name    - ˆ   o   qu6 ˆ   o
+q   u„ qgo.string."PlainMaster_T" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q PlainMas- ˆ   o   q ter_T   - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."*master.PlainMaster_T" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q *master.- ˆ   o   q PlainMas- ˆ   o   q ter_T   - ˆ   o!   qu6 ˆ   o
+q(   u„ qgo.string."func(*master.PlainMaster_T) *twist.Template" - ˆ   oqq    x- ˆ   o   q+   u- ˆ   o   q func(*ma- ˆ   o   q ster.Pla- ˆ   o   q inMaster- ˆ   o$   q _T) *twi- ˆ   o,   q st.Templ- ˆ   o4   q ate     - ˆ   o7   qu6 ˆ   o
+q8   u„ qgo.string."GetTemplate" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q GetTempl- ˆ   o   q ate     - ˆ   o   qu6 ˆ   o
+q   u„ qgo.string."func() *twist.Template" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q func() *- ˆ   o   q twist.Te- ˆ   o   q mplate  - ˆ   o"   qu6 ˆ   o
+q(   u„ q	go.string."method(t *master.PlainMaster_T)func() *twist.Template" - ˆ   o	qq    	x- ˆ   o   	q5   u- ˆ   o   	q method(t- ˆ   o   	q  *master- ˆ   o   	q .PlainMa- ˆ   o$   	q ster_T)f- ˆ   o,   	q unc() *t- ˆ   o4   	q wist.Tem- ˆ   o<   	q plate   - ˆ   oA   	qu6 ˆ   o
+	qH   u„ q
+go.string."map[string] string" - ˆ   o
+qq    
+x- ˆ   o   
+q   u- ˆ   o   
+q map[stri- ˆ   o   
+q ng] stri- ˆ   o   
+q ng      - ˆ   o   
+qu6 ˆ   o
+
+q    u„ qgo.string."func(*twist.Context, string) *master.PlainMaster_T" - ˆ   oqq    x- ˆ   o   q2   u- ˆ   o   q func(*tw- ˆ   o   q ist.Cont- ˆ   o   q ext, str- ˆ   o$   q ing) *ma- ˆ   o,   q ster.Pla- ˆ   o4   q inMaster- ˆ   o<   q _T      - ˆ   o>   qu6 ˆ   o
+q@   u„ qgo.string."func(string) *twist.Template" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q func(str- ˆ   o   q ing) *tw- ˆ   o   q ist.Temp- ˆ   o$   q late    - ˆ   o(   qu6 ˆ   o
+q0   u„ qgo.string."func(*uint8, int64) map[string] string" - ˆ   oqq    x- ˆ   o   q&   u- ˆ   o   q func(*ui- ˆ   o   q nt8, int- ˆ   o   q 64) map[- ˆ   o$   q string] - ˆ   o,   q string  - ˆ   o2   qu6 ˆ   o
+q8   u„ qgo.string."[]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q []*twist- ˆ   o   q .Item   - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."[0]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q [0]*twis- ˆ   o   q t.Item  - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."*[0]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q *[0]*twi- ˆ   o   q st.Item - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."func(int32) *[0]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q func(int- ˆ   o   q 32) *[0]- ˆ   o   q *twist.I- ˆ   o$   q tem     - ˆ   o'   qu6 ˆ   o
+q(   u„ q""..gostring.1 - ˆ   oqq    x- ˆ   o   qw   u- ˆ   o   q func(str- ˆ   o   q ing, *tw- ˆ   o   q ist.Temp- ˆ   o$   q late, *t- ˆ   o,   q wist.Wri- ˆ   o4   q ter, str- ˆ   o<   q ing, map- ˆ   oD   q [string]- ˆ   oL   q  string,- ˆ   oT   q  map[str- ˆ   o\   q ing] str- ˆ   od   q ing, []*- ˆ   ol   q twist.It- ˆ   ot   q em) *twi- ˆ   o|   q st.Item - ˆ   oƒ   qu6 ˆ   o
+qˆ   u„ qgo.string."func(string) *twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q func(str- ˆ   o   q ing) *tw- ˆ   o   q ist.Item- ˆ   o$   qu6 ˆ   o
+q(   u„ qgo.string."[1]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q [1]*twis- ˆ   o   q t.Item  - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."*[1]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q *[1]*twi- ˆ   o   q st.Item - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."func(int32) *[1]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q func(int- ˆ   o   q 32) *[1]- ˆ   o   q *twist.I- ˆ   o$   q tem     - ˆ   o'   qu6 ˆ   o
+q(   u„ qgo.string."func(*uint8, map[string] string, string, string)" - ˆ   oqq    x- ˆ   o   q0   u- ˆ   o   q func(*ui- ˆ   o   q nt8, map- ˆ   o   q [string]- ˆ   o$   q  string,- ˆ   o,   q  string,- ˆ   o4   q  string)- ˆ   o<   qu6 ˆ   o
+q@   u„ qgo.string."[7]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q [7]*twis- ˆ   o   q t.Item  - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."*[7]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q *[7]*twi- ˆ   o   q st.Item - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."func(int32) *[7]*twist.Item" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q func(int- ˆ   o   q 32) *[7]- ˆ   o   q *twist.I- ˆ   o$   q tem     - ˆ   o'   qu6 ˆ   o
+q(   u„ qgo.string."func(int32) *master.PlainMaster_T" - ˆ   oqq    x- ˆ   o   q!   u- ˆ   o   q func(int- ˆ   o   q 32) *mas- ˆ   o   q ter.Plai- ˆ   o$   q nMaster_- ˆ   o,   q T       - ˆ   o-   qu6 ˆ   o
+q0   u„ qgo.string."master.RedMaster_T" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q master.R- ˆ   o   q edMaster- ˆ   o   q _T      - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."RedMaster_T" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q RedMaste- ˆ   o   q r_T     - ˆ   o   qu6 ˆ   o
+q   u„ qgo.string."*master.RedMaster_T" - ˆ   oqq    x- ˆ   o   q   u- ˆ   o   q *master.- ˆ   o   q RedMaste- ˆ   o   q r_T     - ˆ   o   qu6 ˆ   o
+q    u„ qgo.string."func(*master.RedMaster_T) *twist.Template" - ˆ   oqq    x- ˆ   o   q)   u- ˆ   o   q func(*ma- ˆ   o   q ster.Red- ˆ   o   q Master_T- ˆ   o$   q ) *twist- ˆ   o,   q .Templat- ˆ   o4   q e       - ˆ   o5   qu6 ˆ   o
+q8   u„ q go.string."method(t *master.RedMaster_T)func() *twist.Template" - ˆ   o qq     x- ˆ   o    q3   u- ˆ   o    q method(t- ˆ   o    q  *master- ˆ   o    q .RedMast- ˆ   o$    q er_T)fun- ˆ   o,    q c() *twi- ˆ   o4    q st.Templ- ˆ   o<    q ate     - ˆ   o?    qu6 ˆ   o
+ q@   u„ q!go.string."func(*twist.Context, string) *master.RedMaster_T" - ˆ   o!qq    !x- ˆ   o   !q0   u- ˆ   o   !q func(*tw- ˆ   o   !q ist.Cont- ˆ   o   !q ext, str- ˆ   o$   !q ing) *ma- ˆ   o,   !q ster.Red- ˆ   o4   !q Master_T- ˆ   o<   !qu6 ˆ   o
+!q@   u„ q"go.string."[5]*twist.Item" - ˆ   o"qq    "x- ˆ   o   "q   u- ˆ   o   "q [5]*twis- ˆ   o   "q t.Item  - ˆ   o   "qu6 ˆ   o
+"q    u„ q#go.string."*[5]*twist.Item" - ˆ   o#qq    #x- ˆ   o   #q   u- ˆ   o   #q *[5]*twi- ˆ   o   #q st.Item - ˆ   o   #qu6 ˆ   o
+#q    u„ q$go.string."func(int32) *[5]*twist.Item" - ˆ   o$qq    $x- ˆ   o   $q   u- ˆ   o   $q func(int- ˆ   o   $q 32) *[5]- ˆ   o   $q *twist.I- ˆ   o$   $q tem     - ˆ   o'   $qu6 ˆ   o
+$q(   u„ q%go.string."[9]*twist.Item" - ˆ   o%qq    %x- ˆ   o   %q   u- ˆ   o   %q [9]*twis- ˆ   o   %q t.Item  - ˆ   o   %qu6 ˆ   o
+%q    u„ q&go.string."*[9]*twist.Item" - ˆ   o&qq    &x- ˆ   o   &q   u- ˆ   o   &q *[9]*twi- ˆ   o   &q st.Item - ˆ   o   &qu6 ˆ   o
+&q    u„ q'go.string."func(int32) *[9]*twist.Item" - ˆ   o'qq    'x- ˆ   o   'q   u- ˆ   o   'q func(int- ˆ   o   'q 32) *[9]- ˆ   o   'q *twist.I- ˆ   o$   'q tem     - ˆ   o'   'qu6 ˆ   o
+'q(   u„ q(go.string."func(int32) *master.RedMaster_T" - ˆ   o(qq    (x- ˆ   o   (q   u- ˆ   o   (q func(int- ˆ   o   (q 32) *mas- ˆ   o   (q ter.RedM- ˆ   o$   (q aster_T - ˆ   o+   (qu6 ˆ   o
+(q0   u„ q)go.string."func()" - ˆ   o)qq    )x- ˆ   o   )q   u- ˆ   o   )q func()  - ˆ   o   )qu6 ˆ   o
+)q   u„ q*go.string."runtime" - ˆ   o*qq    *x- ˆ   o   *q   u- ˆ   o   *q runtime - ˆ   o   *qu6 ˆ   o
+*q   u„ q+go.string."twist" - ˆ   o+qq    +x- ˆ   o   +q   u- ˆ   o   +q twist   - ˆ   o   +qu6 ˆ   o
++q   uP      

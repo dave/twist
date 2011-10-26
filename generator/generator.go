@@ -10,46 +10,89 @@ import (
 	//"bytes"
 )
 
-const HtmlFileSpec = "../web/html/"
-const GeneatedFile = "../web/twist/generated.go"
+const HtmlDir = "../web/html/"
+const IndexFile = "../web/twist/generated.go"
 
 type visitor struct {
-	Templates *[]Template
+	Templates map[string][]Template
 }
 
-func (v *visitor) AppendTemplate(t *Template) {
-	tem := append(*v.Templates, *t)
-	v.Templates = &tem
+func (v *visitor) AppendTemplate(namespace string, t Template) {
+	if v.Templates[namespace] == nil {
+		t := make([]Template, 0)
+		v.Templates[namespace] = t
+	}
+	tem := append(v.Templates[namespace], t)
+	v.Templates[namespace] = tem
 }
 
 func (v *visitor) VisitDir(path string, f *os.FileInfo) bool {
+	//fmt.Println("DIR! ", path)
 	return true
 }
 
 type Binder struct {
+	Package   string
+	Templates []Template
+}
+type IndexBinder struct {
+	Packages  []Package
 	Templates []Template
 }
 
 func main() {
-	t := []Template{}
-	v := visitor{&t}
-	filepath.Walk(HtmlFileSpec, &v, nil)
-	binder := Binder{*v.Templates}
+	t := make(map[string][]Template)
+	v := visitor{t}
 
-	temp := template.New("")
-	//temp.SetDelims("{{", "}}")
+	filepath.Walk(HtmlDir, &v, nil)
 
-	p, err := temp.Parse(getTemplate())
+	indexBinder := IndexBinder{make([]Package, 0), make([]Template, 0)}
+
+	for packagePath, templates := range v.Templates {
+
+		filename := packagePath[strings.LastIndex(packagePath, "/")+1:]
+
+		binder := Binder{filename, templates}
+
+		temp := template.New("")
+
+		p, err := temp.Parse(getTemplate())
+
+		if err != nil {
+			fmt.Println("Error!", err.String())
+			return
+		}
+		htmlDirWithoutSlash := HtmlDir
+		if strings.HasSuffix(htmlDirWithoutSlash, "/") {
+			htmlDirWithoutSlash = htmlDirWithoutSlash[0 : len(htmlDirWithoutSlash)-1]
+		}
+		htmlDirWithoutBaseDir := htmlDirWithoutSlash[0:strings.LastIndex(htmlDirWithoutSlash, "/")]
+		fullFilename := fmt.Sprint(htmlDirWithoutBaseDir, "/", packagePath, "/", filename, ".go")
+		fmt.Println("fullFilename: ", fullFilename)
+		f, _ := os.Create(fullFilename)
+		defer f.Close()
+
+		p.Execute(f, binder)
+
+		indexBinder.Packages = append(indexBinder.Packages, Package{PackageName: filename, PackagePath: packagePath, PackagePathUnderscores: strings.Replace(packagePath, "/", "_", -1)})
+
+		for _, template := range templates {
+			indexBinder.Templates = append(indexBinder.Templates, template)
+		}
+	}
+
+	tempIndex := template.New("")
+
+	tempIndexParsed, err := tempIndex.Parse(getTemplateIndex())
 
 	if err != nil {
 		fmt.Println("Error!", err.String())
 		return
 	}
-	//b := new(bytes.Buffer)
-	f, _ := os.Create(GeneatedFile)
-	defer f.Close()
+	fIndex, _ := os.Create(IndexFile)
+	defer fIndex.Close()
 
-	p.Execute(f, binder)
+	tempIndexParsed.Execute(fIndex, indexBinder)
 
 	fmt.Println("Done!!")
 
@@ -57,8 +100,20 @@ func main() {
 
 func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 
-	fmt.Print(fi.Name)
+	baseDir := HtmlDir
+	if strings.HasSuffix(HtmlDir, "/") {
+		baseDir = HtmlDir[0 : len(HtmlDir)-1]
+	}
+	baseDirName := baseDir[strings.LastIndex(baseDir, "/")+1:]
+	packageAndFilename := path[len(baseDir)+1:]
+	if !strings.Contains(packageAndFilename, "/") {
+		return
+	}
+	packageName := packageAndFilename[0:strings.LastIndex(packageAndFilename, "/")]
 
+	packagePath := baseDirName + "/" + packageName
+
+	fmt.Print(packagePath, " ", fi.Name)
 	if !strings.HasSuffix(fi.Name, ".html") {
 		fmt.Println(" (skipping)")
 		return
@@ -157,7 +212,7 @@ func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 	for _, v := range root.Contents {
 		newSequence, name, def := v.Definition(sequence, namesMap)
 		defs += def
-		names += `&` + name + `, `
+		names += name + `, `
 		sequence = newSequence
 	}
 
@@ -166,14 +221,17 @@ func (v *visitor) VisitFile(path string, fi *os.FileInfo) {
 	}
 
 	temp := Template{
-		NameUpper: toUpper(templateName),
-		NameLower: toLower(templateName),
-		Html:      sOut,
-		Items:     items,
-		Defs:      defs,
-		Names:     names,
+		PackageName:            packageName,
+		PackagePath:            packagePath,
+		PackagePathUnderscores: strings.Replace(packagePath, "/", "_", -1),
+		NameUpper:              toUpper(templateName),
+		NameLower:              toLower(templateName),
+		Html:                   sOut,
+		Items:                  items,
+		Defs:                   defs,
+		Names:                  names,
 	}
-	v.AppendTemplate(&temp)
+	v.AppendTemplate(packagePath, temp)
 }
 func makeMap(data string, seperator1 string, seperator2 string) map[string]string {
 	out := make(map[string]string)
@@ -217,7 +275,7 @@ func (pte *Text) Definition(sequence int, names map[string]string) (int, string,
 	v := strings.Replace(pte.Text, "`", "`+\"`\"+`", -1)
 	v1 := strings.Replace(v, "\n", "`+\"\\n\"+`", -1)
 	s := fmt.Sprint(`
-	v`, sequence, ` := Item{Text:`, "`", v1, "`", `}`)
+	v`, sequence, ` := twist.NewTextItem(`, "`", v1, "`", `)`)
 	return sequence, fmt.Sprint(`v`, sequence), s
 }
 func (he *Tag) Definition(sequence int, names map[string]string) (int, string, string) {
@@ -228,44 +286,50 @@ func (he *Tag) Definition(sequence int, names map[string]string) (int, string, s
 	}
 
 	newSequence := sequence
-	s := fmt.Sprint(`
-	v`, sequence, ` := Item{Name: "`, he.Name, `", `)
+	s := ``
 
 	if len(he.Id) > 0 {
-		s += fmt.Sprint(`template: t, `)
-		s += fmt.Sprint(`writer: c.Writer, `)
-		s += fmt.Sprint(`id: "`, he.Id, `", `)
+		s += fmt.Sprint(`
+	v`, sequence, ` := twist.NewItemId("`, he.Name, `", `)
+		s += fmt.Sprint(`t, `)
+		s += fmt.Sprint(`c.Writer, `)
+		s += fmt.Sprint(`"`, he.Id, `", `)
+	} else {
+		s += fmt.Sprint(`
+	v`, sequence, ` := twist.NewItem("`, he.Name, `", `)
 	}
 
 	if len(he.Attributes) > 0 {
-		s += `Attributes: map[string]string{`
+		s += `map[string]string{`
 		for k, v := range he.Attributes {
 			s += fmt.Sprint(`"`, k, `":"`, v, `", `)
 		}
 		s += `}, `
 	} else {
-		s += `Attributes: map[string]string{}, `
+		s += `map[string]string{}, `
 	}
 	if len(he.Styles) > 0 {
-		s += `Styles: map[string]string{`
+		s += `map[string]string{`
 		for k, v := range he.Styles {
 			s += fmt.Sprint(`"`, k, `":"`, v, `", `)
 		}
 		s += `}, `
 	} else {
-		s += `Styles: map[string]string{}, `
+		s += `map[string]string{}, `
 	}
 	if len(he.Contents) > 0 {
-		s += `Contents: []*Item{`
+		s += `[]*twist.Item{`
 		for _, c := range he.Contents {
 			newSequence1, name, def := c.Definition(newSequence, names)
-			s += `&` + name + `, `
+			s += name + `, `
 			s = def + s
 			newSequence = newSequence1
 		}
 		s += `}, `
+	} else {
+		s += `[]*twist.Item{}, `
 	}
-	s += `}`
+	s += `)`
 	return newSequence, fmt.Sprint(`v`, sequence), s
 }
 
@@ -282,68 +346,91 @@ type Item struct {
 	ItemNameLower string
 	Variable      string
 }
+type Package struct {
+	PackageName            string
+	PackagePath            string
+	PackagePathUnderscores string
+}
 type Template struct {
-	NameUpper string
-	NameLower string
-	Html      string
-	Items     []Item
-	Defs      string
-	Names     string
+	PackageName            string
+	PackagePath            string
+	PackagePathUnderscores string
+	NameUpper              string
+	NameLower              string
+	Html                   string
+	Items                  []Item
+	Defs                   string
+	Names                  string
 }
 
 func getTemplate() string {
 	return `
+package {{.Package}}
+
+import (
+	"twist"
+)
+
+{{range .Templates}}
+type {{.NameUpper}}_T struct {
+	
+	name string
+	*twist.Template
+	{{range .Items}}
+	{{.ItemNameUpper}} *twist.Item
+	{{end}}
+
+}
+
+func (t *{{.NameUpper}}_T) GetTemplate() *twist.Template {
+	return t.Template
+}
+
+func {{.NameUpper}}(c *twist.Context, id string) *{{.NameUpper}}_T {
+	
+	t := twist.GetTemplateByPath("{{.PackagePathUnderscores}}_{{.NameLower}}")
+	t.Path = "{{.PackagePathUnderscores}}_{{.NameLower}}"
+	t.Writer = c.Writer
+	t.Id = id
+	
+	c.Writer.RegisterTemplate(t)
+
+	{{.Defs}}
+
+	t.Contents = []*twist.Item{ {{.Names}} }
+	
+	return &{{.NameUpper}}_T{
+		name : t.Name, 
+		Template : t,
+		{{range .Items}}
+		{{.ItemNameUpper}} : {{.Variable}},
+		{{end}}
+	}
+}
+{{end}}`
+}
+
+func getTemplateIndex() string {
+	return `
 package twist
 
-func getTemplateByName(name string) *Template {
-	switch name {
+func GetTemplateByPath(path string) *Template {
+	switch path {
 		{{range .Templates}}
-		case "{{.NameLower}}" : 
-			return {{.NameLower}}_Template()
+		case "{{.PackagePathUnderscores}}_{{.NameLower}}" : 
+			return {{.PackagePathUnderscores}}_{{.NameLower}}_Template()
 		{{end}}
 	}
 	return nil
 }
 
 {{range .Templates}}
-type {{.NameUpper}}_T struct {
-	
-	name string
-	*Template
-	{{range .Items}}
-	{{.ItemNameUpper}} *Item
-	{{end}}
-
-}
-func {{.NameLower}}_Template() *Template{
+func {{.PackagePathUnderscores}}_{{.NameLower}}_Template() *Template{
 	return &Template {
-		name     : "{{.NameLower}}",
+		Name     : "{{.NameLower}}",
 		Html     : ` + "`" + `{{.Html}}` + "`" + `,
 	}
 }
-func (t *{{.NameUpper}}_T) GetTemplate() *Template {
-	return t.Template
-}
-
-func {{.NameUpper}}(c *Context, id string) *{{.NameUpper}}_T {
-	
-	t := {{.NameLower}}_Template()
-	t.Writer = c.Writer
-	t.Id = id
-	
-	c.Writer.registerTemplate(*t)
-
-	{{.Defs}}
-
-	t.Contents = []*Item{ {{.Names}} }
-	
-	return &{{.NameUpper}}_T{
-		name : t.name, 
-		Template : t,
-		{{range .Items}}
-		{{.ItemNameUpper}} : &{{.Variable}},
-		{{end}}
-	}
-}
-{{end}}`
+{{end}}
+`
 }

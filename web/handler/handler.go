@@ -4,6 +4,9 @@ import (
 	"http"
 	"twist"
 	"fmt"
+	"html/content"
+	"html/master"
+	"html/misc"
 )
 
 func init() {
@@ -26,8 +29,8 @@ func (f Functions) Root(c *twist.Context) {
 	f.Plain1(c, Plain1_T{Start: 0})
 }
 
-func getNav(c *twist.Context) *twist.Navigation_T {
-	nav := twist.Navigation(c, "Nav")
+func getNav(c *twist.Context) *misc.Navigation_T {
+	nav := misc.Navigation(c, "Nav")
 	nav.Plain1Link.Link(Functions.Plain1, nil)
 	nav.Plain2Link.Link(Functions.Plain2, nil)
 	nav.Plain3Link.Link(Functions.Plain3, nil)
@@ -37,15 +40,16 @@ func getNav(c *twist.Context) *twist.Navigation_T {
 	return nav
 }
 
-func getPlainMaster(c *twist.Context) *twist.PlainMaster_T {
-	master := twist.PlainMaster(c, "Master")
+func getPlainMaster(c *twist.Context) *master.PlainMaster_T {
+
+	master := master.PlainMaster(c, "Master")
 	master.Footer.Html("Here's some HTML in the footer...")
 	master.Navigation.Html(getNav(c))
 	return master
 }
 
-func getRedMaster(c *twist.Context) *twist.RedMaster_T {
-	master := twist.RedMaster(c, "Master")
+func getRedMaster(c *twist.Context) *master.RedMaster_T {
+	master := master.RedMaster(c, "Master")
 	master.Footer.Html("Here's some HTML in the red footer...")
 	master.Navigation.Html(getNav(c))
 	return master
@@ -62,7 +66,7 @@ func (f Functions) Plain1(c *twist.Context, v Plain1_T) {
 
 	master.Header.Html("Plain 1 heading")
 
-	p := twist.Plain1(c, "Plain1")
+	p := content.Plain1(c, "Plain1")
 	master.Content.Html(p)
 
 	p.Plus.Click(Functions.Plain1Add, Plain1Count_T{Count: p.Count, Output: p.Output})
@@ -100,7 +104,7 @@ func (f Functions) Plain2(c *twist.Context) {
 
 	master.Header.Html("Plain 2 heading")
 
-	contents := twist.Plain2(c, "Plain2")
+	contents := content.Plain2(c, "Plain2")
 	master.Content.Html(contents)
 
 }
@@ -111,7 +115,7 @@ func (f Functions) Plain3(c *twist.Context) {
 
 	master.Header.Html("Plain 3 heading")
 
-	contents := twist.Plain3(c, "Plain3")
+	contents := content.Plain3(c, "Plain3")
 	master.Content.Html(contents)
 
 }
@@ -125,7 +129,7 @@ func (f Functions) Red1(c *twist.Context) {
 
 	master.Header.Html("Red 1 heading")
 
-	contents := twist.Red1(c, "Red1")
+	contents := content.Red1(c, "Red1")
 	master.Content.Html(contents)
 
 }
@@ -139,7 +143,7 @@ func (f Functions) Red2(c *twist.Context) {
 
 	master.Header.Html("Red 2 heading")
 
-	contents := twist.Red2(c, "Red2")
+	contents := content.Red2(c, "Red2")
 	master.Content.Html(contents)
 
 }
@@ -153,7 +157,7 @@ func (f Functions) Red3(c *twist.Context) {
 
 	master.Header.Html("Red 3 heading")
 
-	contents := twist.Red3(c, "Red3")
+	contents := content.Red3(c, "Red3")
 	master.Content.Html(contents)
 
 }

@@ -5,7 +5,8 @@ import (
 )
 
 type Template struct {
-	name     string
+	Name     string
+	Path     string
 	Html     string
 	Id       string
 	parentId string

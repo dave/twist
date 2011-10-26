@@ -41,7 +41,7 @@ func serverTemplate(wr http.ResponseWriter, r *http.Request, getFunctionsType fu
 
 	path := r.URL.Path
 	name := path[strings.Index(path, "_")+1:]
-	template := getTemplateByName(name)
+	template := GetTemplateByPath(name)
 	fmt.Fprint(wr, template.getTemplateJavascript())
 
 }

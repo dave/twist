@@ -8,7 +8,7 @@ import (
 type Writer struct {
 	Output    http.ResponseWriter
 	Buffer    string
-	Templates []Template
+	Templates []*Template
 	SendRoot  bool
 	SendHtml  bool
 }
@@ -29,16 +29,16 @@ func newWriter(o http.ResponseWriter, sendRoot bool, sendHtml bool) *Writer {
 	return &Writer{
 		Output:    o,
 		Buffer:    "",
-		Templates: make([]Template, 0),
+		Templates: make([]*Template, 0),
 		SendRoot:  sendRoot,
 		SendHtml:  sendHtml,
 	}
 }
 
-func (w *Writer) registerTemplate(t Template) {
+func (w *Writer) RegisterTemplate(t *Template) {
 
 	for i := 0; i < len(w.Templates); i++ {
-		if w.Templates[i].name == t.name {
+		if w.Templates[i].Name == t.Name {
 			return
 		}
 	}
@@ -104,7 +104,7 @@ var templatesToLoad = ` + fmt.Sprint(len(w.Templates)) + `;
 var templatesLoaded = 0;`
 		for i := 0; i < len(w.Templates); i++ {
 			templates += `
-$("#head").append($("<div>").load("/template_` + w.Templates[i].name + `", function() {templatesLoaded++;if(templatesLoaded == templatesToLoad){runScript();}}));`
+$("#head").append($("<div>").load("/template_` + w.Templates[i].Path + `", function() {templatesLoaded++;if(templatesLoaded == templatesToLoad){runScript();}}));`
 		}
 
 		script = `
@@ -132,7 +132,7 @@ var templatesToLoad = ` + fmt.Sprint(len(w.Templates)) + `;
 var templatesLoaded = 0;`
 		for i := 0; i < len(w.Templates); i++ {
 			templates += `
-$("#head").append($("<div>").load("/template_` + w.Templates[i].name + `", function() {templatesLoaded++;if(templatesLoaded == templatesToLoad){runScript();}}));`
+$("#head").append($("<div>").load("/template_` + w.Templates[i].Path + `", function() {templatesLoaded++;if(templatesLoaded == templatesToLoad){runScript();}}));`
 		}
 		script = `
 function runScript()
