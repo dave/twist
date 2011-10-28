@@ -26,7 +26,7 @@ func handler(wr http.ResponseWriter, r *http.Request) {
 type Functions int
 
 func (f Functions) Root(c *twist.Context) {
-	f.Plain1(c, Plain1_T{Start: 0})
+	f.Plain1(c, Plain1_V{Start: 0})
 }
 
 func getNav(c *twist.Context) *misc.Navigation_T {
@@ -55,11 +55,11 @@ func getRedMaster(c *twist.Context) *master.RedMaster_T {
 	return master
 }
 
-type Plain1_T struct {
+type Plain1_V struct {
 	Start twist.Int
 }
 
-func (f Functions) Plain1(c *twist.Context, v Plain1_T) {
+func (f Functions) Plain1(c *twist.Context, v Plain1_V) {
 
 	master := getPlainMaster(c)
 	c.Root.Html(master)
@@ -69,32 +69,32 @@ func (f Functions) Plain1(c *twist.Context, v Plain1_T) {
 	p := content.Plain1(c, "Plain1")
 	master.Content.Html(p)
 
-	p.Plus.Click(Functions.Plain1Add, Plain1Count_T{Count: p.Count, Output: p.Output})
-	p.Minus.Click(Functions.Plain1Minus, Plain1Count_T{Count: p.Count, Output: p.Output})
+	p.Plus.Click(Functions.Plain1Add, Plain1Count_V{Count: p.Count, Output: p.Output})
+	p.Minus.Click(Functions.Plain1Minus, Plain1Count_V{Count: p.Count, Output: p.Output})
 	p.Output.Html(v.Start.String())
 	p.Count.Attr("value", v.Start.String())
 
 }
 
-type Plain1Count_T struct {
+type Plain1Count_V struct {
 	Count  *twist.Item
 	Output *twist.Item
 }
 
-func (f Functions) Plain1Add(c *twist.Context, v Plain1Count_T) {
+func (f Functions) Plain1Add(c *twist.Context, v Plain1Count_V) {
 	i := v.Count.Int()
 	i++
 	v.Output.Html(fmt.Sprint(i))
 	v.Count.Attr("value", fmt.Sprint(i))
-	c.Navigate(Functions.Plain1, Plain1_T{Start: twist.Int(i)})
+	c.Navigate(Functions.Plain1, Plain1_V{Start: twist.Int(i)})
 }
 
-func (f Functions) Plain1Minus(c *twist.Context, v Plain1Count_T) {
+func (f Functions) Plain1Minus(c *twist.Context, v Plain1Count_V) {
 	i := v.Count.Int()
 	i--
 	v.Output.Html(fmt.Sprint(i))
 	v.Count.Attr("value", fmt.Sprint(i))
-	c.Navigate(Functions.Plain1, Plain1_T{Start: twist.Int(i)})
+	c.Navigate(Functions.Plain1, Plain1_V{Start: twist.Int(i)})
 }
 
 func (f Functions) Plain2(c *twist.Context) {
